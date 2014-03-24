@@ -1,0 +1,83 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeFile="Site.master.cs" Inherits="SiteMaster" %>
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+
+<head runat="server">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+<link rel="stylesheet" type="text/css" href="Styles\fixlib.css" />
+<link rel="stylesheet" href="http://missionbell.com/js/slider/css/basic-jquery-slider.css" />
+<script src="http://missionbell.com/js/slider/js/libs/jquery-1.6.2.min.js"></script>
+<!-- HoverIntent and Basic jQuery Slider //-->
+<script src="http://missionbell.com/js/jquery.hoverIntent.minified.js"></script>
+<script src="http://missionbell.com/js/slider/js/basic-jquery-slider.js"></script>
+<!-- Shadowbox with jQuery //-->
+<link rel="stylesheet" type="text/css" href="http://missionbell.com/js/shadowbox/shadowbox.css">
+<script type="text/javascript" src="http://missionbell.com/js/shadowbox/shadowbox.js"></script>
+<!-- jQuery Validation plugin //-->
+<script type="text/javascript" src="http://missionbell.com/js/validation/dist/jquery.validate.js"></script>
+<!-- MB CSS and JS //-->
+<!--<link rel="stylesheet" type="text/css" href="http://missionbell.com/css/style.css" />-->
+<link rel="stylesheet" type="text/css" href="Styles\fixlib.css" />
+<link rel="icon" type="image/png" href="http://missionbell.com/images/favicon.png">
+<script type="text/javascript" src="http://missionbell.com/js/mb.js"></script>
+<script type="text/javascript" src="Scripts\fixlib.js"></script>
+    <title>Mission Bell Fixtures Library</title>
+</head>
+    <handlers>
+      <remove name="WebServiceHandlerFactory-Integrated"/>
+      <remove name="ScriptHandlerFactory"/>
+      <remove name="ScriptHandlerFactoryAppServices"/>
+      <remove name="ScriptResource"/>
+      <add name="ScriptHandlerFactory" verb="*" path="*.asmx" preCondition="integratedMode" type="System.Web.Script.Services.ScriptHandlerFactory, System.Web.Extensions, Version=3.5.0.0, Culture=neutral, PublicKeyToken=31BF3856AD364E35"/>
+      <add name="ScriptHandlerFactoryAppServices" verb="*" path="*_AppService.axd" preCondition="integratedMode" type="System.Web.Script.Services.ScriptHandlerFactory, System.Web.Extensions, Version=3.5.0.0, Culture=neutral, PublicKeyToken=31BF3856AD364E35"/>
+      <add name="ScriptResource" verb="GET,HEAD" path="ScriptResource.axd" preCondition="integratedMode" type="System.Web.Handlers.ScriptResourceHandler, System.Web.Extensions, Version=3.5.0.0, Culture=neutral, PublicKeyToken=31BF3856AD364E35"/>
+      <add name="Telerik_Web_UI_WebResource_axd" verb="*" preCondition="integratedMode" path="Telerik.Web.UI.WebResource.axd" type="Telerik.Web.UI.WebResource"/>
+      <add name="ChartImage_axd" verb="*" preCondition="integratedMode" path="ChartImage.axd" type="Telerik.Web.UI.ChartHttpHandler"/>
+    </handlers>
+    <httpHandlers>
+      <remove path="*.asmx" verb="*"/>
+      <add path="*.asmx" verb="*" type="System.Web.Script.Services.ScriptHandlerFactory, System.Web.Extensions, Version=3.5.0.0, Culture=neutral, PublicKeyToken=31BF3856AD364E35" validate="false"/>
+      <add path="*_AppService.axd" verb="*" type="System.Web.Script.Services.ScriptHandlerFactory, System.Web.Extensions, Version=3.5.0.0, Culture=neutral, PublicKeyToken=31BF3856AD364E35" validate="false"/>
+      <add path="ScriptResource.axd" verb="GET,HEAD" type="System.Web.Handlers.ScriptResourceHandler, System.Web.Extensions, Version=3.5.0.0, Culture=neutral, PublicKeyToken=31BF3856AD364E35" validate="false"/>
+      <add path="Telerik.Web.UI.DialogHandler.aspx" verb="*" type="Telerik.Web.UI.DialogHandler, Telerik.Web.UI, Culture=neutral, PublicKeyToken=121fae78165ba3d4" validate="false"/>
+      <add path="Telerik.Web.UI.SpellCheckHandler.axd" verb="*" type="Telerik.Web.UI.SpellCheckHandler, Telerik.Web.UI, Culture=neutral, PublicKeyToken=121fae78165ba3d4" validate="false"/>
+      <add verb="*" path="Telerik.RadUploadProgressHandler.ashx" type="Telerik.Web.UI.RadUploadProgressHandler, Telerik.Web.UI"/>
+      <add path="Telerik.Web.UI.WebResource.axd" type="Telerik.Web.UI.WebResource" verb="*" validate="false"/>
+      <add path="ChartImage.axd" type="Telerik.Web.UI.ChartHttpHandler" verb="*" validate="false"/>
+    </httpHandlers>
+<body>
+    <asp:ContentPlaceHolder ID="HeadContent" runat="server">
+    </asp:ContentPlaceHolder>
+	<div id="branding">
+    <hgroup id="logo">
+      <h1 id="missionBell">
+        <a href="index.php">
+          <span>Mission Bell Manufacturing</span>
+        </a>
+      </h1>
+    </hgroup>
+		<hgroup id="tagline">
+			<h2><a href="index.php"><span>Working Wonders in Workspace</span><br />
+			Architectual Millwork,<br />
+			Woodwork and<br />
+			Casework</a></h2>
+		</hgroup>
+	
+		<div id="fixturesTitle">
+			<h1>Fixtures <span>Library</span></h1>
+		</div>
+	</div>	
+
+    <asp:ContentPlaceHolder ID="MainContent" runat="server"/>
+
+    <div class="page">
+        </div>
+      <controls>
+        <add tagPrefix="asp" namespace="System.Web.UI" assembly="System.Web.Extensions, Version=3.5.0.0, Culture=neutral, PublicKeyToken=31BF3856AD364E35"/>
+        <add tagPrefix="asp" namespace="System.Web.UI.WebControls" assembly="System.Web.Extensions, Version=3.5.0.0, Culture=neutral, PublicKeyToken=31BF3856AD364E35"/>
+        <add tagPrefix="telerik" namespace="Telerik.Web.UI" assembly="Telerik.Web.UI"/>
+      </controls>
+</body>
+</html>

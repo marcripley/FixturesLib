@@ -1,0 +1,80 @@
+/* CSS for Mission Bell Manufacturing, Inc.
+ * Custom CSS rules for the Fixtures Library pages
+ * Author: Marc Ripley (http://marcripley.com)
+ * Colors: #660000 (dark red),#990000 (brighter red), #034c95 (dark blue), #c6deff (light blue), #030 (dark green)
+		   #888s and #444s for grays, mostly #f6f6f6 for whitishs
+ */
+
+/* Universal reset */
+html,body,div,span,applet,object,iframe,caption,del,dfn,em,font,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,dl,dt,dd,ol,ul,li,fieldset,form,label,legend {vertical-align: baseline;font-size: 100%;outline: 0;padding: 0;margin: 0;border: 0;}
+html {min-height: 100%;border-bottom: 1px solid transparent;}
+body {background: #ffffff;line-height: 14px;color: #222222;font-size: 12px;font-family: Tahoma, Geneva, sans-serif;line-height: 18px;}
+img {border: none;text-decoration: none;}
+a {outline: none;cursor: pointer;}
+a:link, a:visited, a:active {text-decoration: none;}
+a:hover {text-decoration: none;}
+/* HTML5 tags */
+header, section, footer, aside, nav, article, figure {display: block;}
+
+/* Generic Header Info */
+header {margin-bottom: 40px;}
+div#branding {margin-top: 10px;height: 100px;}
+hgroup#logo {float: left;margin: 0 10px 0;background: #ffffff url('http://missionbell.com/images/logo.png') no-repeat 0 0;height: 100px;width: 100px}
+hgroup#logo h1 a {display: block;width: 100px;height: 100px;}
+h1#missionBell {text-indent: -9999px;}
+h1#missionBell span {display: none;font-size: 36px;line-height: 32px;color: #660000;}
+hgroup#tagline h2 {float: left;margin-top: -4px;font-size: 14px;line-height: 21px;border-bottom: 0px !important;}
+hgroup#tagline h2 a {color: #660000;}
+hgroup#tagline h2 span {color: #a2a2a2;}
+
+#fixturesTitle {float: right;width: 600px;margin-right: 20px;text-align: right;font-size: 62px;line-height: 62px;color: #660000;}
+#fixturesTitle span {color: #555;}
+
+/* Search and Sort */
+#fixturesFilter {position: relative;margin: 20px 0 40px;}
+div.fixturesFormDrop {display: inline;width: 20%;margin: 10px;color: #888;}
+div.fixturesFormDrop  select {width: 260px;margin: 10px;color: #888;}
+div.fixturesFormItem {display: inline;margin: 10px;padding: 4px;/*-moz-border-radius: 15px;border-radius: 15px;*/text-indent: 18px;font-size: 15px;font-weight: bold;background: #f6f6f6;color: #888888;}
+div.fixturesTextInput {display: inline;width: 20%;margin: 10px;color: #888;}
+.fixturesInput {width: 260px;background: #f6f6f6;border: 0px;font-size: 15px;font-weight: bold;color: #888888;}
+.fixturesInput:focus {outline-width: 0;color: #000;}
+
+/* Main Section */
+.fixturesMain {position: relative;text-align: center;}
+.fixturesProj {position: relative;float: left;width: 940px;margin: 4px;background: #222;}
+.fixturesProjTitle {position: absolute;bottom: 0;left: 0;width: 100%;height: 60px;background: #222;background: rgba(0,0,0,0.7);}
+.fixturesProjTitle p {font-size: 18px;line-height: 24px;padding-top:14px;color: #fff;}
+
+/* Single FL Post Details */
+
+/* FL Single */
+.flFeature {width: 960px;float: left;margin: 0 10px 0 20px;}
+.flFeature p {font-size: 16px;line-height: 22px;margin-bottom: 12px;font-style: italic;color: #660000;}
+.flFeature ul {list-style: none;}
+.flFeature ul li {margin-bottom: 20px;}
+
+/* FL Details */
+#flDetailsSection {width: 40%;float: left;font-size: 20px;position: static;top: 0;left: 990px;}
+.flDetails {margin: 10px 0 34px;}
+h2#flTitle {font-size: 28px;line-height: 30px;margin-bottom: 4px;padding-bottom: 4px;color: #660000;border-bottom: 1px solid #888;}
+.flDetails h3 {font-size: 24px;color: #444;}
+.flDetails ul {margin: 10px 10px 20px;list-style: none;line-height: 34px;}
+.flDetails ul span {color: #222;}
+
+/* Labor Details */
+#flDetailsLabor h3 {margin-top: 20px;font-size: 24px;line-height: 32px;color: #444;}
+#flDetailsLabor ul {margin: 10px 10px 20px;list-style: none;font-size: 28px;}
+#flDetailsLabor ul li span {margin: 0 10px 0;font-size: 38px;line-height: 42px;}
+
+/* FL Details Details */
+#flDetailsProject {color: #767676;}
+#flDetailsOrg {color: #767676;}
+#flDetails {color: #767676;}
+
+/* Tags */
+.post-taglist{margin-bottom:10px;clear:both;}
+.post-tag, .post-text .post-tag, a.post-tag{color:#3E6D8E;background-color:#E0EAF1;border-bottom:1px solid #b3cee1;border-right:1px solid #b3cee1;padding:3px 4px 3px 4px;margin:2px 2px 2px 0;text-decoration:none;font-size:90%;line-height:2.4;white-space:nowrap;}
+a.post-tag{margin-right:6px;}
+.post-tag.selected{background-color:#c4dae9;}
+a.post-tag:hover,.post-text a.post-tag:hover,.wmd-preview a.post-tag:hover{background-color:#c4dae9;border-bottom:1px solid #c4dae9;border-right:1px solid #c4dae9;text-decoration:none;}
+.post-tag:after{content:'\200B';}

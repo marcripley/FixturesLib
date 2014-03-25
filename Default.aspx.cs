@@ -12,8 +12,8 @@ using System.Web.UI.WebControls;
 
 public partial class _Default : System.Web.UI.Page
 {
-        string MBData2005_DEV =
-            ConfigurationManager.ConnectionStrings["MBData2005_DEV"].ConnectionString;
+    string MBIntranet_DEV =
+            ConfigurationManager.ConnectionStrings["MBIntranet_DEV"].ConnectionString;
         protected void Page_Load(object sender, EventArgs e)
         {
             DataTable table = new DataTable();
@@ -21,10 +21,10 @@ public partial class _Default : System.Web.UI.Page
             var autoID = 1;
             // get the connection
 
-            using (SqlConnection conn = new SqlConnection(MBData2005_DEV))
+            using (SqlConnection conn = new SqlConnection(MBIntranet_DEV))
             {
                 // write the sql statement to execute
-                string sql = "SELECT TOP 200 Address FROM OLContacts2";
+                string sql = "SELECT TOP 5 jobNumber FROM flPosts";
                 // instantiate the command object to fire
                 using (SqlCommand cmd = new SqlCommand(sql, conn))
                 {
@@ -45,7 +45,13 @@ public partial class _Default : System.Web.UI.Page
             // loop through the rows of the table
             foreach (DataRow row in table.Rows)
             {
-                //Response.Write("<p>"  + row["Address"] + "</p>");
+                Response.Write("<p>"  + row["jobNumber"] + "</p>");
+
             }
+        }
+
+        protected void ExecuteQuery(object sender, EventArgs e)
+        {
+
         }
 }

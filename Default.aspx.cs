@@ -16,8 +16,18 @@ public partial class _Default : System.Web.UI.Page
             ConfigurationManager.ConnectionStrings["MBIntranet_DEV"].ConnectionString;
         protected void Page_Load(object sender, EventArgs e)
         {
+
+        }
+
+        protected void ExecuteQuery(object sender, EventArgs e)
+        {
+
+        }
+
+        protected void Button1_Click(object sender, EventArgs e)
+        {
             DataTable table = new DataTable();
-        
+
             var autoID = 1;
             // get the connection
 
@@ -36,21 +46,35 @@ public partial class _Default : System.Web.UI.Page
                     {
                         // fire Fill method to fetch the data and fill into DataTable
                         ad.Fill(table);
-       
                     }
                     // DataAdapter doesn't need open connection, it takes care of opening and closing the database connection
                 }
             }
+            switch (categoryList.Text)
+            {
+                case "":
+                    break;
+                case " ":
+                    break;
+                default:
+                    break;
+            }
+            if (categoryList.Text == "")
+            {
 
+            }
             // loop through the rows of the table
             foreach (DataRow row in table.Rows)
             {
-                Response.Write("<p>"  + row["jobNumber"] + "</p>");
-
+                Response.Write("<p>" + row["jobNumber"] + "</p>");
             }
+            
         }
+        protected void subcategoryList_SelectedIndexChanged(object sender, EventArgs e)
+        {
 
-        protected void ExecuteQuery(object sender, EventArgs e)
+        }
+        protected void jobNumberText_TextChanged(object sender, EventArgs e)
         {
 
         }

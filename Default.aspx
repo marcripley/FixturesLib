@@ -5,51 +5,43 @@
 
 </asp:Content>
 <asp:Content ID="BodyContent" runat="server" ContentPlaceHolderID="MainContent">
-<div id="fixturesFilter">
-		<form name="fixturesSelect" action="index.php" method="post" id="fixturesSelect">
+
+		<form id="fixturesSelect" runat="server">
 			<div class="fixturesFormDrop">
 				<label for="recipient">CATEGORY</label>
-				<select name="recipient" class="fixturesInput">
-					<option value="general">Desk</option>
-					<option value="sales">Paneling</option>
-					<option value="pm">Window Frame</option>
-					<option value="purch">Bar Counter</option>
-					<option value="acct">Bench</option>
-				</select>
-			</div>
-			<div class="fixturesFormDrop">
-				<label for="recipient">SUBCATEGORY</label>
-				<select name="recipient" class="fixturesInput">
-					<option value="general">Reception</option>
-					<option value="sales">Service Counter</option>
-					<option value="pm">Bank Fixture</option>
-					<option value="purch" action="single.aspx" method="get">Nurse Station</option>
-					<option value="acct">Circular</option>
-				</select>
+                <asp:DropDownList ID="categoryList" runat="server" Height="20px" Width="175px">
+                </asp:DropDownList>
+
+				<label for="recipient">SUBCATEGORY</label>&nbsp;
+                <asp:DropDownList ID="subcategoryList" runat="server" Height="20px" 
+                    onselectedindexchanged="subcategoryList_SelectedIndexChanged" 
+                    Width="177px">
+                </asp:DropDownList>
 			</div>
 
 			<div class="fixturesTextInput">
 				<label for="recipient">TAGS</label>
 				<div class="fixturesFormItem">
-					<input type="text" name="tags" value="" class="fixturesInput" />
-				</div>
+					<asp:TextBox ID="tagsText" runat="server" Height="20px"></asp:TextBox>
+&nbsp;</div>
 				<a href="fixturesSeeAll">See All Tags</a>
 			</div>
 			<div class="fixturesTextInput">
-				<label for="recipient">JOB NUMBER</label>
-				<div class="fixturesFormItem">
-					<input type="text" name="tags" value="" class="fixturesInput" />
-				</div>
+				J<label for="recipient">OB NUMBER</label><asp:TextBox ID="jobNumberText" 
+                    runat="server" Height="20px" ontextchanged="jobNumberText_TextChanged"></asp:TextBox>
+&nbsp;<div class="fixturesFormItem">
+					&nbsp;</div>
 				<a href="fixturesSeeAll">See All Jobs</a>
 			</div>
 			<div class="fixturesTextInput">
 				<label for="recipient">DATE RANGE</label>
 				<div class="fixturesFormItem">
-					<input type="text" name="tags" value="" class="fixturesInput" />
-				</div>
-				<a href="fixturesSeeAll">See All Jobs</a>
-			</div>
-		</form>
+					</div>
+                <asp:TextBox ID="TextBox1" runat="server" Height="20px"></asp:TextBox>
+&nbsp;</div>
+		<asp:Button ID="Button1" runat="server" onclick="Button1_Click" 
+            Text="Execute Query" Width="112px" />
+        </form>
 		<div class="clear"></div>
 	</div>
 </asp:Content>

@@ -17,7 +17,7 @@
 <script type="text/javascript" src="http://missionbell.com/js/validation/dist/jquery.validate.js"></script>
 <!-- MB CSS and JS //-->
 <!--<link rel="stylesheet" type="text/css" href="http://missionbell.com/css/style.css" />-->
-<link rel="stylesheet" type="text/css" href="fixlib.css" />
+<link rel="stylesheet" type="text/css" href="~/Styles/fixlib.css" />
 <link rel="icon" type="image/png" href="http://missionbell.com/images/favicon.png">
 <script type="text/javascript" src="http://missionbell.com/js/mb.js"></script>
 <script type="text/javascript" src="fixlib.js"></script>

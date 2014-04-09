@@ -1,8 +1,8 @@
 <!DOCTYPE HTML>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
 <title>Fixtures Library | Mission Bell</title>
 <!-- jQuery //-->
 <link rel="stylesheet" href="http://missionbell.com/js/slider/css/basic-jquery-slider.css" />
@@ -11,26 +11,32 @@
 <script src="http://missionbell.com/js/jquery.hoverIntent.minified.js"></script>
 <script src="http://missionbell.com/js/slider/js/basic-jquery-slider.js"></script>
 <!-- Shadowbox with jQuery //-->
-<link rel="stylesheet" type="text/css" href="http://missionbell.com/js/shadowbox/shadowbox.css">
+<link rel="stylesheet" type="text/css" href="http://missionbell.com/js/shadowbox/shadowbox.css"/>
 <script type="text/javascript" src="http://missionbell.com/js/shadowbox/shadowbox.js"></script>
 <!-- jQuery Validation plugin //-->
 <script type="text/javascript" src="http://missionbell.com/js/validation/dist/jquery.validate.js"></script>
 <!-- MB CSS and JS //-->
 <!--<link rel="stylesheet" type="text/css" href="http://missionbell.com/css/style.css" />-->
-<link rel="stylesheet" type="text/css" href="fixlib.css" />
-<link rel="icon" type="image/png" href="http://missionbell.com/images/favicon.png">
+<link rel="stylesheet" type="text/css" href="Styles\fixlib.css" />
+<link rel="icon" type="image/png" href="http://missionbell.com/images/favicon.png"/>
 <script type="text/javascript" src="http://missionbell.com/js/mb.js"></script>
-<script type="text/javascript" src="fixlib.js"></script>
+<script type="text/javascript" src="Scripts\fixlib.js"></script>
 <!--[if IE]>
 	<link rel="stylesheet" type="text/css" href="http://missionbell.com/css/ie.css" />
 	<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
 <![endif]-->
 </head>
 <body>
-
+  
 <header>
 	<div id="branding">
-		<hgroup id="logo"><h1 id="missionBell"><a href="index.php"><span>Mission Bell Manufacturing</span></a></h1></hgroup>
+    <hgroup id="logo">
+      <h1 id="missionBell">
+        <a href="index.php">
+          <span>Mission Bell Manufacturing</span>
+        </a>
+      </h1>
+    </hgroup>
 		<hgroup id="tagline">
 			<h2><a href="index.php"><span>Working Wonders in Workspace</span><br />
 			Architectual Millwork,<br />

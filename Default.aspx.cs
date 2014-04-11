@@ -93,11 +93,8 @@ public partial class _Default : System.Web.UI.Page
     {
         DataTable table = new DataTable();
 
-        int selectedIndex = categoryList.SelectedIndex-1;
-
-        string index = selectedIndex.ToString();
-
         string idTemp = "";
+        string selectedInd = "";
 
         //clear subcategory list before adding to it
         subcategoryList.Items.Clear();
@@ -125,12 +122,9 @@ public partial class _Default : System.Web.UI.Page
                 }
                 // DataAdapter doesn't need open connection, it takes care of opening and closing the database connection
             }
-
         }
+
         // loop through the rows of the table
-
-        string selectedInd = "";
-
         // find the ID of the currently selected Category and send to selectedInd
         foreach (DataRow row in table.Rows)
         {

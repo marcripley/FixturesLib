@@ -9,8 +9,8 @@
     <div class="fixturesFormDrop">
         <label for="recipient">
             CATEGORY</label>
-        <asp:DropDownList ID="categoryList" runat="server" 
-            onselectedindexchanged="categoryList_SelectedIndexChanged" AutoPostBack="True" >
+        <asp:DropDownList ID="categoryList"  
+            onselectedindexchanged="categoryList_SelectedIndexChanged" AutoPostBack="False" runat="server">
         </asp:DropDownList>
         <label for="recipient">
             SUBCATEGORY</label>&nbsp;

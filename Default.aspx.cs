@@ -132,7 +132,7 @@ public partial class _Default : System.Web.UI.Page
         // find the ID of the currently selected Category and send to selectedInd
         foreach (DataRow row in table.Rows)
         {
-            if (categoryList0.Text == row["name"].ToString()) ;
+            if (categoryList0.SelectedItem.Text == row["name"].ToString()) 
             {
                 selectedInd = row["ID"].ToString();
             }
@@ -140,20 +140,15 @@ public partial class _Default : System.Web.UI.Page
 
         foreach (DataRow row in table.Rows)
         {
-            if (selectedInd.Equals(row["name"].ToString()))
+            if (selectedInd == row["parent"].ToString())
             {
-                idTemp = row["ID"].ToString();
+                subcategoryList0.Items.Add(row["name"].ToString());
             }
-        }
-
-        foreach (DataRow row in table.Rows)
-        {
-            if (idTemp == row["parent"].ToString())
+            else if (categoryList0.SelectedItem.Text == "All" && !(string.IsNullOrEmpty(row["parent"].ToString())))
             {
                 subcategoryList0.Items.Add(row["name"].ToString());
             }
         }
-
     }
 
 

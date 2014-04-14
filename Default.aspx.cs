@@ -16,44 +16,48 @@ public partial class _Default : System.Web.UI.Page
             ConfigurationManager.ConnectionStrings["MBIntranet_DEV"].ConnectionString;
     protected void Page_Load(object sender, EventArgs e)
     {
-        DataTable table = new DataTable();
 
-        var autoID = 1;
-        // get the connection
-
-        categoryList.Items.Clear();
-
-        using (SqlConnection conn = new SqlConnection(MBIntranet_DEV))
+        if (!IsPostBack)
         {
-            // write the sql statement to execute
-            string sql = "SELECT ID, parent, name FROM flCategories";
-            // instantiate the command object to fire
-            using (SqlCommand cmd = new SqlCommand(sql, conn))
+            DataTable table = new DataTable();
+
+            var autoID = 1;
+            // get the connection
+
+            categoryList0.Items.Clear();
+
+            using (SqlConnection conn = new SqlConnection(MBIntranet_DEV))
             {
-                // attach the parameter to pass if no parameter is in the sql no need to attach
-                SqlParameter prm = new SqlParameter("@autoId", autoID);
-                cmd.Parameters.Add(prm);
-                // get the adapter object and attach the command object to it
-                using (SqlDataAdapter ad = new SqlDataAdapter(cmd))
+                // write the sql statement to execute
+                string sql = "SELECT ID, parent, name FROM flCategories";
+                // instantiate the command object to fire
+                using (SqlCommand cmd = new SqlCommand(sql, conn))
                 {
-                    // fire Fill method to fetch the data and fill into DataTable
-                    ad.Fill(table);
+                    // attach the parameter to pass if no parameter is in the sql no need to attach
+                    SqlParameter prm = new SqlParameter("@autoId", autoID);
+                    cmd.Parameters.Add(prm);
+                    // get the adapter object and attach the command object to it
+                    using (SqlDataAdapter ad = new SqlDataAdapter(cmd))
+                    {
+                        // fire Fill method to fetch the data and fill into DataTable
+                        ad.Fill(table);
+                    }
+                    // DataAdapter doesn't need open connection, it takes care of opening and closing the database connection
                 }
-                // DataAdapter doesn't need open connection, it takes care of opening and closing the database connection
-            }
 
-        }
-        // loop through the rows of the table and add the categories
-        foreach (DataRow row in table.Rows)
-        {
-            if (string.IsNullOrEmpty(row["parent"].ToString()))
+            }
+            // loop through the rows of the table and add the categories
+            foreach (DataRow row in table.Rows)
             {
-                categoryList.Items.Add(row["name"].ToString());
+                if (string.IsNullOrEmpty(row["parent"].ToString()))
+                {
+                    categoryList0.Items.Add(row["name"].ToString());
+                }
             }
-        }
 
-        categoryList.Items.Insert(0, "Select");
-        categoryList.Items.Insert(1, "All");
+            categoryList0.Items.Insert(0, "Select");
+            categoryList0.Items.Insert(1, "All");
+        }
     }
 
     public static List<string> GetCompletionList(string prefixText)
@@ -88,7 +92,7 @@ public partial class _Default : System.Web.UI.Page
     {
 
     }
-    
+
     protected void categoryList_SelectedIndexChanged(object sender, EventArgs e)
     {
         DataTable table = new DataTable();
@@ -97,7 +101,7 @@ public partial class _Default : System.Web.UI.Page
         string selectedInd = "";
 
         //clear subcategory list before adding to it
-        subcategoryList.Items.Clear();
+        subcategoryList0.Items.Clear();
 
         var autoID = 1;
         // get the connection
@@ -128,7 +132,7 @@ public partial class _Default : System.Web.UI.Page
         // find the ID of the currently selected Category and send to selectedInd
         foreach (DataRow row in table.Rows)
         {
-            if (categoryList.Text == row["name"].ToString());
+            if (categoryList0.Text == row["name"].ToString()) ;
             {
                 selectedInd = row["ID"].ToString();
             }
@@ -146,9 +150,10 @@ public partial class _Default : System.Web.UI.Page
         {
             if (idTemp == row["parent"].ToString())
             {
-                subcategoryList.Items.Add(row["name"].ToString());
+                subcategoryList0.Items.Add(row["name"].ToString());
             }
         }
+
     }
 
 

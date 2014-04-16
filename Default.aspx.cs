@@ -123,6 +123,43 @@ public partial class _Default : System.Web.UI.Page
 
     }
 
+    protected void loadTags(object sender, EventArgs e)
+    {
+        DataTable tablet = new DataTable();
+
+        var autoIDt = 1;
+        // get the connection
+
+        // fill table with the data from the flPosts table
+        using (SqlConnection conn = new SqlConnection(MBIntranet_DEV))
+        {
+            // write the sql statement to execute
+            string sql = "SELECT jobNumber, tasks, name, category, subCategory, img1, img2, allImages, tags, comments, createdDate FROM flPosts";
+            // instantiate the command object to fire
+            using (SqlCommand cmd = new SqlCommand(sql, conn))
+            {
+                // attach the parameter to pass if no parameter is in the sql no need to attach
+                SqlParameter prm = new SqlParameter("@autoId", autoIDt);
+                cmd.Parameters.Add(prm);
+                // get the adapter object and attach the command object to it
+                using (SqlDataAdapter ad = new SqlDataAdapter(cmd))
+                {
+                    // fire Fill method to fetch the data and fill into DataTable
+                    ad.Fill(tablet);
+                }
+                // DataAdapter doesn't need open connection, it takes care of opening and closing the database connection
+            }
+        }
+
+        List<string> tagging;
+
+        foreach (DataRow row in tablet.Rows)
+        {
+           
+        }
+
+        
+    }
     protected void categoryList_SelectedIndexChanged(object sender, EventArgs e)
     {
         DataTable table = new DataTable();
@@ -254,11 +291,10 @@ public partial class _Default : System.Web.UI.Page
     public static string[] GetCompletionList(string prefixText, int count, string contextKey)
     {
         // Create array of movies  
-        string[] movies = { "Star Wars", "Star Trek", "Superman", "Memento", "Shrek", "Shrek II" };
+        string[] tags = { "Star Wars", "Star Trek", "Superman", "Memento", "Shrek", "Shrek II" };
 
         // Return matching movies  
-        return (from m in movies where m.StartsWith(prefixText, StringComparison.CurrentCultureIgnoreCase) select m).Take(count).ToArray();
-
+        return (from m in tags where m.StartsWith(prefixText, StringComparison.CurrentCultureIgnoreCase) select m).Take(count).ToArray();
     }
 
     [System.Web.Services.WebMethodAttribute(), System.Web.Script.Services.ScriptMethodAttribute()]

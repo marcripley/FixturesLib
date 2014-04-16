@@ -7,9 +7,6 @@
     <form id="fixturesSelect" runat="server">
     <div class="fixturesFormDrop">
         <asp:ToolkitScriptManager ID="ToolkitScriptManager1" runat="server">
-        <Scripts>
-       
-        </Scripts>
         </asp:ToolkitScriptManager>
     </div>
     <div class="clear">
@@ -35,6 +32,9 @@
                         TAGS</label>
                     <div class="fixturesFormItem">
                         <asp:TextBox ID="tags0" runat="server" Height="20px"></asp:TextBox>
+                        <asp:AutoCompleteExtender ID="tags0_AutoCompleteExtender" runat="server" 
+                            ServiceMethod="GetCompletionList" TargetControlID="tags0" UseContextKey="True" MinimumPrefixLength="2">
+                        </asp:AutoCompleteExtender>
                         &nbsp;</div>
                     <a href="fixturesSeeAll">See All Tags</a>
                 </div>

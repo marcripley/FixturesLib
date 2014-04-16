@@ -35,3 +35,26 @@ function preload(arrayOfImages) {
 }
 
 //bind('mouseenter mouseleave', 
+
+        // Show captions
+		// MB ******* HEAVILY CUSTOMIZED (messed up) FOR MISSION BELL SITE
+        if (settings.useCaptions) {
+
+            $.each(slides, function (key, value) {
+			
+				// MB Added the anchor element as a necessity for populating the captions, and added the "Read more" link to ALL captions, using the aforementioned anchor href.
+                var $slide = $(value);
+				// MB next 2 lines are custom additions
+				var $mbSlideChildLink = $slide.children('a');
+				var mbSCLhref = $mbSlideChildLink.attr('href');
+                var $slideChild = $mbSlideChildLink.children('img:first-child');
+				var title = $slideChild.attr('title');
+
+                if (title) {
+                    var $caption = $('<p class="bjqs-caption">' + title + ' <a href="' + mbSCLhref + '" class="readmore">Read more...</a></p>'); // MB readmore link is custom addition
+                    $caption.appendTo($slide);
+                }
+
+            });
+
+        }

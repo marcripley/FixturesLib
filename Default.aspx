@@ -1,6 +1,5 @@
 ﻿<%@ Page Title="Home Page" Language="C#" MasterPageFile="~/Site.master" AutoEventWireup="true"
     CodeFile="Default.aspx.cs" Inherits="_Default" %>
-
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
 <asp:Content ID="HeaderContent" runat="server" ContentPlaceHolderID="HeadContent">
 </asp:Content>
@@ -8,6 +7,9 @@
     <form id="fixturesSelect" runat="server">
     <div class="fixturesFormDrop">
         <asp:ToolkitScriptManager ID="ToolkitScriptManager1" runat="server">
+        <Scripts>
+       
+        </Scripts>
         </asp:ToolkitScriptManager>
     </div>
     <div class="clear">
@@ -45,9 +47,11 @@
                         runat="server" TargetControlID="jobNumber0" FilterType="Numbers">
                     </asp:FilteredTextBoxExtender>
                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="fixturesSeeAll">See All Jobs</a> &nbsp;</div>
-            </ContentTemplate>
-        </asp:UpdatePanel>
         <asp:Label ID="bottomOfPage" runat="server" CssClass="MyStyle" visible="false" />
+            </ContentTemplate>
+
+        </asp:UpdatePanel>
+
     </div>
     </form>
 </asp:Content>

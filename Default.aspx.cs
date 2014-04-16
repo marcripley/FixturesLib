@@ -188,8 +188,7 @@ public partial class _Default : System.Web.UI.Page
         var autoIDc = 1;
         // get the connection
 
-        // fill table with categories to find out if the category is a child of the category selected to
-        // display it as a subcategory in the subcategory down drop list
+        // fill table with the data from the flPosts table
         using (SqlConnection conn = new SqlConnection(MBIntranet_DEV))
         {
             // write the sql statement to execute
@@ -210,18 +209,24 @@ public partial class _Default : System.Web.UI.Page
             }
         }
 
+        string jobNumber, tasks, name, category, subcategory, img1, img2, allImages, tags, comments, createdDate, titles;
+
         // display all of the posts
         if (categoryList0.SelectedItem.Text == "All")
         {
             foreach (DataRow row in tablec.Rows)
             {
-                bottomOfPage.Text = "Job Number:" + row["jobNumber"] + "Tasks:" + row["tasks"] + "Name:" + row["name"] + "Category:" + row["category"] + "Sub-category" + row["subcategory"]
-                  + "<a href='single.php'><div class='fixturesProj'><img src='http://missionbell.com/projects/c3-energy/images/c3-energy7-940x450.jpg' data-other-src='http://missionbell.com/projects/c3-energy/images/c3energySD.jpg' alt='Fixtures Library Project' width='940' height='450' class='flFeaturedImage' title='C3 Energy | Other, Planter, Shingles, Round' /><span class='fixturesProjTitle'><p></p></span></div></a>";
+                jobNumber=row["jobNumber"].ToString(); tasks=row["tasks"].ToString(); name=row["name"].ToString(); category=row["category"].ToString(); 
+                subcategory=row["subcategory"].ToString(); img1=row["img1"].ToString(); img2=row["img2"].ToString(); allImages=row["allImages"].ToString();
+                tags = row["tags"].ToString(); comments = row["comments"].ToString(); createdDate = row["createdDate"].ToString(); titles = name + " | " + tags;
+
+                bottomOfPage.Text += "Job Number:" + row["jobNumber"] + "Tasks:" + row["tasks"] + "Name:" + row["name"] + "Category:" + row["category"] + "Sub-category" + row["subcategory"]
+                  + "<a href='single.php'><div class='fixturesProj'><img src='http://missionbell.com/projects/c3-energy/images/c3-energy7-940x450.jpg' data-other-src='http://missionbell.com/FixturesLib/images/c3energySD.jpg' alt='Fixtures Library Project' width=940 height=450 class='flFeaturedImage' title='C3 Energy | Other, Planter, Shingles, Round' style='display: inline;'> /><span class='fixturesProjTitle'><p></p></span></div></a>";
                 bottomOfPage.Visible = true;
             }
         }
 
-        string category = "";
+        category = "";
 
         // display only a particular category
         foreach (DataRow row in table.Rows)

@@ -33,7 +33,7 @@
                     <div class="fixturesFormItem">
                         <asp:TextBox ID="tags0" runat="server" Height="20px"></asp:TextBox>
                         <asp:AutoCompleteExtender ID="tags0_AutoCompleteExtender" runat="server" 
-                            ServiceMethod="GetCompletionList" TargetControlID="tags0" UseContextKey="True" MinimumPrefixLength="2">
+                            ServiceMethod="autocomplete" TargetControlID="tags0" UseContextKey="True" MinimumPrefixLength="2">
                         </asp:AutoCompleteExtender>
                         &nbsp;</div>
                     <a href="fixturesSeeAll">See All Tags</a>
@@ -47,7 +47,7 @@
                         runat="server" TargetControlID="jobNumber0" FilterType="Numbers">
                     </asp:FilteredTextBoxExtender>
                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="fixturesSeeAll">See All Jobs</a> &nbsp;</div>
-        <asp:Label ID="bottomOfPage" runat="server" CssClass="MyStyle" visible="false" />
+        <asp:Label ID="bottomOfPage" runat="server" CssClass="MyStyle" visible="true" />
             </ContentTemplate>
 
         </asp:UpdatePanel>

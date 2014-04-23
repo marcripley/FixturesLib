@@ -60,24 +60,6 @@ public partial class _Default : System.Web.UI.Page
 
     }
 
-    public static List<string> GetCompletionList(string prefixText)
-    {
-        DataTable dt = new DataTable();
-        string constr = ConfigurationManager.ConnectionStrings["ConnectionString"].ToString();
-        SqlConnection con = new SqlConnection(constr);
-        con.Open();
-        SqlCommand cmd = new SqlCommand("select * from flPosts where tags like @Tag+'%'", con);
-        cmd.Parameters.AddWithValue("@Tag", prefixText);
-        SqlDataAdapter adp = new SqlDataAdapter(cmd);
-        adp.Fill(dt);
-        List<string> tags = new List<string>();
-        for (int i = 0; i < dt.Rows.Count; i++)
-        {
-            tags.Add(dt.Rows[i][1].ToString());
-        }
-        return tags;
-    }
-
     protected void subcategoryList_SelectedIndexChanged(object sender, EventArgs e)
     {
         DataTable table = new DataTable();
@@ -106,6 +88,13 @@ public partial class _Default : System.Web.UI.Page
                 // DataAdapter doesn't need open connection, it takes care of opening and closing the database connection
             }
         }
+        foreach (DataRow row in table.Rows)
+        {
+            if (subcategoryList0.SelectedItem.Text == row["subcategory"].ToString())
+            {
+
+            }
+        }
         // display the post based on the subcategory
         foreach (DataRow row in table.Rows)
         {
@@ -118,6 +107,44 @@ public partial class _Default : System.Web.UI.Page
         }
     }
 
+    protected int getSubCategory(object sender, EventArgs e)
+    {
+        DataTable table = new DataTable();
+
+        string selectedInd = "";
+        bottomOfPage.Text = "Hello";
+        bottomOfPage.Visible = true;
+        //clear subcategory list before adding to it
+        subcategoryList0.Items.Clear();
+
+        var autoID = 1;
+        // get the connection
+
+        // fill table with categories to find out if the category is a child of the category selected to
+        // display it as a subcategory in the subcategory down drop list
+        using (SqlConnection conn = new SqlConnection(MBIntranet_DEV))
+        {
+            // write the sql statement to execute
+            string sql = "SELECT ID, parent, name FROM flCategories";
+            // instantiate the command object to fire
+            using (SqlCommand cmd = new SqlCommand(sql, conn))
+            {
+                // attach the parameter to pass if no parameter is in the sql no need to attach
+                SqlParameter prm = new SqlParameter("@autoId", autoID);
+                cmd.Parameters.Add(prm);
+                // get the adapter object and attach the command object to it
+                using (SqlDataAdapter ad = new SqlDataAdapter(cmd))
+                {
+                    // fire Fill method to fetch the data and fill into DataTable
+                    ad.Fill(table);
+                }
+                // DataAdapter doesn't need open connection, it takes care of opening and closing the database connection
+            }
+        }
+
+        return 0;
+    }
+
     protected void jobNumberText_TextChanged(object sender, EventArgs e)
     {
 
@@ -128,8 +155,6 @@ public partial class _Default : System.Web.UI.Page
         DataTable table = new DataTable();
 
         string selectedInd = "";
-        bottomOfPage.Text = "Hello";
-        bottomOfPage.Visible = true;
         //clear subcategory list before adding to it
         subcategoryList0.Items.Clear();
 
@@ -249,9 +274,7 @@ public partial class _Default : System.Web.UI.Page
         }
     }
 
-    //code for auto completing tags
-    [System.Web.Services.WebMethodAttribute(), System.Web.Script.Services.ScriptMethodAttribute()]
-    public static string[] GetCompletionList(string prefixText, int count, string contextKey)
+    protected void autoComplete(object sender, EventArgs e)
     {
         DataTable tablet = new DataTable();
 
@@ -287,6 +310,12 @@ public partial class _Default : System.Web.UI.Page
             tagging = row["tags"].ToString().Split(',').Select(sValue => sValue.Trim()).ToArray();
         }
 
+    }
+
+    //code for auto completing tags
+    [System.Web.Services.WebMethodAttribute(), System.Web.Script.Services.ScriptMethodAttribute()]
+    public static string[] GetCompletionList(string prefixText, int count, string contextKey)
+    {
         // Create list of tags  
         string[] tags = { "Star Wars", "Star Trek", "Superman", "Memento", "Shrek", "Shrek II" };
 

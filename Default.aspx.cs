@@ -63,7 +63,6 @@ public partial class _Default : System.Web.UI.Page
     protected void subcategoryList_SelectedIndexChanged(object sender, EventArgs e)
     {
         DataTable table = new DataTable();
-
         var autoID = 1;
         // get the connection
 
@@ -88,36 +87,12 @@ public partial class _Default : System.Web.UI.Page
                 // DataAdapter doesn't need open connection, it takes care of opening and closing the database connection
             }
         }
-        foreach (DataRow row in table.Rows)
-        {
-            if (subcategoryList0.SelectedItem.Text == row["subcategory"].ToString())
-            {
 
-            }
-        }
-        // display the post based on the subcategory
-        foreach (DataRow row in table.Rows)
-        {
-            if (subcategoryList0.SelectedItem.Text == row["subcategory"].ToString())
-            {
-                bottomOfPage.Text = "Job Number:" + row["jobNumber"] + "Tasks:" + row["tasks"] + "Name:" + row["name"] + "Category:" + row["category"] + "Sub-category" + row["subcategory"]
-                  + "<a href='single.php'><div class='fixturesProj'><img src='http://missionbell.com/projects/c3-energy/images/c3-energy7-940x450.jpg' data-other-src='http://missionbell.com/projects/c3-energy/images/c3energySD.jpg' alt='Fixtures Library Project' width='940' height='450' class='flFeaturedImage' title='C3 Energy | Other, Planter, Shingles, Round' /><span class='fixturesProjTitle'><p></p></span></div></a>";
-                bottomOfPage.Visible = true;
-            }
-        }
-    }
-
-    protected int getSubCategory(object sender, EventArgs e)
-    {
-        DataTable table = new DataTable();
-
+        DataTable tablec = new DataTable();
         string selectedInd = "";
-        bottomOfPage.Text = "Hello";
-        bottomOfPage.Visible = true;
         //clear subcategory list before adding to it
-        subcategoryList0.Items.Clear();
 
-        var autoID = 1;
+        var autoIDc = 1;
         // get the connection
 
         // fill table with categories to find out if the category is a child of the category selected to
@@ -130,19 +105,36 @@ public partial class _Default : System.Web.UI.Page
             using (SqlCommand cmd = new SqlCommand(sql, conn))
             {
                 // attach the parameter to pass if no parameter is in the sql no need to attach
-                SqlParameter prm = new SqlParameter("@autoId", autoID);
+                SqlParameter prm = new SqlParameter("@autoId", autoIDc);
                 cmd.Parameters.Add(prm);
                 // get the adapter object and attach the command object to it
                 using (SqlDataAdapter ad = new SqlDataAdapter(cmd))
                 {
                     // fire Fill method to fetch the data and fill into DataTable
-                    ad.Fill(table);
+                    ad.Fill(tablec);
                 }
                 // DataAdapter doesn't need open connection, it takes care of opening and closing the database connection
             }
         }
 
-        return 0;
+        // find the ID of the currently selected Category and send to selectedInd
+        foreach (DataRow row in tablec.Rows)
+        {
+            if (subcategoryList0.SelectedItem.Text == row["name"].ToString())
+            {
+                selectedInd = row["ID"].ToString();
+            }
+        }
+        // display the post based on the subcategory
+        foreach (DataRow row in table.Rows)
+        {
+            if (selectedInd == row["subcategory"].ToString())
+            {
+                bottomOfPage.Text = "<br>" + "Name:" + row["name"] + "Job Number:" + row["jobNumber"] + "Tasks:" + row["tasks"] + "Category:" + row["category"] + "Sub-category" + row["subcategory"]
+                  + "<a href='single.php'><div class='fixturesProj'><img src='' data-other-src='' alt='Fixtures Library Project' width='540' height='450' class='flFeaturedImage' title='C3 Energy | Other, Planter, Shingles, Round' /><span class='fixturesProjTitle'><p></p></span></div></a>";
+                bottomOfPage.Visible = true;
+            }
+        }
     }
 
     protected void jobNumberText_TextChanged(object sender, EventArgs e)
@@ -193,20 +185,6 @@ public partial class _Default : System.Web.UI.Page
             }
         }
 
-        foreach (DataRow row in table.Rows)
-        {
-            if (selectedInd == row["parent"].ToString())
-            {
-                subcategoryList0.Items.Add(row["name"].ToString());
-            }
-            else if (categoryList0.SelectedItem.Text == "All" && !(string.IsNullOrEmpty(row["parent"].ToString())))
-            {
-                subcategoryList0.Items.Add(row["name"].ToString());
-            }
-        }
-        subcategoryList0.Items.Insert(0, "Select");
-        subcategoryList0.Items.Insert(1, "All");
-
         // load table for flPosts
         DataTable tablec = new DataTable();
 
@@ -233,20 +211,22 @@ public partial class _Default : System.Web.UI.Page
                 // DataAdapter doesn't need open connection, it takes care of opening and closing the database connection
             }
         }
-
+        // save the posts' attributes
         string jobNumber, tasks, name, category, subcategory, img1, img2, allImages, tags, comments, createdDate, titles;
 
         // display all of the posts
         if (categoryList0.SelectedItem.Text == "All")
         {
+            bottomOfPage.Text = "<br>";
             foreach (DataRow row in tablec.Rows)
             {
                 jobNumber=row["jobNumber"].ToString(); tasks=row["tasks"].ToString(); name=row["name"].ToString(); category=row["category"].ToString(); 
                 subcategory=row["subcategory"].ToString(); img1=row["img1"].ToString(); img2=row["img2"].ToString(); allImages=row["allImages"].ToString();
                 tags = row["tags"].ToString(); comments = row["comments"].ToString(); createdDate = row["createdDate"].ToString(); titles = name + " | " + tags;
 
-                bottomOfPage.Text += "Job Number:" + row["jobNumber"] + "Tasks:" + row["tasks"] + "Name:" + row["name"] + "Category:" + row["category"] + "Sub-category" + row["subcategory"]
-                  + "<a href='single.php'><div class='fixturesProj'><img src='http://missionbell.com/projects/c3-energy/images/c3-energy7-940x450.jpg' data-other-src='http://missionbell.com/FixturesLib/images/c3energySD.jpg' alt='Fixtures Library Project' width=940 height=450 class='flFeaturedImage' title='C3 Energy | Other, Planter, Shingles, Round' style='display: inline;'> /><span class='fixturesProjTitle'><p></p></span></div></a>";
+                bottomOfPage.Text += "Name:" + row["name"] + "Job Number:" + row["jobNumber"] + "Tasks:" + row["tasks"] + "Category:" + row["category"] + "Sub-category" + row["subcategory"]
+                  + "<a href='single.php'><div class='fixturesProj'><img src=img1 data-other-src=img2 alt=name width=540 height=450 class='flFeaturedImage' title='C3 Energy | Other, Planter, Shingles, Round' style='display: inline;'> /><span class='fixturesProjTitle'><p></p></span></div></a>";
+
                 bottomOfPage.Visible = true;
             }
         }
@@ -254,6 +234,7 @@ public partial class _Default : System.Web.UI.Page
         category = "";
 
         // display only a particular category
+        // find the ID for the currently selected category
         foreach (DataRow row in table.Rows)
         {
             if (categoryList0.SelectedItem.Text == row["name"].ToString())
@@ -267,11 +248,40 @@ public partial class _Default : System.Web.UI.Page
         {
             if (category == row["category"].ToString())
             {
-                topOfPage.Text = "Job Number:" + row["jobNumber"] + "Tasks:" + row["tasks"] + "Name:" + row["name"] + "Category:" + row["category"] + "Sub-category" + row["subcategory"]
-                  + "<a href='single.php'><div class='fixturesProj'><img src='http://missionbell.com/projects/c3-energy/images/c3-energy7-940x450.jpg' data-other-src='http://missionbell.com/projects/c3-energy/images/c3energySD.jpg' alt='Fixtures Library Project' width='940' height='450' class='flFeaturedImage' title='C3 Energy | Other, Planter, Shingles, Round' /><span class='fixturesProjTitle'><p></p></span></div></a>";
-                topOfPage.Visible = true;
+                jobNumber = row["jobNumber"].ToString(); tasks = row["tasks"].ToString(); name = row["name"].ToString(); category = row["category"].ToString();
+                subcategory = row["subcategory"].ToString(); img1 = row["img1"].ToString(); img2 = row["img2"].ToString(); allImages = row["allImages"].ToString();
+                tags = row["tags"].ToString(); comments = row["comments"].ToString(); createdDate = row["createdDate"].ToString(); titles = name + " | " + tags;
+
+                bottomOfPage.Text = "<br>" + "Name:" + row["name"] + "Job Number:" + row["jobNumber"] + "Tasks:" + row["tasks"] + "Category:" + categoryList0.SelectedItem.Text + "Sub-category" + row["subcategory"]
+                  + "<a href='single.php'><div class='fixturesProj'><img src='' data-other-src='' alt='Fixtures Library Project' width='540' height='450' class='flFeaturedImage' title='C3 Energy | Other, Planter, Shingles, Round' /><span class='fixturesProjTitle'><p></p></span></div></a>";
+                bottomOfPage.Visible = true;
             }
         }
+        // populate the subcategory list based on the category selected
+        if (!(categoryList0.SelectedItem.Text == "All"))
+        {
+            foreach (DataRow row in table.Rows)
+            {
+                if (selectedInd == row["parent"].ToString())
+                {
+                    subcategoryList0.Items.Add(row["name"].ToString());
+                }
+            }
+        }
+        else
+        {
+             foreach (DataRow row in table.Rows)
+             {
+                 if (categoryList0.SelectedItem.Text == "All" && !(string.IsNullOrEmpty(row["parent"].ToString())))
+                 {
+                      subcategoryList0.Items.Add(row["name"].ToString());
+                 }
+             }
+        }
+
+        subcategoryList0.Items.Insert(0, "Select");
+        subcategoryList0.Items.Insert(1, "All");
+
     }
 
     protected void autoComplete(object sender, EventArgs e)

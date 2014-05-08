@@ -8,10 +8,10 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
 <link rel="stylesheet" type="text/css" href="Styles\fixlib.css" />
 <link rel="stylesheet" href="http://missionbell.com/js/slider/css/basic-jquery-slider.css" />
-<script src="http://missionbell.com/js/slider/js/libs/jquery-1.6.2.min.js"></script>
+<script type="text/javascript" src="http://missionbell.com/js/slider/js/libs/jquery-1.6.2.min.js"></script>
 <!-- HoverIntent and Basic jQuery Slider //-->
-<script src="http://missionbell.com/js/jquery.hoverIntent.minified.js"></script>
-<script src="http://missionbell.com/js/slider/js/basic-jquery-slider.js"></script>
+<script type="text/javascript" src="http://missionbell.com/js/jquery.hoverIntent.minified.js"></script>
+<script type="text/javascript" src="http://missionbell.com/js/slider/js/basic-jquery-slider.js"></script>
 <!-- Shadowbox with jQuery //-->
 <link rel="stylesheet" type="text/css" href="http://missionbell.com/js/shadowbox/shadowbox.css">
 <script type="text/javascript" src="http://missionbell.com/js/shadowbox/shadowbox.js"></script>
@@ -46,15 +46,9 @@
 		<div id="fixturesTitle">
 			<h1>Fixtures <span>Library</span></h1>
 		</div>
-	</div>	
-
-
+	</div>
     <div class="page">
     </div>
-
-
     <asp:ContentPlaceHolder ID="MainContent" runat="server"/>
-
-
 </body>
 </html>

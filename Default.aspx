@@ -1,6 +1,7 @@
 ﻿<%@ Page Title="Home Page" Language="C#" MasterPageFile="~/Site.master" AutoEventWireup="true"
     CodeFile="Default.aspx.cs" Inherits="_Default" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
+
 <asp:Content ID="HeaderContent" runat="server" ContentPlaceHolderID="HeadContent">
 </asp:Content>
 <asp:Content ID="BodyContent" runat="server" ContentPlaceHolderID="MainContent">
@@ -36,7 +37,7 @@
                             ServiceMethod="autocomplete" TargetControlID="tags0" UseContextKey="True" MinimumPrefixLength="2">
                         </asp:AutoCompleteExtender>
                         &nbsp;</div>
-                    <a href="fixturesSeeAll">See All Tags</a>
+                    See All Tags
                 </div>
                 <div class="fixturesTextInput">
                     <label for="recipient">
@@ -46,12 +47,14 @@
                     <asp:FilteredTextBoxExtender ID="jobNumber0_FilteredTextBoxExtender" 
                         runat="server" TargetControlID="jobNumber0" FilterType="Numbers">
                     </asp:FilteredTextBoxExtender>
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="fixturesSeeAll">See All Jobs</a> &nbsp;</div>
-        <asp:Label ID="bottomOfPage" runat="server" CssClass="MyStyle" visible="true" />
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;</div>
+        <asp:Label ID="bottomOfPage" runat="server" CssClass="fixlib" visible="true" />
             </ContentTemplate>
 
         </asp:UpdatePanel>
 
     </div>
+<div class="fixturesMain">
+	<a href="single.php"><div class="fixturesProj"><img src="http://missionbell.com/projects/c3-energy/images/c3-energy7-940x450.jpg" data-other-src="images/c3energySD.jpg" alt="Fixtures Library Project" width="940" height="450" class="flFeaturedImage" title="C3 Energy | Other, Planter, Shingles, Round" /><span class="fixturesProjTitle"><p></p></span></div></a></div>
     </form>
 </asp:Content>

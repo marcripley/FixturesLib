@@ -1,17 +1,16 @@
 ﻿<%@ Master Language="C#" AutoEventWireup="true" CodeFile="Site.master.cs" Inherits="SiteMaster" %>
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
-
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head runat="server">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
   <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
 <link rel="stylesheet" type="text/css" href="Styles\fixlib.css" />
 <link rel="stylesheet" href="http://missionbell.com/js/slider/css/basic-jquery-slider.css" />
-<script type="text/javascript" src="http://missionbell.com/js/slider/js/libs/jquery-1.6.2.min.js"></script>
+<script src="http://missionbell.com/js/slider/js/libs/jquery-1.6.2.min.js"></script>
 <!-- HoverIntent and Basic jQuery Slider //-->
-<script type="text/javascript" src="http://missionbell.com/js/jquery.hoverIntent.minified.js"></script>
-<script type="text/javascript" src="http://missionbell.com/js/slider/js/basic-jquery-slider.js"></script>
+<script src="http://missionbell.com/js/jquery.hoverIntent.minified.js"></script>
+<script src="http://missionbell.com/js/slider/js/basic-jquery-slider.js"></script>
 <!-- Shadowbox with jQuery //-->
 <link rel="stylesheet" type="text/css" href="http://missionbell.com/js/shadowbox/shadowbox.css">
 <script type="text/javascript" src="http://missionbell.com/js/shadowbox/shadowbox.js"></script>
@@ -23,6 +22,7 @@
 <link rel="icon" type="image/png" href="http://missionbell.com/images/favicon.png">
 <script type="text/javascript" src="http://missionbell.com/js/mb.js"></script>
 <script type="text/javascript" src="Scripts\fixlib.js"></script>
+
     <title>Mission Bell Fixtures Library</title>
 </head>
 <body>
@@ -46,9 +46,13 @@
 		<div id="fixturesTitle">
 			<h1>Fixtures <span>Library</span></h1>
 		</div>
-	</div>
+	</div>	
+
+
     <div class="page">
     </div>
+
+
     <asp:ContentPlaceHolder ID="MainContent" runat="server"/>
 </body>
 </html>

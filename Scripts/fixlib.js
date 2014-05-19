@@ -17,16 +17,16 @@ $(document).ready(function() {
     'images/c3energySD.jpg'
   ]);
 
-//  // If the user scrolls below the post details, they will fix to the top of the window
-//  var flDetails = $("#flDetailsSection"), pos = flDetails.offset();
-//  $(window).scroll(function () {
-//      if ($(this).scrollTop() > pos.top && $(flDetails.css('position') == 'static')) {
-//          $(flDetails).css('position', 'fixed');
-//      } else {
-//          $(flDetails).css('position', 'static');
-//      }
-//  })
-//});
+// If the user scrolls below the post details, they will fix to the top of the window
+var flDetails = $("#flDetailsSection"), pos = flDetails.offset();
+$(window).scroll(function () {
+    if ($(this).scrollTop() > pos.top && $(flDetails.css('position') == 'static')) {
+        $(flDetails).css('position', 'fixed');
+    } else {
+        $(flDetails).css('position', 'static');
+    }
+})
+});
 
 function preload(arrayOfImages) {
     $(arrayOfImages).each(function () {

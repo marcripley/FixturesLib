@@ -7,12 +7,12 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
 
 
-<link rel="stylesheet" href="http://missionbell.com/js/slider/css/basic-jquery-slider.css" />
 <script src="http://missionbell.com/js/slider/js/libs/jquery-1.6.2.min.js"></script>
 
 <!-- HoverIntent and Basic jQuery Slider //-->
 <script src="http://missionbell.com/js/jquery.hoverIntent.minified.js" />
 <script src="http://missionbell.com/js/slider/js/basic-jquery-slider.js"></script>
+<link rel="stylesheet" type="text/css" href="Styles/bjqs.css" />
 
 <!-- Shadowbox with jQuery //-->
 <link rel="stylesheet" type="text/css" href="http://missionbell.com/js/shadowbox/shadowbox.css" />
@@ -25,13 +25,10 @@ Displays Mission Bell logo and logo text //-->
 <!-- MB CSS and JS //-->
 <link rel="stylesheet" type="text/css" href="Styles\fixlib.css" />
 <link rel="icon" type="image/png" href="http://missionbell.com/images/favicon.png" />
-<script type="text/javascript" src="http://missionbell.com/js/mb.js"></script>
-<script type="text/javascript" src="Scripts\fixlib.js"></script>
 
-
-
-    <title>Mission Bell Fixtures Library</title>
+<title>Mission Bell Fixtures Library</title>
 </head>
+
 <body>
     <asp:ContentPlaceHolder ID="HeadContent" runat="server">
     </asp:ContentPlaceHolder>

@@ -1,4 +1,4 @@
-﻿<%@ Page Title="Home Page" Language="C#" MasterPageFile="~/Site.master" AutoEventWireup="true" CodeFile="Default.aspx.cs" Inherits="_Default" %>
+﻿<%@ Page Title="Home Page" Language="C#" MasterPageFile="~/Site.master" AutoEventWireup="true" CodeFile="Default.aspx.cs" Inherits="_Default" EnableViewState="true" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="Ajax" %>
 
 <asp:Content ID="HeaderContent" runat="server" ContentPlaceHolderID="HeadContent">
@@ -19,43 +19,38 @@
             if (s.length > 0) {
                 s = s.substring(2, s.length);
             }
-            var TxtBox = document.getElementById("<%=tags0.ClientID%>");
-            TxtBox.value = s;
+            var TxtBox_Tags = document.getElementById("<%=tags0.ClientID%>");
+            TxtBox_Tags.value = s;
             document.getElementById('<%=hidVal.ClientID %>').value = s;
-        }
+        }  
     </script>
 </asp:Content>
 
 
 <asp:Content ID="BodyContent" runat="server" ContentPlaceHolderID="MainContent">
-    
+    <div class="fixturesFilter">
     <form id="fixturesSelect" runat="server">
 
-    <Ajax:ToolkitScriptManager runat="server" ID="ScriptManager1" ScriptMode="Release" />
+        <Ajax:ToolkitScriptManager runat="server" ID="ScriptManager1" ScriptMode="Release" />
+    
+        <asp:SqlDataSource ID="dsCategories" 
+                            runat="server" 
+                            SelectCommand="SELECT CategoryID, CategoryName FROM flCategories WHERE ParentID IS NULL" 
+                            ConnectionString="<%$ ConnectionStrings:MBData2005_DEV %>" 
+                            DataSourceMode="DataSet" />
 
-    <asp:SqlDataSource ID="dsCategories" 
-                        runat="server" 
-                        SelectCommand="SELECT CategoryID, CategoryName FROM flCategories WHERE ParentID IS NULL" 
-                        ConnectionString="<%$ ConnectionStrings:MBData2005_DEV %>" 
-                        DataSourceMode="DataSet" />
+        <asp:SqlDataSource ID="dsSubCategories" 
+                            runat="server"    
+                            ConnectionString="<%$ ConnectionStrings:MBData2005_DEV %>" 
+                            DataSourceMode="DataSet" />
 
-    <asp:SqlDataSource ID="dsSubCategories" 
-                    runat="server"    
-                    ConnectionString="<%$ ConnectionStrings:MBData2005_DEV %>" 
-                    DataSourceMode="DataSet" />
+        <asp:Table ID="tblDropdowns" runat="server" Width="80%" HorizontalAlign="Center">
+            <asp:TableRow><asp:TableCell><p>&nbsp;</p></asp:TableCell></asp:TableRow>
 
-        <%--<div class="fixturesFormDrop">
-           
-
-        </div>--%>
-        <div class="clear">
-
-        <asp:Label ID="topOfPage" runat="server" CssClass="MyStyle" visible="false" />
-          
-
-           <%-- <ContentTemplate>--%>
+            <asp:TableRow>
+                <asp:TableCell>
                 <div class="fixturesFormDrop">
-                    <label for="recipient"> &nbsp;&nbsp;&nbsp; CATEGORY&nbsp;&nbsp;</label>
+                    <label for="recipient">CATEGORY</label>
                     <asp:DropDownList ID="categoryList0" 
                                         DataSourceID="dsCategories"
                                         DataTextField="CategoryName" 
@@ -68,88 +63,83 @@
                                         AppendDataBoundItems="true">
                                         <asp:ListItem Text="Select" Value="0" />
                                         <asp:ListItem Text="All" Value="1" />
-                    </asp:DropDownList>
-                
-                    <label for="recipient"> &nbsp; SUBCATEGORY</label>&nbsp;
-                    <asp:DropDownList ID="subcategoryList0" 
-                                        runat="server" 
-                                        DataSourceID="dsSubCategories"
-                                        DataTextField="CategoryName" 
-                                        DataValueField="CategoryID" 
-                                        Height="20px"
-                                        OnSelectedIndexChanged="subcategoryList_SelectedIndexChanged" 
-                                        Width="180px" 
-                                        AutoPostBack="True" 
-                                        AppendDataBoundItems="true">
-                                        <asp:ListItem Text="Select" Value="0" />
-                                        <asp:ListItem Text="All" Value="1" />
-                    </asp:DropDownList>
-          
+                        </asp:DropDownList></div>
+                </asp:TableCell>
 
-               <%-- Added by: Jenise Marcus 5/8/14 - Changed Tags textbox to dropdown checkbox list for multiple Tag selections --%>               
-                    <label for="recipient"> TAGS </label> &nbsp;&nbsp;                                         
-                        <asp:TextBox ID="tags0" runat="server" ReadOnly="true" Width="200" Height="20px" />
-                        <%--<asp:TextBox ID="tags0" runat="server" Height="20px"></asp:TextBox>--%>
+                <asp:TableCell>
+                <div class="fixturesFormDrop">
+                    <label for="recipient">SUBCATEGORY</label>
+                <asp:DropDownList ID="subcategoryList0" 
+                                    runat="server" 
+                                    DataSourceID="dsSubCategories"
+                                    DataTextField="CategoryName" 
+                                    DataValueField="CategoryID" 
+                                    Height="20px"
+                                    OnSelectedIndexChanged="subcategoryList_SelectedIndexChanged" 
+                                    Width="180px" 
+                                    AutoPostBack="True" 
+                                    AppendDataBoundItems="true">
+                                    <asp:ListItem Text="Select" Value="0" />
+                                    <asp:ListItem Text="All" Value="1" />
+                </asp:DropDownList></div>
+                </asp:TableCell>
 
-       
-                     <Ajax:PopupControlExtender ID="PopupControlExtender111" runat="server" TargetControlID="tags0" PopupControlID="Panel1" Position="Bottom">
-                    </Ajax:PopupControlExtender>
+                <asp:TableCell>
+                <div class="fixturesFormDrop">              
+                <label for="recipient"> TAGS </label> &nbsp;                                       
+                    <asp:TextBox ID="tags0" runat="server" ReadOnly="true" Width="200" Height="20px" />
+     
+                    <Ajax:PopupControlExtender ID="PopupControlExtender111" runat="server" TargetControlID="tags0" PopupControlID="Panel1" Position="Bottom" />
 
-                        <input type="hidden" name="hidVal" id="hidVal" runat="server" />
-                        <asp:Panel ID="Panel1" runat="server">
-                            <asp:CheckBoxList ID="chkList" 
-                                runat="server" 
-                                Height="20" onclick="CheckItem(this)">                                                                                                                                                                        
-                            </asp:CheckBoxList>
-                         </asp:Panel>
-                        <%--<asp:AutoCompleteExtender ID="tags0_AutoCompleteExtender" runat="server" 
-                            ServiceMethod="GetCompletionList" TargetControlID="tags0" UseContextKey="True" MinimumPrefixLength="2">
-                        </asp:AutoCompleteExtender>--%>
-                </div>
-
-
+                    <input type="hidden" name="hidVal" id="hidVal" runat="server" />
+                    <asp:Panel ID="Panel1" runat="server">
+                        <asp:CheckBoxList ID="chkList" 
+                            runat="server" 
+                            Height="20" onclick="CheckItem(this)">                                                                                                                                                                        
+                        </asp:CheckBoxList>
+                        </asp:Panel>
+                        </div>
+                </asp:TableCell>
+                <asp:TableCell>
                 <div class="fixturesTextInput">
-                    <label for="recipient">JOB NUMBER &nbsp;&nbsp;&nbsp;</label>
-                    <asp:TextBox ID="jobNumber0" runat="server" Height="20px" OnTextChanged="jobNumberText_TextChanged"></asp:TextBox>
-                    
-                    
-                  <%--  button added by jenise marcus 5/8/14--%> 
-                    &nbsp;<asp:Button ID="btnSubmit" runat="server" Text="Search" OnClick="btnSubmit_OnClick" />
-                         </div>          
+                    <label for="recipient">JOB NUMBER&nbsp;</label>
+                    <asp:TextBox ID="jobNumber0" runat="server" Height="20px" ></asp:TextBox></div>
+                </asp:TableCell>
+                <asp:TableCell HorizontalAlign="Left">
+                    <asp:Button ID="btnSubmit" runat="server" Text="Search" OnClick="btnSubmit_OnClick" />&nbsp;
+                    <asp:Button ID="btnClear" runat="server" Text="Clear Search" OnClick="btnClear_OnClick" />
+                </asp:TableCell>
+            </asp:TableRow>
 
-                <asp:Label ID="bottomOfPage" runat="server" CssClass="MyStyle" visible="false" />
-           <%--</ContentTemplate>--%>
+            <asp:TableRow ID="trBlank" runat="server"><asp:TableCell ColumnSpan="5" runat="server">&nbsp;</asp:TableCell></asp:TableRow>
+            <asp:TableRow ID="trlblMessage" runat="server">
+                <asp:TableCell ColumnSpan="5" runat="server">
+                    <h2 id="h2_lblMessage" align="center"><asp:Label ID="lblMessage" runat="server" visible="false" ForeColor="#660000" Font-Size="15px" /></h2>
+                </asp:TableCell>
+            </asp:TableRow>
+        </asp:Table>     
 
-        
 
-    </div>
-
-
-    <div class="fixturesMain">
-    <p></p><asp:Label ID="lbltest" runat="server" />
-    
-        <%--Jenise Marcus - 5/9/14 - display initial search results - Testing Only--%>
-        <asp:GridView ID="gv" runat="server" AutoGenerateColumns="false" Visible="true" ShowHeader="false" >
+        <asp:GridView ID="gv" runat="server" AutoGenerateColumns="false" Visible="true" ShowHeader="false" GridLines="None" Width="90%" 
+                        HorizontalAlign="Center" OnRowDataBound="gv_OnRowDataBound">
         <Columns>
-            <asp:TemplateField HeaderImageUrl="Images">
+            <asp:TemplateField HeaderImageUrl="Images" ItemStyle-HorizontalAlign="Left">
                 <ItemTemplate>
                     <asp:HyperLink ID="HyperLink1" runat="server" NavigateUrl='<%#"~/FixtureDetails.aspx?JID="+Eval("lJobNumber")+"&TID="+Eval("lTaskNumber") %>' Target="_self">
-                        <img src='<%# Eval("Img1") %>' alt="no image" data-other-src="images/c3energySD.jpg" width="940" height="450" class="flFeaturedImage" title="C3 Energy | Other, Planter..." /><span class="ficturesProjTitle"></span>                   
+                        <div class="img-wrap">
+                        <asp:Image ID="imgOriginal" runat="server" Height="300" Width="550" ToolTip="C3 Energy | Other, Planter ..." AlternateText="No Image" />
+                        <div class="img-overlay">
+                        <h3 align="center"><asp:Label ID="lblOverlaytitle" runat="server" Text='<%# Eval("txtJobName") %>' ForeColor="White" /></h3>
+                        <%--<p><asp:Label ID="lblOverlayDesc" runat="server" /></p>--%>
+                        </div></div>
+                         <asp:Label ID="lblimage1" runat="server" Visible="false" Text='<%# Eval("Img1") %>'  />
+                         <asp:Label ID="lblimage2" runat="server" Visible="false" Text='<%# Eval("Img2") %>' />                    
                     </asp:HyperLink>
-                    
                 </ItemTemplate>
             </asp:TemplateField>  
         </Columns>
        </asp:GridView>
 
-    </div>
-    
-
-    <div class="fixturesMain">
-    
-    
-    </div>
-
-
     </form>
+    </div>
 </asp:Content>

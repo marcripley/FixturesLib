@@ -11,7 +11,10 @@ using System.Web.UI.WebControls;
 
 public partial class FixtureDetails : System.Web.UI.Page
 {
+    public Int32 ProjSum = 0;
+    public Int32 ActualSum = 0;
     string MBIntranet_DEV = ConfigurationManager.ConnectionStrings["MBData2005_DEV"].ConnectionString;
+    public string strStatus = "Admin";
 
     protected void Page_Load(object sender, EventArgs e)
     {
@@ -22,12 +25,14 @@ public partial class FixtureDetails : System.Web.UI.Page
             BindImages();
             BindJobDetails();
             BindLaborDetails();
+            getTags();
         }
         else
         {
 
         }
     }
+
 
 
     private void BindImages()
@@ -41,11 +46,9 @@ public partial class FixtureDetails : System.Web.UI.Page
             using (SqlCommand cmd = new SqlCommand())
             {
                 cmd.CommandType = CommandType.StoredProcedure;
-                cmd.CommandText = "GetImages";
+                cmd.CommandText = "flGetImages";
                 cmd.Parameters.Add("@JobNumber", SqlDbType.Int).Value = Convert.ToInt32(Request.QueryString["JID"]);
-
                 cmd.Parameters.Add("@TaskNumber", SqlDbType.Int).Value = Convert.ToInt32(Request.QueryString["TID"]);
-
                 cmd.Parameters.Add("@ImageType", SqlDbType.Int).Value = iImageType;
 
                 cmd.Connection = conn;
@@ -102,9 +105,10 @@ public partial class FixtureDetails : System.Web.UI.Page
             using (SqlCommand cmd = new SqlCommand())
             {
                 cmd.CommandType = CommandType.StoredProcedure;
-                cmd.CommandText = "GetLaborDetails";
+                cmd.CommandText = "flGetLaborDetails";
                 cmd.Parameters.Add("@JobNumber", SqlDbType.Int).Value = Convert.ToInt32(Request.QueryString["JID"]);
                 cmd.Parameters.Add("@TaskNumber", SqlDbType.Int).Value = Convert.ToInt32(Request.QueryString["TID"]);
+                cmd.Parameters.Add("@strStatus", SqlDbType.VarChar).Value = strStatus;
                 cmd.Connection = conn;
 
                 try
@@ -157,10 +161,12 @@ public partial class FixtureDetails : System.Web.UI.Page
         {
             using (SqlCommand cmd = new SqlCommand())
             {
+                //Int32 itestid = 2;
                 cmd.CommandType = CommandType.StoredProcedure;
-                cmd.CommandText = "GetJobDetails";
+                cmd.CommandText = "flGetJobDetails";
                 cmd.Parameters.Add("@JobNumber", SqlDbType.Int).Value = Convert.ToInt32(Request.QueryString["JID"]);
                 cmd.Parameters.Add("@TaskNumber", SqlDbType.Int).Value = Convert.ToInt32(Request.QueryString["TID"]);
+               // cmd.Parameters.Add("@StatusID", SqlDbType.Int).Value = itestid;
                 cmd.Connection = conn;
 
                 try
@@ -177,6 +183,11 @@ public partial class FixtureDetails : System.Web.UI.Page
                         lblJobNum.Text = reader["txtJobNumber"].ToString();
                         lblGC.Text = reader["txtCustomerName"].ToString();
                         lblArhitect.Text = reader["txtArchitectName"].ToString();
+                        lblJobCity.Text = reader["txtJobCity"].ToString();
+                        lblCategory.Text = reader["CategoryName"].ToString();
+                        lblSubCat.Text = reader["SubCategoryName"].ToString();
+                        lblComments.Text = reader["Comments"].ToString();
+                        
                     }
 
                 }
@@ -196,10 +207,59 @@ public partial class FixtureDetails : System.Web.UI.Page
 
 
 
+    protected void getTags()
+    {
+        //submit selected values to stored procedure and retrieve results
+        //temp populated into gridveiw
+        using (SqlConnection conn = new SqlConnection(MBIntranet_DEV))
+        {
+            using (SqlCommand cmd = new SqlCommand())
+            {
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.CommandText = "flGetTags";
+                cmd.Parameters.Add("@JobNumber", SqlDbType.Int).Value = Convert.ToInt32(Request.QueryString["JID"]);
+                cmd.Parameters.Add("@TaskNumber", SqlDbType.Int).Value = Convert.ToInt32(Request.QueryString["TID"]);
+                cmd.Connection = conn;
+
+                try
+                {
+                    conn.Open();
+                    SqlDataReader reader = cmd.ExecuteReader();
+
+                    //get code for no records found
+
+                    if (reader.HasRows)
+                    {
+                        while (reader.Read())
+                        {
+                            HyperLink hp = new HyperLink();
+                            hp.Text = reader["Tags"].ToString();
+                            hp.NavigateUrl = "~/Default.aspx?TagID=" + reader["TagID"] + "&Tag=" + hp.Text;
+                            hp.CssClass = "post-tag";
+                            tcTags.Controls.Add(hp);   
+                        }
+                    }
+
+                }
+                catch (Exception ex)
+                {
+
+                }
+                finally
+                {
+                    cmd.Dispose();
+                    conn.Close();
+                    conn.Dispose();
+                }
+            }
+        }
+
+    }
+
+
     protected void gvLaborDetails_RowDataBound(object sender, GridViewRowEventArgs e)
     {
-        Int32 ProjSum = 0;
-        Int32 ActualSum = 0;
+        
 
         if (e.Row.RowType == DataControlRowType.DataRow)
         {

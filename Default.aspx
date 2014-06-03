@@ -2,14 +2,14 @@
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="Ajax" %>
 
 <asp:Content ID="HeaderContent" runat="server" ContentPlaceHolderID="HeadContent">
-    <%--Added by: Jenise Marcus 5/9/14 - Used for multiple select dropdown checklist--%>
+    <%--Javascript used to populate the Tags textbox with the checklist items selected--%>
     <script type = "text/javascript">
         function CheckItem(checkBoxList) {
             var options = checkBoxList.getElementsByTagName('input');
             var arrayOfCheckBoxLabels = checkBoxList.getElementsByTagName("label");
             var s = "";
 
-            //populates textbox of with the selected checklist items
+            //Loop through selected checklist items
             for (i = 0; i < options.length; i++) {
                 var opt = options[i];
                 if (opt.checked) {
@@ -19,6 +19,7 @@
             if (s.length > 0) {
                 s = s.substring(2, s.length);
             }
+            //Populates textboxes
             var TxtBox_Tags = document.getElementById("<%=tags0.ClientID%>");
             TxtBox_Tags.value = s;
             document.getElementById('<%=hidVal.ClientID %>').value = s;
@@ -33,6 +34,7 @@
 
         <Ajax:ToolkitScriptManager runat="server" ID="ScriptManager1" ScriptMode="Release" />
     
+    <%--Drop down list Datasources--%>
         <asp:SqlDataSource ID="dsCategories" 
                             runat="server" 
                             SelectCommand="SELECT CategoryID, CategoryName FROM flCategories WHERE ParentID IS NULL" 
@@ -44,7 +46,8 @@
                             ConnectionString="<%$ ConnectionStrings:MBData2005_DEV %>" 
                             DataSourceMode="DataSet" />
 
-        <asp:Table ID="tblDropdowns" runat="server" Width="80%" HorizontalAlign="Center">
+    <%--Images Displayed in Table below--%>
+        <asp:Table ID="tblDropdowns" runat="server" Width="85%" HorizontalAlign="Center">
             <asp:TableRow><asp:TableCell><p>&nbsp;</p></asp:TableCell></asp:TableRow>
 
             <asp:TableRow>
@@ -66,45 +69,44 @@
                         </asp:DropDownList></div>
                 </asp:TableCell>
 
+                <%--SubCategory List Populated by Category Selected in code behind--%>
                 <asp:TableCell>
-                <div class="fixturesFormDrop">
+                    <div class="fixturesFormDrop">
                     <label for="recipient">SUBCATEGORY</label>
-                <asp:DropDownList ID="subcategoryList0" 
-                                    runat="server" 
-                                    DataSourceID="dsSubCategories"
-                                    DataTextField="CategoryName" 
-                                    DataValueField="CategoryID" 
-                                    Height="20px"
-                                    OnSelectedIndexChanged="subcategoryList_SelectedIndexChanged" 
-                                    Width="180px" 
-                                    AutoPostBack="True" 
-                                    AppendDataBoundItems="true">
-                                    <asp:ListItem Text="Select" Value="0" />
-                                    <asp:ListItem Text="All" Value="1" />
-                </asp:DropDownList></div>
+                    <asp:DropDownList ID="subcategoryList0" 
+                                        runat="server" 
+                                        DataSourceID="dsSubCategories"
+                                        DataTextField="CategoryName" 
+                                        DataValueField="CategoryID" 
+                                        Height="20px"
+                                        OnSelectedIndexChanged="subcategoryList_SelectedIndexChanged" 
+                                        Width="180px" 
+                                        AutoPostBack="True" 
+                                        AppendDataBoundItems="true">             
+                    </asp:DropDownList>
+                    </div>
                 </asp:TableCell>
 
                 <asp:TableCell>
-                <div class="fixturesFormDrop">              
-                <label for="recipient"> TAGS </label> &nbsp;                                       
-                    <asp:TextBox ID="tags0" runat="server" ReadOnly="true" Width="200" Height="20px" />
+                    <div class="fixturesFormDrop">              
+                    <label for="recipient"> TAGS </label> &nbsp;                                       
+                    <asp:TextBox ID="tags0" runat="server" ReadOnly="true" Width="250" Height="20px" />
      
-                    <Ajax:PopupControlExtender ID="PopupControlExtender111" runat="server" TargetControlID="tags0" PopupControlID="Panel1" Position="Bottom" />
-
-                    <input type="hidden" name="hidVal" id="hidVal" runat="server" />
-                    <asp:Panel ID="Panel1" runat="server">
-                        <asp:CheckBoxList ID="chkList" 
-                            runat="server" 
-                            Height="20" onclick="CheckItem(this)">                                                                                                                                                                        
-                        </asp:CheckBoxList>
+                        <Ajax:PopupControlExtender ID="PopupControlExtender111" runat="server" TargetControlID="tags0" PopupControlID="Panel1" Position="Bottom" />
+                        <input type="hidden" name="hidVal" id="hidVal" runat="server" />
+                        <asp:Panel ID="Panel1" runat="server">
+                            <asp:CheckBoxList ID="chkList" runat="server" Height="20" onclick="CheckItem(this)" />
                         </asp:Panel>
-                        </div>
+                     </div>
                 </asp:TableCell>
+
                 <asp:TableCell>
-                <div class="fixturesTextInput">
-                    <label for="recipient">JOB NUMBER&nbsp;</label>
-                    <asp:TextBox ID="jobNumber0" runat="server" Height="20px" ></asp:TextBox></div>
+                    <div class="fixturesTextInput">
+                        <label for="recipient">JOB NUMBER&nbsp;</label>
+                        <asp:TextBox ID="jobNumber0" runat="server" Height="20px" />
+                    </div>
                 </asp:TableCell>
+
                 <asp:TableCell HorizontalAlign="Left">
                     <asp:Button ID="btnSubmit" runat="server" Text="Search" OnClick="btnSubmit_OnClick" />&nbsp;
                     <asp:Button ID="btnClear" runat="server" Text="Clear Search" OnClick="btnClear_OnClick" />
@@ -133,12 +135,13 @@
                         <%--<p><asp:Label ID="lblOverlayDesc" runat="server" /></p>--%>
                         </div></div>
                          <asp:Label ID="lblimage1" runat="server" Visible="false" Text='<%# Eval("Img1") %>'  />
-                         <asp:Label ID="lblimage2" runat="server" Visible="false" Text='<%# Eval("Img2") %>' />                    
+                         <%--<asp:Label ID="lblimage2" runat="server" Visible="false" Text='<%# Eval("Img2") %>' /> --%>                   
                     </asp:HyperLink>
                 </ItemTemplate>
             </asp:TemplateField>  
         </Columns>
        </asp:GridView>
+
 
     </form>
     </div>

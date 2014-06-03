@@ -107,8 +107,10 @@ public partial class _Default : System.Web.UI.Page
         //clear subcategory list before adding to it
         subcategoryList0.Items.Clear();
         //Add Select and All items to the Subcategory drop down list
-        subcategoryList0.Items.Insert(0, "Select");
-        subcategoryList0.Items.Insert(1, "All");
+       // subcategoryList0.Items.Insert(0, "Select");
+        //subcategoryList0.Items.Insert(1, "All");
+        subcategoryList0.Items.Insert(0, new ListItem("Select", "0"));
+        subcategoryList0.Items.Insert(0, new ListItem("All", "1"));
 
         //If user selects "All" from subcategory drop down, provide all otherwise filter by selected category
         if (categoryList0.SelectedValue == "1")
@@ -121,6 +123,8 @@ public partial class _Default : System.Web.UI.Page
         }
         
         subcategoryList0.DataBind();
+        //subcategoryList0.AppendDataBoundItems = true;
+        
     }
 
 
@@ -191,6 +195,7 @@ public partial class _Default : System.Web.UI.Page
                 }
                 else
                 {
+                    //***need to add code for for "All"
                     cmd.Parameters.Add("@SubCategoryID", SqlDbType.Int).Value = subcategoryList0.SelectedValue;
                 }
                 if (string.IsNullOrEmpty(strquery))

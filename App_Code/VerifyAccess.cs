@@ -24,7 +24,10 @@ public class VerifyAccess
         PrincipalContext ctx = new PrincipalContext(ContextType.Domain);
         // find currently logged in user
         UserPrincipal user = UserPrincipal.Current;
-        strUsername = user.DisplayName;
+        //strUsername = user.DisplayName;
+        //***Need to accomadate ' apostrophe's 
+        strUsername = "Blaine Gulbinas";
+        //strUsername = "Sharon de la Cruz";
         UserPrincipal user2 = UserPrincipal.FindByIdentity(ctx, strUsername);
 
         //Find Admin group

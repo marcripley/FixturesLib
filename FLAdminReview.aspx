@@ -37,6 +37,7 @@
 <asp:Table ID="tblMain" runat="server" Width="80%" HorizontalAlign="Center">
     <asp:TableRow>
         <asp:TableCell ID="tcList" runat="server" HorizontalAlign="Left" BorderStyle="None" VerticalAlign="Top">
+           
             <asp:GridView ID="gvPending" runat="server" AutoGenerateColumns="false" CellPadding="3" ShowHeader="false" BorderStyle="None">
                 <Columns>
                     <asp:TemplateField HeaderImageUrl="Images" ItemStyle-HorizontalAlign="Left">
@@ -52,10 +53,12 @@
         
 
         <asp:TableCell ID="tcData" runat="server" HorizontalAlign="Left" VerticalAlign="Middle">
-            <h3><asp:Label ID="lblProjectName" runat="server" cssClass="flDetails" Font-Size="24px" /></h3><br />
+            
+            <h3><asp:Label ID="lblProjectName" runat="server" cssClass="flDetails" Font-Size="24px" ForeColor="Maroon" /></h3><br />
 
             <h3><asp:Label ID="Label1" runat="server" Text="Labor Details" CssClass="flDetails" Font-Size="24px" /></h3><br />
            
+            <asp:Table ID="tblDetails" runat="server"><asp:TableRow ID="trLaborgv" runat="server"><asp:TableCell>
             <asp:GridView ID="gvLaborDetails" runat="server" ShowFooter="true" AutoGenerateColumns="false"  
                 OnRowDataBound="gvLaborDetails_RowDataBound" cellspacing="10" BorderStyle="Solid" GridLines="Both" Width="100%">
                 <Columns>
@@ -80,7 +83,10 @@
                 </asp:TemplateField>                 
                 </Columns>
             </asp:GridView>              
+            </asp:TableCell>
+            </asp:TableRow>
 
+            <asp:TableRow ID="trProjDetails" runat="server"><asp:TableCell>
 
             <div class="flDetails" id="flDetailsProject">
                 <asp:Table ID="tblProjDetails" runat="server" CellPadding="1">
@@ -92,25 +98,34 @@
                     <%--<asp:TableRow><asp:TableCell>&nbsp;&nbsp;&nbsp;Job Close Date:&nbsp;<asp:Label ID="lblJobCloseDate" runat="server" /></asp:TableCell></asp:TableRow>--%>
                 </asp:Table>
             </div>
+            </asp:TableCell></asp:TableRow>
+            <asp:TableRow ID="trComments" runat="server"><asp:TableCell>
+            <asp:TextBox ID="txtComments" runat="server" Rows="4" TextMode="MultiLine" Width="90%" />
+            
+            </asp:TableCell></asp:TableRow>
 
+            <asp:TableRow ID="trCheckboxes" runat="server"><asp:TableCell>
+            <asp:CheckBox ID="cbApprove"  runat="server" Text="Approve" OnCheckedChanged="cbApprove_OnCheckChanged" AutoPostBack="true" />&nbsp;&nbsp;
+            <asp:CheckBox ID="cbDecline" runat="server" Text="Decline" OnCheckedChanged="cbDecline_OnCheckChanged" AutoPostBack="true" />
             <p></p>
-
-            <asp:CheckBox ID="cbApprove"  runat="server" Text="Approve" />&nbsp;&nbsp;<asp:CheckBox ID="cbDecline" runat="server" Text="Decline" />
-            <p></p>
-            Assign Category:<Ajax:ComboBox ID="cbCategory" 
-                                    runat="server" 
+            </asp:TableCell></asp:TableRow>
+            <asp:TableRow ID="trCategoryDD" runat="server"><asp:TableCell>
+            Assign Category:<Ajax:ComboBox ID="ddCategory" 
+                            runat="server" 
                             DropDownStyle="DropDown" 
                             AutoCompleteMode="None"
                             CaseSensitive="false"
                             RenderMode="Inline"
                             ItemInsertLocation="Append" 
                             DataSourceID="dsCategories"
-                             DataTextField="CategoryName" DataValueField="CategoryID" AutoPostBack="true" OnSelectedIndexChanged="cbCategory_SelectedIndexChanged" Height="20px" Width="181px"
+                             DataTextField="CategoryName" DataValueField="CategoryID" AutoPostBack="true" OnSelectedIndexChanged="ddCategory_SelectedIndexChanged" Height="20px" Width="181px"
                             ListItemHoverCssClass="ComboBoxListItemHover">
                             </Ajax:ComboBox>
-                              
+                 </asp:TableCell></asp:TableRow>
+                 
+                 <asp:TableRow ID="trSubCatDD" runat="server"><asp:TableCell>
                &nbsp;&nbsp; Assign SubCategory:               
-                     <Ajax:ComboBox ID="cbSubCategory" 
+                     <Ajax:ComboBox ID="ddSubCategory" 
                                     runat="server" 
                             DropDownStyle="DropDown" 
                             AutoCompleteMode="None"
@@ -122,23 +137,28 @@
                             ListItemHoverCssClass="ComboBoxListItemHover">
                             </Ajax:ComboBox>
                             <p></p>
+</asp:TableCell></asp:TableRow>
 
+<asp:TableRow ID="trTagscbl" runat="server"><asp:TableCell>
                             Select Tags (min 3 Required):<asp:CheckBoxList ID="cblTags" runat="server" DataSourceID="dsTags" RepeatColumns="4" RepeatDirection="Horizontal" DataTextField="Tags" DataValueField="TagID" />
                             <p></p>
+                            </asp:TableCell></asp:TableRow>
 
-                            Upload Primary Image:<asp:FileUpload ID="FileUpload1" runat="server" /><br />
+                            <asp:TableRow ID="trUploads" runat="server"><asp:TableCell>
+                            Upload Primary Image:<asp:FileUpload ID="PrimaryfileUpload" runat="server" /><br />
                             
                             Upload Additional Images:<ajax:AjaxFileUpload ID="AjaxFileUpload1"
                                                 ThrobberID="myThrobber"
                                                 ContextKeys="fred"
-                                                
                                                 MaximumNumberOfFiles="10"
                                                 runat="server"/>
-
                                                 <p></p>
-                            <asp:Button ID="btnSubmit" runat="server" Text="Submit" />
+                                                </asp:TableCell></asp:TableRow>
 
-
+                                                <asp:TableRow ID="trButtons" runat="server"><asp:TableCell>
+                            <asp:Button ID="btnSubmit" runat="server" Text="Submit" OnClick="btnSubmit_OnClick" />
+                            </asp:TableCell></asp:TableRow>
+        </asp:Table>
         </asp:TableCell>
     </asp:TableRow>
 </asp:Table>

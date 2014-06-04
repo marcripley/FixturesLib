@@ -1,7 +1,16 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Site.master" AutoEventWireup="true" CodeFile="FLAdminReview.aspx.cs" Inherits="FLAdminReview" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="Ajax" %>
 
-<asp:Content ID="Content1" ContentPlaceHolderID="HeadContent" Runat="Server"></asp:Content>
+<asp:Content ID="Content1" ContentPlaceHolderID="HeadContent" Runat="Server">
+<script type = "text/javascript">
+    function uploadComplete(sender) {
+        $get("<%=lblUploadMsg.ClientID%>").innerHTML = "File Uploaded Successfully";
+    }
+    function uploadError(sender) {
+        $get("<%=lblUploadMsg.ClientID%>").innerHTML = "File upload failed.";
+    } 
+</script> 
+</asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" Runat="Server">
 
 <form runat="server">
@@ -169,15 +178,24 @@
 
                 <asp:TableRow ID="trUploads" runat="server">
                     <asp:TableCell>
-                        <asp:Label ID="lblUploadPrim" runat="server" Text="Upload Primary Image:" Font-Size="14px" />
+                        <asp:Label ID="lblUploadPrim" runat="server" Text="Upload Primary Image:" Font-Size="14px" />&nbsp;
                         <asp:FileUpload ID="PrimaryfileUpload" runat="server" /><br />
                     
                         <asp:Label ID="lblUploadMltp" runat="server" Text="Upload Additional Images:" Font-Size="14px" />
-                        <ajax:AjaxFileUpload ID="AjaxFileUpload"
-                                    ThrobberID="myThrobber"
-                                    ContextKeys="fred"
-                                    MaximumNumberOfFiles="10"
-                                    runat="server"/>
+                        <ajax:AjaxFileUpload ID="AsyncFileUpload" 
+                                            OnClientUploadError="uploadError" 
+                                            OnClientUploadComplete="uploadComplete"
+                                            UploaderStyle="Modern" 
+                                            CompleteBackColor="White" 
+                                            UploadingBackColor="#CCFFFF" 
+                                            ThrobberID="imgLoader"
+                                            ContextKeys="fred"
+                                            MaximumNumberOfFiles="10" 
+                                            
+                                            runat="server"/>
+                            <asp:Image ID="imgLoader" runat="server" ImageUrl="/images/ProgressBar.gif" /> 
+                            <br /> 
+                            <asp:Label ID="lblUploadMsg" runat="server" Text="" />
                     </asp:TableCell>
                 </asp:TableRow>
 

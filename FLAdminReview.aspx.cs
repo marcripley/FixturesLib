@@ -422,6 +422,15 @@ public partial class FLAdminReview : System.Web.UI.Page
 
 
 
+    protected void AsyncFileUpload_UploadedComplete(object sender, AjaxControlToolkit.AsyncFileUploadEventArgs e)  
+    { 
+        System.Threading.Thread.Sleep(5000);  
+        //string filename = System.IO.Path.GetFileName(AsyncFileUpload.FileName);  
+        //AsyncFileUpload.SaveAs(Server.MapPath("FileUploads/") + filename);    
+    } 
+
+
+
     protected void btnSubmit_OnClick(object sender, EventArgs e)
     {
         //Code below is for Approver hitting submit button
@@ -499,7 +508,6 @@ public partial class FLAdminReview : System.Web.UI.Page
             string strFileName;
             string strFilePath;
 
-
             using (SqlConnection conn = new SqlConnection(MBIntranet_DEV))
             {
                 using (SqlCommand cmd = new SqlCommand())
@@ -534,22 +542,19 @@ public partial class FLAdminReview : System.Web.UI.Page
                     {
                         cmd.Parameters.Add("@PrimaryImgPath", SqlDbType.VarChar).Value = "NA";
                     }
-
                     cmd.Connection = conn;
 
                     try
                     {
                         conn.Open();
                         SqlDataReader reader = cmd.ExecuteReader();
-
                         //get code for no records found
                         if (reader.HasRows)
                         {
                             reader.Read();
                             intPostID = Convert.ToInt32(reader["PostID"]);
                         }
-                        reader.Close();
-                        GetLaborList();
+                        reader.Close();       
                     }
                     catch (Exception ex)
                     {
@@ -564,44 +569,85 @@ public partial class FLAdminReview : System.Web.UI.Page
                         conn.Dispose();
                     }
                 }
-            }
 
 
-            //loop through checkboxlist
-            using (SqlConnection conn = new SqlConnection(MBIntranet_DEV))
-            {
-                using (SqlCommand cmd = new SqlCommand())
+
+                //only do this portion if one of the tags are selected
+                string cbFlag = "0";
+                for (int i = 0; i < cblTags.Items.Count; i++)
+                    {
+                    if (cblTags.Items[i].Selected)
+                      {
+                        cbFlag = "1";
+                        break;
+                      }
+                    }
+
+                if (cbFlag == "1")
                 {
-                    cmd.CommandType = CommandType.Text;
-                    cmd.CommandText = "INSERT INTO dbo.flTagLookup (PostID, TagID) VALUES (@PostID, @TagID)";
-                    //cmd_Apps.Parameters.Add("@RFSID", SqlDbType.Int).Value = txtRFSID.Text;
-                    cmd.Connection = conn;
+                    //Delete record with postid
+                    using (SqlCommand cmd = new SqlCommand())
+                    {          
+                        cmd.CommandType = CommandType.Text;
+                        cmd.CommandText = "DELETE FROM dbo.flTagLookup WHERE PostID = " + intPostID;
+                        cmd.Connection = conn;
 
-                    try
-                    {
-                        conn.Open();
-
-                        foreach (ListItem item in cblTags.Items)
+                        try
                         {
-                            cmd.Parameters.Clear();
-                            cmd.Parameters.AddWithValue("@AppID", item.Value);
-                            cmd.Parameters.AddWithValue("@RFSID", intPostID);
-                            cmd.ExecuteNonQuery();
+                            conn.Open();
+                            SqlDataReader reader = cmd.ExecuteReader();
+                            reader.Read();
+                            reader.Close();
                         }
-                    }
-                    catch (Exception ex)
-                    {
-                        lblMessage.Visible = true;
-                        lblMessage.Text = ex.Message;
-                    }
-                    finally
-                    {
-                        cmd.Dispose();
-                        conn.Close();
-                        conn.Dispose();
-                    }
+                        catch (Exception ex)
+                        {
+                            //Display error message when form submission unsuccessful
+                            lblMessage.Visible = true;
+                            lblMessage.Text = "Error (Insert SysInfo Apps): " + ex.Message + ".<br>" + strErrMsg;
+                        }
+                        finally
+                        {
+                            cmd.Dispose();
+                            conn.Close();
+                            conn.Dispose();   
+                        }                   
+                    }  
+
+
+                     //loop through check box list to insert
+                    using (SqlCommand cmd = new SqlCommand())
+                    {          
+                        cmd.CommandType = CommandType.Text;
+                        cmd.CommandText = "INSERT INTO dbo.flTagLookup (PostID, TagID) VALUES (@PostID, @TagID)";
+                        cmd.Connection = conn;
+
+                        try
+                        {
+                            conn.Open();
+                            foreach (ListItem item in cblTags.Items)
+                            {
+                                cmd.Parameters.Clear();
+                                cmd.Parameters.AddWithValue("@PostID", intPostID);
+                                cmd.Parameters.AddWithValue("@TagID", item.Value);   
+                                cmd.ExecuteNonQuery();
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            //Display error message when form submission unsuccessful
+                            lblMessage.Visible = true;
+                            lblMessage.Text = "Error (Insert SysInfo Apps): " + ex.Message + ".<br>" + strErrMsg;
+                        }
+                        finally
+                        {
+                             cmd.Dispose();
+                            conn.Close();
+                            conn.Dispose();   
+                        }                   
+                    }  
                 }
             }
+            GetLaborList();
         }
     }
 

@@ -15,7 +15,6 @@ public partial class _Default : System.Web.UI.Page
 {
     //Public Declarations
     public string strUsername;
-    public string strErrMsg;
     string MBIntranet_DEV = ConfigurationManager.ConnectionStrings["MBData2005_DEV"].ConnectionString;
 
     public string strPrimImageLoc;
@@ -223,7 +222,7 @@ public partial class _Default : System.Web.UI.Page
                     {
                         //Display No records message if no data found.
                         gv.Visible = false;
-                        lblMessage.Text = "There are no Records that match your criteria";
+                        lblMessage.Text = "There are no Records that match your criteria.";
                         trBlank.Visible = true;
                         trlblMessage.Visible = true;
                     }
@@ -238,7 +237,7 @@ public partial class _Default : System.Web.UI.Page
                 //Error handeling
                 catch (Exception ex)
                 {
-                    lblMessage.Text = ex.Message;
+                    lblMessage.Text = "Error Msg: " + ex.Message + " was received while trying to retrieve the Fixtures Library images. Please contact support@missionbell.com with a screenshot of the page";
                 }
                 finally
                 {

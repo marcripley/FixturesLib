@@ -8,7 +8,7 @@
 /* Universal reset */
 html,body,div,span,applet,object,iframe,caption,del,dfn,em,font,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,dl,dt,dd,ol,ul,li,fieldset,form,label,legend {vertical-align: baseline;font-size: 100%;outline: 0;padding: 0;margin: 0;border: 0;}
 html {min-height: 100%;border-bottom: 1px solid transparent;}
-body {background: #ffffff;line-height: 14px;color: #222222;font-size: 12px;font-family: Tahoma, Geneva, sans-serif;line-height: 18px;}
+body {background: #ffffff;line-height: 14px;color: #222222;font-size: 12px;font-family: Georgia, Palatino Linotype, Century Gothic;line-height: 18px;}
 img {border: none;text-decoration: none;}
 a {outline: none;cursor: pointer;}
 a:link {text-decoration: none; color:Maroon}
@@ -65,10 +65,10 @@ h2#flTitle {font-size: 28px;line-height: 30px;margin-bottom: 4px;padding-bottom:
 .flDetails ul {margin: 10px 10px 20px;list-style: none;line-height: 34px;}
 .flDetails ul span {color: #222;}
 
-.flComments {margin: 20px;font-size: 14px; color:#222; padding-top:3px; font-family: Tahoma, Geneva, sans-serif; line-height: 27px; list-style: none;}
-.flDetails td {font-size: 16px; color:#A2A2A1; font-family: Tahoma, Geneva, sans-serif; line-height: 27px; list-style: none;}
-.flDetails td span {font-size: 16px; color:#222; font-family: Tahoma, Geneva, sans-serif; line-height: 27px; list-style: none; font-weight:600}
-div.flDetailsHeader{font-size: 28px;line-height: 30px;margin-bottom: 4px;padding-bottom: 4px; font-family: Tahoma, Geneva, sans-serif;}
+.flComments {margin: 20px;font-size: 14px; color:#222; padding-top:3px; font-family: Georgia, Palatino Linotype, Century Gothic; line-height: 27px; list-style: none;}
+.flDetails td {font-size: 16px; color:#A2A2A1; font-family: Georgia, Palatino Linotype, Century Gothic; line-height: 27px; list-style: none;}
+.flDetails td span {font-size: 16px; color:#222; font-family: Georgia, Palatino Linotype, Century Gothic; line-height: 27px; list-style: none; font-weight:600}
+div.flDetailsHeader{font-size: 28px;line-height: 30px;margin-bottom: 4px;padding-bottom: 4px; font-family: Georgia, Palatino Linotype, Century Gothic;}
 .flDetailsHeader h3 {font-size: 48px;}
 .flDetailsHeader h2 {font-size: 28px;line-height: 30px;margin-bottom: 4px;padding-bottom: 4px;color:purple ;border-bottom: 1px solid #888;}
 .flDetails h4 {font-size: 30px;color: #444;}

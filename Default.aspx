@@ -111,6 +111,7 @@
                     <asp:Button ID="btnSubmit" runat="server" Text="Search" OnClick="btnSubmit_OnClick" />&nbsp;
                     <asp:Button ID="btnClear" runat="server" Text="Clear Search" OnClick="btnClear_OnClick" />
                 </asp:TableCell>
+                </asp:TableRow>
                 <asp:TableRow ID="trBlank" runat="server"><asp:TableCell ColumnSpan="5" runat="server">&nbsp;</asp:TableCell></asp:TableRow><asp:TableRow ID="trlblMessage" runat="server">
                 <asp:TableCell ColumnSpan="5" runat="server">
                     <h2 id="h2_lblMessage" align="center"><asp:Label ID="lblMessage" runat="server" visible="false" ForeColor="#660000" Font-Size="15px" /></h2>

@@ -9,6 +9,7 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.DirectoryServices.AccountManagement;
+using AjaxControlToolkit.Config;
 
 
 public partial class FLAdminReview : System.Web.UI.Page
@@ -62,6 +63,7 @@ public partial class FLAdminReview : System.Web.UI.Page
                 trCategoryDD.Visible = false;
                 trTagscbl.Visible = false;
                 trUploads.Visible = false;
+                trPostedcb.Visible = false;
             }
             else
             {
@@ -424,9 +426,13 @@ public partial class FLAdminReview : System.Web.UI.Page
 
     protected void AsyncFileUpload_UploadedComplete(object sender, AjaxControlToolkit.AsyncFileUploadEventArgs e)  
     { 
-        System.Threading.Thread.Sleep(5000);  
-        //string filename = System.IO.Path.GetFileName(AsyncFileUpload.FileName);  
-        //AsyncFileUpload.SaveAs(Server.MapPath("FileUploads/") + filename);    
+        System.Threading.Thread.Sleep(5000);
+        //if (AsyncFileUpload.HasFile)
+        {
+        //    string strPath = MapPath("~/Uploads/") + Path.GetFileName(e.filename);
+        //    string filename = System.IO.Path.GetFileName(AsyncFileUpload.FileName);
+        //    AsyncFileUpload.SaveAs(Server.MapPath("FileUploads/") + filename);    
+        } 
     } 
 
 
@@ -519,6 +525,7 @@ public partial class FLAdminReview : System.Web.UI.Page
                     cmd.Parameters.Add("@strStatus", SqlDbType.VarChar).Value = vaClass.VerifyflAdminAccess();
                     cmd.Parameters.Add("@CategoryID", SqlDbType.VarChar).Value = ddCategory.SelectedValue;
                     cmd.Parameters.Add("@SubCategoryID", SqlDbType.VarChar).Value = ddSubCategory.SelectedValue;
+                    cmd.Parameters.Add("@intPosted", SqlDbType.Int).Value = cbPostedStatus.Checked;
 
                     //Verify File exists in Attachment field before submitting form
                     if (PrimaryfileUpload.HasFile)

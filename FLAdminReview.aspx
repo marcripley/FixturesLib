@@ -178,8 +178,9 @@
 
                 <asp:TableRow ID="trUploads" runat="server">
                     <asp:TableCell>
+                    <br />
                         <asp:Label ID="lblUploadPrim" runat="server" Text="Upload Primary Image:" Font-Size="14px" />&nbsp;
-                        <asp:FileUpload ID="PrimaryfileUpload" runat="server" /><br />
+                        <asp:FileUpload ID="PrimaryfileUpload" runat="server" /><br /><br />
                     
                         <asp:Label ID="lblUploadMltp" runat="server" Text="Upload Additional Images:" Font-Size="14px" />
                         <ajax:AjaxFileUpload ID="AsyncFileUpload" 
@@ -190,15 +191,17 @@
                                             UploadingBackColor="#CCFFFF" 
                                             ThrobberID="imgLoader"
                                             ContextKeys="fred"
-                                            MaximumNumberOfFiles="10" 
-                                            
-                                            runat="server"/>
-                            <asp:Image ID="imgLoader" runat="server" ImageUrl="/images/ProgressBar.gif" /> 
-                            <br /> 
-                            <asp:Label ID="lblUploadMsg" runat="server" Text="" />
+                                            MaximumNumberOfFiles="10"                                             
+                                            runat="server"/>  
+                            <asp:Label ID="lblUploadMsg" runat="server" Text="" /><br />
                     </asp:TableCell>
                 </asp:TableRow>
 
+            <asp:TableRow ID="trPostedcb" runat="server">
+                <asp:TableCell>
+                    <asp:CheckBox ID="cbPostedStatus" runat="server" Text="Ready To Post" Font-Size="18px" ForeColor="Maroon" />
+                </asp:TableCell>
+            </asp:TableRow>
 
             <asp:TableRow ID="trButtons" runat="server">
                 <asp:TableCell>

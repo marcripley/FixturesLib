@@ -215,22 +215,22 @@ public partial class _Default : System.Web.UI.Page
                 {
                     //Open connection and bind datasource to gridview
                     conn.Open();
-                    gv.DataSource = cmd.ExecuteReader();
-                    gv.DataBind();
+                    gvPosts.DataSource = cmd.ExecuteReader();
+                    gvPosts.DataBind();
 
-                    if (gv.Rows.Count == 0)
+                    if (gvPosts.Rows.Count == 0)
                     {
                         //Display No records message if no data found.
-                        gv.Visible = false;
+                        gvPosts.Visible = false;
                         lblMessage.Text = "There are no Records that match your criteria.";
-                        trBlank.Visible = true;
+                        //trBlank.Visible = true;
                         trlblMessage.Visible = true;
                     }
                     else
                     {                        
-                        gv.Visible = true;
+                        gvPosts.Visible = true;
                         lblMessage.Text = string.Empty;
-                        trBlank.Visible = true;
+                        //trBlank.Visible = true;
                         trlblMessage.Visible = true;
                     }                   
                 }
@@ -252,7 +252,7 @@ public partial class _Default : System.Web.UI.Page
 
 
 
-    protected void gv_OnRowDataBound(object sender, GridViewRowEventArgs e)
+    protected void gvPosts_OnRowDataBound(object sender, GridViewRowEventArgs e)
     {
         //Formatting for Images
         if (e.Row.RowType == DataControlRowType.DataRow)

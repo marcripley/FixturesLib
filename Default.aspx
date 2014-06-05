@@ -120,30 +120,22 @@
         <Columns>
             <asp:TemplateField HeaderImageUrl="Images" ItemStyle-HorizontalAlign="Left">
                 <ItemTemplate>
-                    <div id="slideshow0">
-                    <asp:Label ID="lblimage1" runat="server" Visible="true" Text='<%# Eval("Img1") %>' />
-                        <asp:HyperLink ID="HyperLink1" runat="server" NavigateUrl='<%#"~/FixtureDetails.aspx?JID="+Eval("lJobNumber")+"&TID="+Eval("lTaskNumber") %>' Target="_self">
-                            <ul class="bjqs">
-                                <asp:GridView ID="gvPics" runat="server" AutoGenerateColumns="false" Visible="false" ShowHeader="false" GridLines="None"
-                                                OnRowDataBound="gvPics_OnRowDataBound">
-                                    <Columns>
-                                        <asp:TemplateField>
-                                            <ItemTemplate>
-                                                <li>                                
-                                                    <asp:Image ID="imgOriginal" runat="server" Height="450" Width="940" ToolTip="Job name and tags" AlternateText="No Image" />
-                                                </li>                                            
-                                            </ItemTemplate>
-                                        </asp:TemplateField>
-                                        <asp:BoundField DataField="imgURL" HeaderText="imgURL" />
-                                    </Columns>
-                                </asp:GridView>
-                            </ul>
-                        </asp:HyperLink>
-                    </div>
+                    <asp:HyperLink ID="HyperLink1" runat="server" NavigateUrl='<%#"~/FixtureDetails.aspx?JID="+Eval("lJobNumber")+"&TID="+Eval("lTaskNumber") %>' Target="_self">
+                        <div class="img-wrap">
+                        <asp:Image ID="imgOriginal" runat="server" Height="300" Width="550" ToolTip="C3 Energy | Other, Planter ..." AlternateText="No Image" />
+                        <div class="img-overlay">
+                        <h3 align="center"><asp:Label ID="lblOverlaytitle" runat="server" Text='<%# Eval("txtJobName") %>' ForeColor="White" /></h3>
+                        <%--<p><asp:Label ID="lblOverlayDesc" runat="server" /></p>--%>
+                        </div></div>
+                         <asp:Label ID="lblimage1" runat="server" Visible="false" Text='<%# Eval("Img1") %>'  />
+                         <%--<asp:Label ID="lblimage2" runat="server" Visible="false" Text='<%# Eval("Img2") %>' /> --%>                   
+                    </asp:HyperLink>
                 </ItemTemplate>
-            </asp:TemplateField>
+            </asp:TemplateField>  
         </Columns>
-    </asp:GridView>
-</form>
-</div>
+       </asp:GridView>
+
+
+    </form>
+    </div>
 </asp:Content>

@@ -217,7 +217,7 @@ public partial class _Default : System.Web.UI.Page
                     conn.Open();
                     gvPosts.DataSource = cmd.ExecuteReader();
                     gvPosts.DataBind();
-                    
+
                     if (gvPosts.Rows.Count == 0)
                     {
                         //Display No records message if no data found.
@@ -252,7 +252,7 @@ public partial class _Default : System.Web.UI.Page
 
 
 
-    protected void gv_OnRowDataBound(object sender, GridViewRowEventArgs e)
+    protected void gvPosts_OnRowDataBound(object sender, GridViewRowEventArgs e)
     {
         //Formatting for Images
         if (e.Row.RowType == DataControlRowType.DataRow)

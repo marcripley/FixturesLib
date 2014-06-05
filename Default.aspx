@@ -99,47 +99,37 @@
                         </asp:CheckBoxList>
                         </asp:Panel>
                         </div>
-                </asp:TableCell>
-                <asp:TableCell>
+                </asp:TableCell><asp:TableCell>
                 <div class="fixturesTextInput">
                     <label for="recipient">JOB NUMBER&nbsp;</label>
                     <asp:TextBox ID="jobNumber0" runat="server" Height="20px" ></asp:TextBox></div>
-                </asp:TableCell>
-                <asp:TableCell HorizontalAlign="Left">
+                </asp:TableCell><asp:TableCell HorizontalAlign="Left">
                     <asp:Button ID="btnSubmit" runat="server" Text="Search" OnClick="btnSubmit_OnClick" />&nbsp;
                     <asp:Button ID="btnClear" runat="server" Text="Clear Search" OnClick="btnClear_OnClick" />
-                </asp:TableCell>
-            </asp:TableRow>
-
-            <asp:TableRow ID="trBlank" runat="server"><asp:TableCell ColumnSpan="5" runat="server">&nbsp;</asp:TableCell></asp:TableRow>
-            <asp:TableRow ID="trlblMessage" runat="server">
+                </asp:TableCell></asp:TableRow><asp:TableRow ID="trBlank" runat="server"><asp:TableCell ColumnSpan="5" runat="server">&nbsp;</asp:TableCell></asp:TableRow><asp:TableRow ID="trlblMessage" runat="server">
                 <asp:TableCell ColumnSpan="5" runat="server">
                     <h2 id="h2_lblMessage" align="center"><asp:Label ID="lblMessage" runat="server" visible="false" ForeColor="#660000" Font-Size="15px" /></h2>
-                </asp:TableCell>
-            </asp:TableRow>
-        </asp:Table>     
-
-
-        <asp:GridView ID="gv" runat="server" AutoGenerateColumns="false" Visible="true" ShowHeader="false" GridLines="None" Width="90%" 
-                        HorizontalAlign="Center" OnRowDataBound="gv_OnRowDataBound">
+                </asp:TableCell></asp:TableRow></asp:Table><asp:GridView ID="gvPosts" runat="server" AutoGenerateColumns="false" Visible="true" ShowHeader="false" GridLines="None" Width="940" 
+                        HorizontalAlign="Center" OnRowDataBound="gvPosts_OnRowDataBound">
         <Columns>
             <asp:TemplateField HeaderImageUrl="Images" ItemStyle-HorizontalAlign="Left">
                 <ItemTemplate>
-                    <asp:HyperLink ID="HyperLink1" runat="server" NavigateUrl='<%#"~/FixtureDetails.aspx?JID="+Eval("lJobNumber")+"&TID="+Eval("lTaskNumber") %>' Target="_self">
-                        <div class="img-wrap">
-                        <asp:Image ID="imgOriginal" runat="server" Height="300" Width="550" ToolTip="C3 Energy | Other, Planter ..." AlternateText="No Image" />
-                        <div class="img-overlay">
-                        <h3 align="center"><asp:Label ID="lblOverlaytitle" runat="server" Text='<%# Eval("txtJobName") %>' ForeColor="White" /></h3>
-                        <%--<p><asp:Label ID="lblOverlayDesc" runat="server" /></p>--%>
-                        </div></div>
-                         <asp:Label ID="lblimage1" runat="server" Visible="false" Text='<%# Eval("Img1") %>'  />
-                         <asp:Label ID="lblimage2" runat="server" Visible="false" Text='<%# Eval("Img2") %>' />                    
-                    </asp:HyperLink>
-                </ItemTemplate>
-            </asp:TemplateField>  
-        </Columns>
-       </asp:GridView>
-
-    </form>
-    </div>
-</asp:Content>
+                    <div id="slideshow0">
+                    <asp:Label ID="lblimage1" runat="server" Visible="true" Text='<%# Eval("Img1") %>' />
+                        <asp:HyperLink ID="HyperLink1" runat="server" NavigateUrl='<%#"~/FixtureDetails.aspx?JID="+Eval("lJobNumber")+"&TID="+Eval("lTaskNumber") %>' Target="_self">
+                            <ul class="bjqs">
+                                <asp:GridView ID="gvPics" runat="server" AutoGenerateColumns="false" Visible="false" ShowHeader="false" GridLines="None"
+                                                OnRowDataBound="gvPics_OnRowDataBound">
+                                    <Columns>
+                                        <asp:TemplateField>
+                                            <ItemTemplate>
+                                                <li>                                
+                                                    <asp:Image ID="imgOriginal" runat="server" Height="450" Width="940" ToolTip="Job name and tags" AlternateText="No Image" />
+                                                </li>                                            
+                                            </ItemTemplate>
+                                        </asp:TemplateField>
+                                        <asp:BoundField DataField="imgURL" HeaderText="imgURL" />
+                                    </Columns>
+                                </asp:GridView>
+                            </ul>
+                        </asp:HyperLink></div></ItemTemplate></asp:TemplateField></Columns></asp:GridView></form></div></asp:Content>

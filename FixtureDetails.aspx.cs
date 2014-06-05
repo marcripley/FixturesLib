@@ -175,7 +175,6 @@ public partial class FixtureDetails : System.Web.UI.Page
                     SqlDataReader reader = cmd.ExecuteReader();
 
                     //get code for no records found
-
                     if (reader.HasRows)
                     {
                         reader.Read();
@@ -186,10 +185,8 @@ public partial class FixtureDetails : System.Web.UI.Page
                         lblJobCity.Text = reader["txtJobCity"].ToString();
                         lblCategory.Text = reader["CategoryName"].ToString();
                         lblSubCat.Text = reader["SubCategoryName"].ToString();
-                        lblComments.Text = reader["Comments"].ToString();
-                        
+                        lblComments.Text = reader["Comments"].ToString();  
                     }
-
                 }
                 catch (Exception ex)
                 {

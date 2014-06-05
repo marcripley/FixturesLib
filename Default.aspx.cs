@@ -15,7 +15,6 @@ public partial class _Default : System.Web.UI.Page
 {
     //Public Declarations
     public string strUsername;
-    public string strErrMsg;
     string MBIntranet_DEV = ConfigurationManager.ConnectionStrings["MBData2005_DEV"].ConnectionString;
 
     public string strPrimImageLoc;
@@ -24,35 +23,6 @@ public partial class _Default : System.Web.UI.Page
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        //Section Below will be used for Phase II of Fixtures Library Site
-        //strUsername = Environment.UserName;
-        //verifyAccess method in CommonMethods.cs class file.
-        PrincipalContext ctx = new PrincipalContext(ContextType.Domain);
-        // find currently logged in user
-        UserPrincipal user = UserPrincipal.Current;
-        strUsername = user.DisplayName;
-        UserPrincipal user2 = UserPrincipal.FindByIdentity(ctx, strUsername);
-
-        //get name of group for website and just compare user to that group in a class
-        List<GroupPrincipal> result = new List<GroupPrincipal>();
-
-        // if found - grab its groups
-      //  if (user2 != null)
-      //  {
-      //      PrincipalSearchResult<Principal> groups = user2.GetAuthorizationGroups();
-
-            // iterate over all groups
-       //     foreach (Principal p in groups)
-       //     {
-                // make sure to add only group principals
-       //         if (p is GroupPrincipal)
-       //         {
-       //             result.Add((GroupPrincipal)p);
-        //        }
-        //    }
-       // }
-
-
         if (!IsPostBack)
         {
             //Initial Page Open
@@ -64,8 +34,9 @@ public partial class _Default : System.Web.UI.Page
             subcategoryList0.Items.Clear();
 
             //Populate user message
-            lblMessage.Text = "To begin your search, please select a Category, Tag or enter a Job Number";
             lblMessage.Visible = true;
+            lblMessage.Text = "To begin your search, please select a Category, Tag or enter a Job Number";
+            
 
             //Check for Pre-populated tags
             //Tags can be pre-populated if the user has selected the tags from the Project details screen
@@ -106,21 +77,29 @@ public partial class _Default : System.Web.UI.Page
 
         //clear subcategory list before adding to it
         subcategoryList0.Items.Clear();
-        //Add Select and All items to the Subcategory drop down list
-        subcategoryList0.Items.Insert(0, "Select");
-        subcategoryList0.Items.Insert(1, "All");
 
         //If user selects "All" from subcategory drop down, provide all otherwise filter by selected category
-        if (categoryList0.SelectedValue == "1")
+        if (categoryList0.SelectedValue == "0")
         {
-            dsSubCategories.SelectCommand = "SELECT CategoryID, CategoryName FROM flCategories WHERE ParentID IS NOT NULL";
+            subcategoryList0.Items.Clear();
         }
         else
         {
-            dsSubCategories.SelectCommand = "SELECT CategoryID, CategoryName FROM flCategories WHERE ParentID = " + categoryList0.SelectedValue;
+            //Add Select and All items to the Subcategory drop down list
+            subcategoryList0.Items.Insert(0, new ListItem("Select", "0"));
+            subcategoryList0.Items.Insert(1, new ListItem("All", "1"));
+            
+            if (categoryList0.SelectedValue == "1")
+            {
+                dsSubCategories.SelectCommand = "SELECT CategoryID, CategoryName FROM flCategories WHERE ParentID IS NOT NULL";
+            }
+            else
+            {
+                dsSubCategories.SelectCommand = "SELECT CategoryID, CategoryName FROM flCategories WHERE ParentID = " + categoryList0.SelectedValue;
+            }
         }
-        
-        subcategoryList0.DataBind();
+       
+        subcategoryList0.DataBind();        
     }
 
 
@@ -152,6 +131,7 @@ public partial class _Default : System.Web.UI.Page
 
 
 
+
     protected void GetPics()
     {
         //Clear string used for populating query criteria
@@ -164,7 +144,7 @@ public partial class _Default : System.Web.UI.Page
             {
                 if (string.IsNullOrEmpty(strquery))
                 {
-                    strquery = " AND dbo.flTagLookup.TagID = " + chkList.Items[i].Value;
+                    strquery = " AND (dbo.flTagLookup.TagID = " + chkList.Items[i].Value;
                 }
                 else
                 {
@@ -183,27 +163,34 @@ public partial class _Default : System.Web.UI.Page
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.CommandText = "flPostSearch";
 
-
                 //need to check for empty values within all search criteria boxes before passing values to database
-                if (string.IsNullOrEmpty(subcategoryList0.SelectedValue))
+                if (string.IsNullOrEmpty(categoryList0.SelectedValue))
                 {
-                    cmd.Parameters.Add("@SubCategoryID", SqlDbType.Int).Value = "0";
+                    cmd.Parameters.Add("@intCategoryID", SqlDbType.Int).Value = "0";
                 }
                 else
                 {
-                    cmd.Parameters.Add("@SubCategoryID", SqlDbType.Int).Value = subcategoryList0.SelectedValue;
+                    cmd.Parameters.Add("@intCategoryID", SqlDbType.Int).Value = categoryList0.SelectedValue;
+                }
+                if (string.IsNullOrEmpty(subcategoryList0.SelectedValue))
+                {
+                    cmd.Parameters.Add("@intSubCategoryID", SqlDbType.Int).Value = "0";
+                }
+                else
+                {
+                    cmd.Parameters.Add("@intSubCategoryID", SqlDbType.Int).Value = subcategoryList0.SelectedValue;
                 }
                 if (string.IsNullOrEmpty(strquery))
                 {
-                    cmd.Parameters.Add("@TagQuery", SqlDbType.VarChar).Value = "N/A";
+                    cmd.Parameters.Add("@strTagQuery", SqlDbType.VarChar).Value = "N/A";
                 }
                 else
                 {
-                    cmd.Parameters.Add("@TagQuery", SqlDbType.VarChar).Value = strquery;
+                    cmd.Parameters.Add("@strTagQuery", SqlDbType.VarChar).Value = strquery;
                 }
                 if (string.IsNullOrEmpty(jobNumber0.Text))
                 {
-                    cmd.Parameters.Add("@JobNumber", SqlDbType.VarChar).Value = "N/A";
+                    cmd.Parameters.Add("@strJobNumber", SqlDbType.VarChar).Value = "N/A";
                 }
                 else
                 {
@@ -211,56 +198,46 @@ public partial class _Default : System.Web.UI.Page
                     string strJobNoPrefix;
                     string strJobNumber;
 
-                    strJobNoPrefix = jobNumber0.Text.Substring(1, 1);
+                    strJobNoPrefix = jobNumber0.Text.Substring(0, 1);
                     if (strJobNoPrefix != "J")
                     {
                         strJobNumber = "J" + jobNumber0.Text;
                     }
                     else
                     {
-                        strJobNumber = strJobNoPrefix;
+                        strJobNumber = jobNumber0.Text;
                     }
-                    cmd.Parameters.Add("@JobNumber", SqlDbType.VarChar).Value = strJobNumber;
+                    cmd.Parameters.Add("@strJobNumber", SqlDbType.VarChar).Value = strJobNumber;
                 }
                 cmd.Connection = conn;
 
                 try
                 {
-                    SqlDataAdapter myadapter = new SqlDataAdapter();
-                    myadapter.SelectCommand = cmd;
-                    DataSet myDataSet = new DataSet();
-                    myadapter.Fill(myDataSet);
-
-                    DataView myDataView = new DataView();
-                    myDataView = myDataSet.Tables[0].DefaultView;
-
-                    gv.DataSource = myDataView;
+                    //Open connection and bind datasource to gridview
+                    conn.Open();
+                    gv.DataSource = cmd.ExecuteReader();
                     gv.DataBind();
-
 
                     if (gv.Rows.Count == 0)
                     {
                         //Display No records message if no data found.
                         gv.Visible = false;
-                        lblMessage.Text = "There are no Records that match your criteria";
+                        lblMessage.Text = "There are no Records that match your criteria.";
                         trBlank.Visible = true;
                         trlblMessage.Visible = true;
                     }
                     else
-                    {
-                        //Data Found
+                    {                        
                         gv.Visible = true;
-                        //lblMessage.Text = "record count:" + gv.Rows.Count;
                         lblMessage.Text = string.Empty;
                         trBlank.Visible = true;
                         trlblMessage.Visible = true;
-                    }
-                    myadapter.Dispose();
+                    }                   
                 }
                 //Error handeling
                 catch (Exception ex)
                 {
-                    lblMessage.Text = "Error Msg: " + ex.Message + "; <br/> Please contact Jenise Marcus at ext 335 for assistance.";
+                    lblMessage.Text = "Error Msg: " + ex.Message + " was received while trying to retrieve the Fixtures Library images. Please contact support@missionbell.com with a screenshot of the page";
                 }
                 finally
                 {
@@ -281,15 +258,15 @@ public partial class _Default : System.Web.UI.Page
         if (e.Row.RowType == DataControlRowType.DataRow)
         {
             Label lblimg1 = (Label)e.Row.FindControl("lblimage1");
-            Label lblimg2 = (Label)e.Row.FindControl("lblimage2");
+            //Label lblimg2 = (Label)e.Row.FindControl("lblimage2");
 
             strPrimImageLoc = lblimg1.Text;
-            strSecImageLoc = lblimg2.Text;
+            //strSecImageLoc = lblimg2.Text;
 
             Image img = (Image)e.Row.FindControl("imgOriginal");
             img.ImageUrl = strPrimImageLoc;
 
-            img.Attributes.Add("onmouseover", "this.src='" + strSecImageLoc + "'");
+            //img.Attributes.Add("onmouseover", "this.src='" + strSecImageLoc + "'");
             img.Attributes.Add("onmouseout", "this.src='" + strPrimImageLoc + "'");
 
             Label lblOverlay = (Label)e.Row.FindControl("lblOverlayDesc");
@@ -313,6 +290,7 @@ public partial class _Default : System.Web.UI.Page
 
     protected void btnClear_OnClick(object sender, EventArgs e)
     {
+        //Clear search criteria boxes
         categoryList0.SelectedValue = "0";
         subcategoryList0.Items.Clear();
         tags0.Text = string.Empty;

@@ -43,23 +43,31 @@ public class VerifyAccess
         
         if (user2 != null)
         {
-            //Assigns Admin Flag is user logged in is in the group
-            if (user2.IsMemberOf(Admingroup))
+            try
             {
-                strIsInAdminGroupFlag = "1";
+                //Assigns Admin Flag is user logged in is in the group
+                if (user2.IsMemberOf(Admingroup))
+                {
+                    strIsInAdminGroupFlag = "1";
+                }
+                else
+                {
+                    strIsInAdminGroupFlag = "0";
+                }
+                //Assigns Approval Flag is user logged in is in the group
+                if (user2.IsMemberOf(Approvalgroup))
+                {
+                    strIsInApprovalGroupFlag = "1";
+                }
+                else
+                {
+                    strIsInApprovalGroupFlag = "0";
+                }
+
             }
-            else
+            catch(Exception e)
             {
-                strIsInAdminGroupFlag = "0";
-            }
-            //Assigns Approval Flag is user logged in is in the group
-            if (user2.IsMemberOf(Approvalgroup))
-            {
-                strIsInApprovalGroupFlag = "1";
-            }
-            else
-            {
-                strIsInApprovalGroupFlag = "0";
+                return e.Message;
             }
         }
 

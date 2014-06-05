@@ -42,9 +42,32 @@
 
 <asp:Table ID="tblMain" runat="server" Width="90%" HorizontalAlign="Center">
     <asp:TableRow>
+
     <%--Contains List of Pending items for Committee and List of Approved items for Admin--%>
         <asp:TableCell ID="tcList" runat="server" HorizontalAlign="Left" BorderStyle="None" VerticalAlign="Top">
+
+        <h3 class="AdminTitle"><asp:Label ID="lblPendingTitle" runat="server" Font-Underline="true" /></h3><br /> 
+
             <asp:GridView ID="gvPending" runat="server" AutoGenerateColumns="false" CellPadding="3" ShowHeader="false" BorderStyle="None">
+                <Columns>
+                    <asp:TemplateField>
+                    <ItemTemplate>
+                        <div class="flReviewList">
+                        <asp:HyperLink ID="HyperLink1" runat="server" NavigateUrl='<%#"~/FLAdminReview.aspx?JID="+Eval("lJobNumber")+"&TID="+Eval("lTaskNumber") %>' Target="_self">
+                            <asp:Label id="lblhl" runat="server" Text='<%# Eval("txtJobNumber") + " | " + Eval("txtTaskNumber") + " | " + Eval("txtJobName") + " | " + Eval("txtEmployeeName") + " | " + Eval("CreatedDate") %>' />
+                        </asp:HyperLink></div>
+                    </ItemTemplate>    
+                    </asp:TemplateField>
+                </Columns>
+            </asp:GridView>
+
+
+            <br />
+            <br />
+            <br />
+            <h3 class="AdminTitle"><asp:Label ID="lblHistory" runat="server" Font-Underline="true" /></h3><br />
+
+            <asp:GridView ID="gvHistory" runat="server" AutoGenerateColumns="false" CellPadding="3" ShowHeader="false" BorderStyle="None">
                 <Columns>
                     <asp:TemplateField>
                     <ItemTemplate>
@@ -99,17 +122,14 @@
 
                 <%--Project Details--%>
                 <asp:TableRow ID="trProjDetails" runat="server">
-                    <asp:TableCell>
-                        <div class="flDetails" id="flDetailsProject">
-                        <asp:Table ID="tblProjDetails" runat="server">
+                    <asp:TableCell>                        
+                        <asp:Table ID="tblProjDetails" runat="server" CssClass="flDetails">
                             <asp:TableRow><asp:TableCell><h3 class="flProjectHeader">Project Details</h3></asp:TableCell></asp:TableRow>
                             <asp:TableRow><asp:TableCell>&nbsp;&nbsp;&nbsp;Job Number:&nbsp;<b><asp:Label ID="lblJobNum" runat="server" /></b></asp:TableCell></asp:TableRow>
                             <asp:TableRow><asp:TableCell>&nbsp;&nbsp;&nbsp;Job Location:&nbsp;<asp:Label ID="lblJobCity" runat="server" /></asp:TableCell></asp:TableRow>
                             <asp:TableRow><asp:TableCell>&nbsp;&nbsp;&nbsp;General Contractor:&nbsp;<asp:Label ID="lblGC" runat="server" /></asp:TableCell></asp:TableRow>
                             <asp:TableRow><asp:TableCell>&nbsp;&nbsp;&nbsp;Architect:&nbsp;<asp:Label ID="lblArhitect" runat="server" /></asp:TableCell></asp:TableRow>
-                            <%--<asp:TableRow><asp:TableCell>&nbsp;&nbsp;&nbsp;Job Close Date:&nbsp;<asp:Label ID="lblJobCloseDate" runat="server" /></asp:TableCell></asp:TableRow>--%>
-                        </asp:Table>
-                        </div>
+                        </asp:Table>                    
                     </asp:TableCell>
                 </asp:TableRow>
 
@@ -135,7 +155,9 @@
                         <asp:Table ID="tblddlists" runat="server" CellPadding="15">
                             <asp:TableRow>
                                 <asp:TableCell>
-                                    <asp:Label ID="lblAC" runat="server" Text="Assign Category:" Font-Size="14px" /> 
+                                    <div class="flLabels">
+                                        <asp:Label ID="lblAC" runat="server" Text="Assign Category:" /> 
+                                    </div>
                                     <Ajax:ComboBox ID="ddCategory" 
                                                     runat="server"  
                                                     ItemInsertLocation="Append" 
@@ -151,7 +173,9 @@
                                 </asp:TableCell>
                                     
                                 <asp:TableCell>
-                                    <asp:Label ID="lblASC" runat="server" Text="Assign Subcategory:" Font-Size="14px" />       
+                                    <div class="flLabels">
+                                        <asp:Label ID="lblASC" runat="server" Text="Assign Subcategory:" />
+                                    </div>       
                                      <Ajax:ComboBox ID="ddSubCategory" 
                                                     runat="server"  
                                                     ItemInsertLocation="Append" 
@@ -170,7 +194,9 @@
 
                 <asp:TableRow ID="trTagscbl" runat="server">
                     <asp:TableCell>
-                        <asp:label ID="lblSelectTags" runat="server" Text="Select Tags (3 min):" Font-Size="14px" />
+                        <div class="flLabels">
+                            <asp:label ID="lblSelectTags" runat="server" Text="Select Tags (3 min):" />
+                        </div>
                         <asp:CheckBoxList ID="cblTags" runat="server" DataSourceID="dsTags" RepeatColumns="8" CellPadding="5" RepeatDirection="Horizontal" DataTextField="Tags" DataValueField="TagID"  Font-Size="14px"/>
                     </asp:TableCell>
                 </asp:TableRow>
@@ -178,11 +204,16 @@
 
                 <asp:TableRow ID="trUploads" runat="server">
                     <asp:TableCell>
-                    <br />
-                        <asp:Label ID="lblUploadPrim" runat="server" Text="Upload Primary Image:" Font-Size="14px" />&nbsp;
-                        <asp:FileUpload ID="PrimaryfileUpload" runat="server" /><br /><br />
-                    
-                        <asp:Label ID="lblUploadMltp" runat="server" Text="Upload Additional Images:" Font-Size="14px" />
+                        <br />
+                        <div class="flLabels">
+                            <asp:Label ID="lblUploadPrim" runat="server" Text="Upload Primary Image:" />&nbsp;
+                            <asp:FileUpload ID="PrimaryfileUpload" runat="server" BorderColor="AliceBlue" />
+                            <asp:TextBox ID="txtCurrPrimFile" runat="server" Visible="false" />
+                            <br /><br />
+                        </div>
+                        <div class="flLabels">
+                            <asp:Label ID="lblUploadMltp" runat="server" Text="Upload Additional Images:" />
+                        </div>
                         <ajax:AjaxFileUpload ID="AsyncFileUpload" 
                                             OnClientUploadError="uploadError" 
                                             OnClientUploadComplete="uploadComplete"
@@ -193,19 +224,26 @@
                                             ContextKeys="fred"
                                             MaximumNumberOfFiles="10"                                             
                                             runat="server"/>  
-                            <asp:Label ID="lblUploadMsg" runat="server" Text="" /><br />
+                            <div class="flLabels">
+                                <asp:Label ID="lblUploadMsg" runat="server" Text="" />
+                            </div>
                     </asp:TableCell>
                 </asp:TableRow>
 
             <asp:TableRow ID="trPostedcb" runat="server">
                 <asp:TableCell>
-                    <asp:CheckBox ID="cbPostedStatus" runat="server" Text="Ready To Post" Font-Size="18px" ForeColor="Maroon" />
+                    <div class="flLabels">
+                        <br />
+                        <asp:CheckBox ID="cbPostedStatus" runat="server" Text="Ready To Post" Font-Size="18px" ForeColor="Maroon" /> 
+                        <asp:CheckBox ID="cbArchive" runat="server" Text="Archive" Font-Size="18px" ForeColor="Maroon" Visible="false" /> 
+                    </div>
                 </asp:TableCell>
             </asp:TableRow>
 
             <asp:TableRow ID="trButtons" runat="server">
                 <asp:TableCell>
-                    <asp:Button ID="btnSubmit" runat="server" Text="Submit" OnClick="btnSubmit_OnClick" Font-Size="14px" />
+                    <br />
+                    <asp:Button ID="btnSubmit" runat="server" Text="Submit" OnClick="btnSubmit_OnClick" Font-Size="16px" />
                 </asp:TableCell>
             </asp:TableRow>
 

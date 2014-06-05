@@ -3,13 +3,15 @@ using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
 using System.Text;
+
+using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.DirectoryServices.AccountManagement;
-using AjaxControlToolkit.Config;
+using AjaxControlToolkit;
 
 
 public partial class FLAdminReview : System.Web.UI.Page
@@ -59,19 +61,29 @@ public partial class FLAdminReview : System.Web.UI.Page
 
             if (vaClass.VerifyflAdminAccess() == "Approver")
             {
-                lblMainTitle.Text = "Fixtures Awaiting Approval";
+                lblMainTitle.Text = "Committe Review";
                 trCategoryDD.Visible = false;
                 trTagscbl.Visible = false;
                 trUploads.Visible = false;
                 trPostedcb.Visible = false;
+                lblPendingTitle.Text = "Fixtures Awaiting Approval";
+                lblHistory.Visible = false;
+                gvHistory.Visible = false;
             }
             else
             {
                 if (vaClass.VerifyflAdminAccess() == "Admin")
                 {
-                    lblMainTitle.Text = "Fixtures Ready to Post";
+                    //Retrieve Historical gridview data - all records that have been posted so they can be edited.
+                    GetHistory();
+
+                    lblMainTitle.Text = "Administration";
                     trCheckboxes.Visible = false;
                     trComments.Visible = false;
+                    lblPendingTitle.Text = "Fixtures Ready to Post";
+                    lblHistory.Text = "Posted Fixtures";
+
+                    
                 }
             }
         }
@@ -101,9 +113,8 @@ public partial class FLAdminReview : System.Web.UI.Page
                         if (gvPending.Rows.Count == 0)
                         {
                             //Display No records message if no data found.
-                            tblMain.Visible = false;
                             lblMessage.Visible = true;
-                            lblMessage.Text = "There are no pending records to review at this time.";
+                            lblMessage.Text = "There are no records that need approval at this time.";
                         }
                         else
                         {
@@ -127,6 +138,49 @@ public partial class FLAdminReview : System.Web.UI.Page
             }
     }
 
+
+
+    private void GetHistory()
+    {
+        //Passes the user's access type to the stored procedure returning list of appropriate Job listing awaiting action.
+        using (SqlConnection conn = new SqlConnection(MBIntranet_DEV))
+        {
+            using (SqlCommand cmd = new SqlCommand())
+            {
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.CommandText = "flGetHistory";
+                cmd.Connection = conn;
+
+                try
+                {
+                    //Open connection and bind datasource to gridview
+                    conn.Open();
+                    gvHistory.DataSource = cmd.ExecuteReader();
+                    gvHistory.DataBind();
+
+                    if (gvHistory.Rows.Count == 0)
+                    {
+                        //Display No records message if no data found.
+                        lblHistory.Visible = false;
+                        gvHistory.Visible = false;    
+                    }
+                }
+                //Error handeling
+                catch (Exception ex)
+                {
+                    lblMessage.Visible = true;
+                    lblMessage.Text = "Error Msg: " + ex.Message + " was received while trying to retrieve the Fixtures Library images. Please contact support@missionbell.com with a screenshot of the page";
+                    lblMessage.ForeColor = System.Drawing.Color.Red;
+                }
+                finally
+                {
+                    cmd.Dispose();
+                    conn.Close();
+                    conn.Dispose();
+                }
+            }
+        }
+    }
 
 
 
@@ -203,7 +257,7 @@ public partial class FLAdminReview : System.Web.UI.Page
             using (SqlCommand cmd = new SqlCommand())
             {
                 cmd.CommandType = CommandType.StoredProcedure;
-                cmd.CommandText = "InsertCategories";
+                cmd.CommandText = "flInsertCategories";
                 cmd.Parameters.Add("@strItem", SqlDbType.VarChar).Value = strCategory;
                 cmd.Parameters.Add("@strText", SqlDbType.VarChar).Value = ddCategory.SelectedItem.ToString();
                 cmd.Parameters.Add("@intCategoryID", SqlDbType.Int).Value = 0;
@@ -266,7 +320,7 @@ public partial class FLAdminReview : System.Web.UI.Page
                 using (SqlCommand cmd = new SqlCommand())
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.CommandText = "InsertCategories";
+                    cmd.CommandText = "flInsertCategories";
                     cmd.Parameters.Add("@strItem", SqlDbType.VarChar).Value = strCategory;
                     cmd.Parameters.Add("@strText", SqlDbType.VarChar).Value = ddSubCategory.SelectedItem.ToString();
                     cmd.Parameters.Add("@intCategoryID", SqlDbType.Int).Value = ddCategory.SelectedValue;
@@ -342,9 +396,7 @@ public partial class FLAdminReview : System.Web.UI.Page
                 {
                     conn.Open();
                     SqlDataReader reader = cmd.ExecuteReader();
-
                     //get code for no records found
-
                     if (reader.HasRows)
                     {
                         reader.Read();
@@ -353,8 +405,18 @@ public partial class FLAdminReview : System.Web.UI.Page
                         lblGC.Text = reader["txtCustomerName"].ToString();
                         lblArhitect.Text = reader["txtArchitectName"].ToString();
                         lblJobCity.Text = reader["txtJobCity"].ToString();
-
-                       // lblComments.Text = reader["Comments"].ToString();
+                        ddCategory.SelectedValue = Convert.ToInt32(reader["CategoryID"]).ToString();
+                        ddSubCategory.SelectedValue = Convert.ToInt32(reader["SubCategoryID"]).ToString();
+                        if (string.IsNullOrEmpty(reader["img1"].ToString()))
+                        {
+                            txtCurrPrimFile.Text = reader["img1"].ToString();
+                        }
+                        if (Convert.ToInt32(reader["StatusID"]) == 4)
+                        {
+                            cbArchive.Visible = true;
+                            cbArchive.Checked = true;
+                            cbPostedStatus.Visible = false;
+                        }
                     }
                     reader.Close();
                 }
@@ -370,6 +432,10 @@ public partial class FLAdminReview : System.Web.UI.Page
                     conn.Dispose();
                 }
             }
+
+
+           //Loop through checkboxlist to populate
+            
         }
     }
 
@@ -513,6 +579,7 @@ public partial class FLAdminReview : System.Web.UI.Page
             //variables for Uploaded files
             string strFileName;
             string strFilePath;
+            string strDirectory;
 
             using (SqlConnection conn = new SqlConnection(MBIntranet_DEV))
             {
@@ -520,11 +587,11 @@ public partial class FLAdminReview : System.Web.UI.Page
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.CommandText = "flUpdateAdmin";
-                    cmd.Parameters.Add("@JobNumber", SqlDbType.Int).Value = Convert.ToInt32(Request.QueryString["JID"]);
-                    cmd.Parameters.Add("@TaskNumber", SqlDbType.Int).Value = Convert.ToInt32(Request.QueryString["TID"]);
+                    cmd.Parameters.Add("@intJobNumber", SqlDbType.Int).Value = Convert.ToInt32(Request.QueryString["JID"]);
+                    cmd.Parameters.Add("@intTaskNumber", SqlDbType.Int).Value = Convert.ToInt32(Request.QueryString["TID"]);
                     cmd.Parameters.Add("@strStatus", SqlDbType.VarChar).Value = vaClass.VerifyflAdminAccess();
-                    cmd.Parameters.Add("@CategoryID", SqlDbType.VarChar).Value = ddCategory.SelectedValue;
-                    cmd.Parameters.Add("@SubCategoryID", SqlDbType.VarChar).Value = ddSubCategory.SelectedValue;
+                    cmd.Parameters.Add("@intCategoryID", SqlDbType.VarChar).Value = ddCategory.SelectedValue;
+                    cmd.Parameters.Add("@intSubCategoryID", SqlDbType.VarChar).Value = ddSubCategory.SelectedValue;
                     cmd.Parameters.Add("@intPosted", SqlDbType.Int).Value = cbPostedStatus.Checked;
 
                     //Verify File exists in Attachment field before submitting form
@@ -533,9 +600,14 @@ public partial class FLAdminReview : System.Web.UI.Page
                         try
                         {
                             strFileName = System.IO.Path.GetFileName(PrimaryfileUpload.FileName);
-                            PrimaryfileUpload.SaveAs(Server.MapPath("~/images/" + lblProjectName.Text.Trim() + "/") + strFileName);
-                            strFilePath = "~/images/" + lblProjectName.Text.Trim() + "/" + strFileName;
+                            strDirectory = "~/images/" + lblProjectName.Text.Trim();
 
+                            if (!Directory.Exists(strDirectory))
+                            {
+                                Directory.CreateDirectory(MapPath(strDirectory));
+                            }
+                            strFilePath = strDirectory + "/" + strFileName;
+                            PrimaryfileUpload.SaveAs(Server.MapPath(strFilePath));
                             cmd.Parameters.Add("@PrimaryImgPath", SqlDbType.VarChar).Value = strFilePath;
                         }
                         catch (Exception ex)
@@ -559,7 +631,14 @@ public partial class FLAdminReview : System.Web.UI.Page
                         if (reader.HasRows)
                         {
                             reader.Read();
-                            intPostID = Convert.ToInt32(reader["PostID"]);
+                            string strJobName = reader["txtJobName"].ToString();
+                            reader.Close();
+
+                            lblMessage.Visible = true;
+                            lblMessage.Text = "The " + strJobName + " Fixtures Listing has been Updated.";
+                            tcData.Visible = false;
+                            GetLaborList();
+                            GetHistory();
                         }
                         reader.Close();       
                     }

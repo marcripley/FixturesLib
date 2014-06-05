@@ -66,8 +66,8 @@ h2#flTitle {font-size: 28px;line-height: 30px;margin-bottom: 4px;padding-bottom:
 .flDetails ul span {color: #222;}
 
 .flComments {margin: 20px;font-size: 14px; color:#222; padding-top:3px; font-family: Georgia, Palatino Linotype, Century Gothic; line-height: 27px; list-style: none;}
-.flDetails td {font-size: 16px; color:#A2A2A1; font-family: Georgia, Palatino Linotype, Century Gothic; line-height: 27px; list-style: none;}
-.flDetails td span {font-size: 16px; color:#222; font-family: Georgia, Palatino Linotype, Century Gothic; line-height: 27px; list-style: none; font-weight:600}
+.flDetails td {font-size: 16px; color:#A2A2A1; font-family: Georgia, Palatino Linotype, Century Gothic; line-height: 22px; list-style: none;}
+.flDetails td span {font-size: 16px; color:#222; font-family: Georgia, Palatino Linotype, Century Gothic; line-height: 22px; list-style: none; font-weight:600}
 div.flDetailsHeader{font-size: 28px;line-height: 30px;margin-bottom: 4px;padding-bottom: 4px; font-family: Georgia, Palatino Linotype, Century Gothic;}
 .flDetailsHeader h3 {font-size: 48px;}
 .flDetailsHeader h2 {font-size: 28px;line-height: 30px;margin-bottom: 4px;padding-bottom: 4px;color:purple ;border-bottom: 1px solid #888;}
@@ -77,12 +77,14 @@ div.flDetailsHeader{font-size: 28px;line-height: 30px;margin-bottom: 4px;padding
 .flAdminHeader h2 {font-size: 28px;line-height: 30px;margin-bottom: 4px;padding-bottom: 4px;color:Gray ;text-align:center;}
 .flAdminMessage h3 {font-size: 18px;line-height: 30px;margin-bottom: 4px;padding-bottom: 4px;color:maroon;margin-top: 8px; text-align:center;}
 h3.flProjectTitle {font-size: 24px;line-height: 30px;margin-bottom: 4px;padding-bottom: 4px;color:maroon ;border-bottom: 1px solid #888;}
+h3.AdminTitle {font-size: 24px;line-height: 30px;margin-bottom: 4px;padding-bottom: 4px;color:maroon;}
 .flReviewList {font-size: 14px;}
 h3.flLaborHeader {font-size: 22px;line-height: 5px;padding-top:8px;color:#444;}
 h3.flProjectHeader {font-size: 22px;line-height: 5px;padding-top:8px;color:#444; padding-bottom:8px;}
 .CustomComboBoxStyle .ajax__combobox_itemlist li {font-size:14px; width:150px;}
 /*.CustomComboBoxStyle .ajax__combobox_textboxcontainer {width:500px;}
 .CustomComboBoxStyle .ajax__combobox_textboxcontainer input {width:500px;}*/
+div.flLabels {font-size: 16px; font-family: Georgia, Palatino Linotype, Century Gothic;}
 
 
 /* Labor Details */

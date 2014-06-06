@@ -54,7 +54,7 @@
                     <ItemTemplate>
                         <div class="flReviewList">
                         <asp:HyperLink ID="HyperLink1" runat="server" NavigateUrl='<%#"~/FLAdminReview.aspx?JID="+Eval("lJobNumber")+"&TID="+Eval("lTaskNumber") %>' Target="_self">
-                            <asp:Label id="lblhl" runat="server" Text='<%# Eval("txtJobNumber") + " | " + Eval("txtTaskNumber") + " | " + Eval("txtJobName") + " | " + Eval("txtEmployeeName") + " | " + Eval("CreatedDate") %>' />
+                            <asp:Label id="lblhl" runat="server" Text='<%# Eval("txtJobNumber") + " | " + Eval("txtTaskNumber") + " | " + Eval("txtJobName") + " | By: " + Eval("txtEmployeeName") + " | On: " + Eval("CreatedDate") %>' />
                         </asp:HyperLink></div>
                     </ItemTemplate>    
                     </asp:TemplateField>
@@ -73,7 +73,7 @@
                     <ItemTemplate>
                         <div class="flReviewList">
                         <asp:HyperLink ID="HyperLink1" runat="server" NavigateUrl='<%#"~/FLAdminReview.aspx?JID="+Eval("lJobNumber")+"&TID="+Eval("lTaskNumber") %>' Target="_self">
-                            <asp:Label id="lblhl" runat="server" Text='<%# Eval("txtJobNumber") + " | " + Eval("txtTaskNumber") + " | " + Eval("txtJobName") + " | " + Eval("txtEmployeeName") + " | " + Eval("CreatedDate") %>' />
+                            <asp:Label id="lblhl" runat="server" Text='<%# Eval("txtJobNumber") + " | " + Eval("txtTaskNumber") + " | " + Eval("txtJobName") + " | By: " + Eval("txtEmployeeName") + " | On: " + Eval("CreatedDate") %>' />
                         </asp:HyperLink></div>
                     </ItemTemplate>    
                     </asp:TemplateField>
@@ -197,7 +197,15 @@
                         <div class="flLabels">
                             <asp:label ID="lblSelectTags" runat="server" Text="Select Tags (3 min):" />
                         </div>
-                        <asp:CheckBoxList ID="cblTags" runat="server" DataSourceID="dsTags" RepeatColumns="8" CellPadding="5" RepeatDirection="Horizontal" DataTextField="Tags" DataValueField="TagID"  Font-Size="14px"/>
+                        <asp:CheckBoxList ID="cblTags" 
+                                        runat="server" 
+                                        DataSourceID="dsTags" 
+                                        RepeatColumns="8" 
+                                        CellPadding="5" 
+                                        RepeatDirection="Horizontal" 
+                                        DataTextField="Tags" 
+                                        DataValueField="TagID" Font-Size="14px" 
+                                        OnDataBound="cblTags_OnDataBound"/>
                     </asp:TableCell>
                 </asp:TableRow>
 

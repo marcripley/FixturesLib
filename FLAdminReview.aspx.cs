@@ -389,14 +389,12 @@ public partial class FLAdminReview : System.Web.UI.Page
                 cmd.CommandText = "flGetJobDetails";
                 cmd.Parameters.Add("@JobNumber", SqlDbType.Int).Value = Convert.ToInt32(Request.QueryString["JID"]);
                 cmd.Parameters.Add("@TaskNumber", SqlDbType.Int).Value = Convert.ToInt32(Request.QueryString["TID"]);
-                //cmd.Parameters.Add("@StatusID", SqlDbType.Int).Value = intStatus;
                 cmd.Connection = conn;
 
                 try
                 {
                     conn.Open();
                     SqlDataReader reader = cmd.ExecuteReader();
-                    //get code for no records found
                     if (reader.HasRows)
                     {
                         reader.Read();
@@ -405,8 +403,15 @@ public partial class FLAdminReview : System.Web.UI.Page
                         lblGC.Text = reader["txtCustomerName"].ToString();
                         lblArhitect.Text = reader["txtArchitectName"].ToString();
                         lblJobCity.Text = reader["txtJobCity"].ToString();
-                        ddCategory.SelectedValue = Convert.ToInt32(reader["CategoryID"]).ToString();
-                        ddSubCategory.SelectedValue = Convert.ToInt32(reader["SubCategoryID"]).ToString();
+                        if (reader["CategoryID"] != DBNull.Value)
+                        {
+                            ddCategory.SelectedValue = Convert.ToInt32(reader["CategoryID"]).ToString();
+                        }
+                        if (reader["SubCategoryID"] != DBNull.Value)
+                        {
+                            ddSubCategory.SelectedValue = Convert.ToInt32(reader["SubCategoryID"]).ToString();
+                        }
+
                         if (string.IsNullOrEmpty(reader["img1"].ToString()))
                         {
                             txtCurrPrimFile.Text = reader["img1"].ToString();
@@ -432,10 +437,52 @@ public partial class FLAdminReview : System.Web.UI.Page
                     conn.Dispose();
                 }
             }
+        }
+    }
 
 
-           //Loop through checkboxlist to populate
-            
+
+
+    protected void cblTags_OnDataBound(object sender, EventArgs e)
+    {
+        //Loops through each of the tags to determine which one has been selected in the database
+        using (SqlConnection conn = new SqlConnection(MBIntranet_DEV))
+            {
+            using (SqlCommand cmd = new SqlCommand())
+            {
+                cmd.CommandType = CommandType.Text;
+                cmd.CommandText = "SELECT TagID, PostID FROM dbo.flTagLookup WHERE PostID = 1";
+                cmd.Connection = conn;
+
+                try
+                {
+                    conn.Open();
+                    SqlDataReader reader = cmd.ExecuteReader();
+
+                    //Retrieve List of Tags from DB
+                    while (reader.Read())
+                    {
+                        //Loops through each Tag to determine if it needs to be selected or not.
+                        for (int i = 0; i < cblTags.Items.Count; i++)
+                        {
+                            string strTagIndex = cblTags.Items[i].Value;
+                            if (strTagIndex == reader["TagID"].ToString())
+                            {
+                                cblTags.Items[i].Selected = true;
+                            }
+                        }
+                    }
+                }
+                catch (Exception e2)
+                {
+                    lblMessage.Visible = true;
+                    lblMessage.Text = "Error Msg:" + e2.Message + " Please contact support@missionbell.com";
+                }
+                finally
+                {
+                    cmd.Dispose();
+                }
+            }
         }
     }
 

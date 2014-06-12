@@ -54,7 +54,7 @@ public partial class _Default : System.Web.UI.Page
                     currentCheckBox.Selected = true;
                 }
                 //Call GetPics method to retrieve Images from Database based upon TagID
-                GetPics();
+                GetPosts();
             }
         }
     }
@@ -65,7 +65,7 @@ public partial class _Default : System.Web.UI.Page
     protected void subcategoryList_SelectedIndexChanged(object sender, EventArgs e)
     {
         //Call GetPics method to retrieve Images from Database based upon SubCategoryID Selected
-        GetPics();
+        GetPosts();
     }
 
 
@@ -132,7 +132,7 @@ public partial class _Default : System.Web.UI.Page
 
 
 
-    protected void GetPics()
+    protected void GetPosts()
     {
         //Clear string used for populating query criteria
         string strquery = string.Empty;
@@ -227,17 +227,17 @@ public partial class _Default : System.Web.UI.Page
                         trlblMessage.Visible = true;
                     }
                     else
-                    {                        
+                    {
                         gvPosts.Visible = true;
                         lblMessage.Text = string.Empty;
                         //trBlank.Visible = true;
                         trlblMessage.Visible = true;
-                    }                   
+                    }
                 }
                 //Error handeling
                 catch (Exception ex)
                 {
-                    lblMessage.Text = "Error Msg: " + ex.Message + " was received while trying to retrieve the Fixtures Library images. Please contact support@missionbell.com with a screenshot of the page";
+                    lblMessage.Text = "Error Msg: " + ex.Message + " was received while trying to retrieve the Fixtures Library posts. Please contact support@missionbell.com with a screenshot of the page";
                 }
                 finally
                 {
@@ -257,20 +257,45 @@ public partial class _Default : System.Web.UI.Page
         //Formatting for Images
         if (e.Row.RowType == DataControlRowType.DataRow)
         {
-            Label lblimg1 = (Label)e.Row.FindControl("lblimage1");
-            //Label lblimg2 = (Label)e.Row.FindControl("lblimage2");
+            using (SqlConnection conn = new SqlConnection(MBIntranet_DEV))
+            {
+                using (SqlCommand cmd = new SqlCommand())
+                {
+                    ListView lvPics = ((ListView)e.Row.FindControl("lvPics"));
+                    int postId = int.Parse((gvPosts.DataKeys[e.Row.RowIndex].Value.ToString()));
 
-            strPrimImageLoc = lblimg1.Text;
-            //strSecImageLoc = lblimg2.Text;
+                    lblMessage.Text = Convert.ToString(postId);
 
-            Image img = (Image)e.Row.FindControl("imgOriginal");
-            img.ImageUrl = strPrimImageLoc;
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.CommandText = "flGetImages";
+                    cmd.Parameters.Add("@PostId", SqlDbType.Int).Value = 4;
 
-            //img.Attributes.Add("onmouseover", "this.src='" + strSecImageLoc + "'");
-            img.Attributes.Add("onmouseout", "this.src='" + strPrimImageLoc + "'");
+                    cmd.Connection = conn;
 
-            Label lblOverlay = (Label)e.Row.FindControl("lblOverlayDesc");
-            //lblOverlay.Text = tags0.Text;
+                    try
+                    {
+                        SqlDataAdapter daPics = new SqlDataAdapter();
+                        daPics.SelectCommand = cmd;
+                        DataSet dsPics = new DataSet();
+                        daPics.Fill(dsPics);
+
+                        lvPics.DataSource = dsPics;
+                        lvPics.DataBind();
+
+                        daPics.Dispose();
+                    }
+                    catch (Exception ex)
+                    {
+                        lblMessage.Text = "Error Msg: " + ex.Message + " was received while trying to retrieve the Fixtures Library images. Please contact support@missionbell.com with a screenshot of the page";
+                    }
+                    finally
+                    {
+                        cmd.Dispose();
+                        conn.Close();
+                        conn.Dispose();
+                    }
+                }
+            }
         }
     }
 
@@ -282,7 +307,7 @@ public partial class _Default : System.Web.UI.Page
         GetTags();
 
         //Get Images based upon Criteria search provided in text/drop down boxes
-        GetPics();
+        GetPosts();
     }
 
 
@@ -362,8 +387,5 @@ public partial class _Default : System.Web.UI.Page
         get { return hidVal.Value; }
         set { tags0.Text = value; }
     }
-
-
-
 
 }

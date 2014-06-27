@@ -3,7 +3,6 @@ using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
 using System.Text;
-
 using System.IO;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,79 +18,82 @@ public partial class FLAdminReview : System.Web.UI.Page
     //Public Declarations   
     public string strErrMsg;
 
-    string MBIntranet_DEV = ConfigurationManager.ConnectionStrings["MBData2005_DEV"].ConnectionString;
+    string MBIntranet_DEV = ConfigurationManager.ConnectionStrings["MBData2005"].ConnectionString;
 
     public Int32 ProjSum = 0;
     public Int32 ActualSum = 0;
-
     public Int32 intStatus;
 
     //Declare Class - VerifyAccess.cs file in App_Code folder
      VerifyAccess vaClass = new VerifyAccess();
+     public string strAccessType;
 
-    public Int32 intPostID;
-
-
-    protected void Page_Load(object sender, EventArgs e)
-    {
-        //For users with no access - display the following message
-        if (vaClass.VerifyflAdminAccess() == "None")
-        {
-            lblMessage.Visible = true;
-            lblMessage.Text = "You do not have access to this page.  If you feel you've reached this message in error, please contact support@missionbell.com.";
-            lblMainTitle.Text = "Fixtures Library Administration Page";
-            tblMain.Visible = false;
-        }
-        else
-        {
-            //For users with access to the Administration page
-            GetLaborList();
-            
-            if (!!String.IsNullOrEmpty(Request.QueryString["JID"]))
-            {
-                tcData.Visible = false;
-            }
-            else
-            {
-                tcList.Visible = true;
-                tcData.Visible = true;
-                BindLaborDetails();
-                BindJobDetails();
-            }
-
-            if (vaClass.VerifyflAdminAccess() == "Approver")
-            {
-                lblMainTitle.Text = "Committe Review";
-                trCategoryDD.Visible = false;
-                trTagscbl.Visible = false;
-                trUploads.Visible = false;
-                trPostedcb.Visible = false;
-                lblPendingTitle.Text = "Fixtures Awaiting Approval";
-                lblHistory.Visible = false;
-                gvHistory.Visible = false;
-            }
-            else
-            {
-                if (vaClass.VerifyflAdminAccess() == "Admin")
-                {
-                    //Retrieve Historical gridview data - all records that have been posted so they can be edited.
-                    GetHistory();
-
-                    lblMainTitle.Text = "Administration";
-                    trCheckboxes.Visible = false;
-                    trComments.Visible = false;
-                    lblPendingTitle.Text = "Fixtures Ready to Post";
-                    lblHistory.Text = "Posted Fixtures";
-
-                    
-                }
-            }
-        }
-    }
+    //public Int32 intPostID;
 
 
+     protected void Page_Load(object sender, EventArgs e)
+     {
+         if (!Page.IsPostBack)
+         {
+             strAccessType = vaClass.VerifyflAdminAccess();
 
-    private void GetLaborList()
+             //For users with no access - display the following message
+             if (strAccessType == "None")
+             {
+                 lblMessage.Visible = true;
+                 lblMessage.Text = "You do not have access to this page.  If you feel you've reached this message in error, please contact <u><a href=mailto:jenisem@missionbell.com?subject=FLAdmin>Support</a></u>.";
+                 lblMainTitle.Text = "Fixtures Library Administration Page";
+                 tblMain.Visible = false;
+             }
+             else
+             {
+                 //For users with access to the Administration page
+                 GetPostList(strAccessType);
+
+                 if (!!String.IsNullOrEmpty(Request.QueryString["PostID"]))
+                 {
+                     tcData.Visible = false;
+                 }
+                 else
+                 {
+                     tcList.Visible = true;
+                     tcData.Visible = true;
+                     BindLaborDetails();
+                     BindJobDetails();
+                 }
+
+                 if (strAccessType == "Approver")
+                 {
+                     lblMainTitle.Text = "Committe Review";
+                     trCategoryDD.Visible = false;
+                     trTagscbl.Visible = false;
+                     trUploads.Visible = false;
+                     trPostedcb.Visible = false;
+                     lblPendingTitle.Text = "Fixtures Awaiting Approval";
+                     lblHistory.Visible = false;
+                     gvHistory.Visible = false;
+                 }
+                 else
+                 {
+                     if (strAccessType == "Admin")
+                     {
+                         //Retrieve Historical gridview data - all records that have been posted so they can be edited.
+                         GetHistory();
+
+                         lblMainTitle.Text = "Administration";
+                         trCheckboxes.Visible = false;
+                         trComments.Visible = false;
+                         lblPendingTitle.Text = "Fixtures Ready to Post";
+                         lblHistory.Text = "Posted Fixtures";
+                     }
+                 }
+             }
+         }
+     }
+
+
+
+    private void GetPostList(string strAccessType)
     {
         //Passes the user's access type to the stored procedure returning list of appropriate Job listing awaiting action.
             using (SqlConnection conn = new SqlConnection(MBIntranet_DEV))
@@ -100,7 +102,7 @@ public partial class FLAdminReview : System.Web.UI.Page
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.CommandText = "flGetPending";
-                    cmd.Parameters.Add("@AccessType", SqlDbType.VarChar).Value = vaClass.VerifyflAdminAccess();
+                    cmd.Parameters.Add("@AccessType", SqlDbType.VarChar).Value = strAccessType;
                     cmd.Connection = conn;
 
                     try
@@ -125,7 +127,7 @@ public partial class FLAdminReview : System.Web.UI.Page
                     catch (Exception ex)
                     {
                         lblMessage.Visible = true;
-                        lblMessage.Text = "Error Msg: " + ex.Message + " was received while trying to retrieve the Fixtures Library images. Please contact support@missionbell.com with a screenshot of the page";
+                        lblMessage.Text = "Error Msg: " + ex.Message + " was received. Please contact support@missionbell.com with a screenshot of the page";
                         lblMessage.ForeColor = System.Drawing.Color.Red;
                     }
                     finally
@@ -193,9 +195,7 @@ public partial class FLAdminReview : System.Web.UI.Page
             {
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.CommandText = "flGetLaborDetails";
-                cmd.Parameters.Add("@JobNumber", SqlDbType.Int).Value = Convert.ToInt32(Request.QueryString["JID"]);
-                cmd.Parameters.Add("@TaskNumber", SqlDbType.Int).Value = Convert.ToInt32(Request.QueryString["TID"]);
-                cmd.Parameters.Add("@strStatus", SqlDbType.VarChar).Value = vaClass.VerifyflAdminAccess();
+                cmd.Parameters.Add("@PostID", SqlDbType.Int).Value = Convert.ToInt32(Request.QueryString["PostID"]);
                 cmd.Connection = conn;
 
                 try
@@ -235,6 +235,14 @@ public partial class FLAdminReview : System.Web.UI.Page
 
 
     protected void ddCategory_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        BindSubCategory();
+    }
+
+
+
+
+    private void BindSubCategory()
     {
         //clear subcategory list before adding to it
         ddSubCategory.Items.Clear();
@@ -313,7 +321,6 @@ public partial class FLAdminReview : System.Web.UI.Page
 
         if (!string.IsNullOrEmpty(ddCategory.SelectedValue))
         {
-
             //Insert new item in flCategories table
             using (SqlConnection conn = new SqlConnection(MBIntranet_DEV))
             {
@@ -387,8 +394,7 @@ public partial class FLAdminReview : System.Web.UI.Page
             {
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.CommandText = "flGetJobDetails";
-                cmd.Parameters.Add("@JobNumber", SqlDbType.Int).Value = Convert.ToInt32(Request.QueryString["JID"]);
-                cmd.Parameters.Add("@TaskNumber", SqlDbType.Int).Value = Convert.ToInt32(Request.QueryString["TID"]);
+                cmd.Parameters.Add("@PostID", SqlDbType.Int).Value = Convert.ToInt32(Request.QueryString["PostID"]);
                 cmd.Connection = conn;
 
                 try
@@ -406,20 +412,20 @@ public partial class FLAdminReview : System.Web.UI.Page
                         if (reader["CategoryID"] != DBNull.Value)
                         {
                             ddCategory.SelectedValue = Convert.ToInt32(reader["CategoryID"]).ToString();
-                        }
-                        if (reader["SubCategoryID"] != DBNull.Value)
-                        {
-                            ddSubCategory.SelectedValue = Convert.ToInt32(reader["SubCategoryID"]).ToString();
+
+                            if (reader["SubCategoryID"] != DBNull.Value)
+                            {
+                                dsSubCategories.SelectCommand = "SELECT CategoryID, CategoryName FROM flCategories WHERE ParentID = " + Convert.ToInt32(reader["CategoryID"]).ToString();
+                                ddSubCategory.DataBind();
+                                ddSubCategory.SelectedValue = Convert.ToInt32(reader["SubCategoryID"]).ToString();
+                            }
                         }
 
-                        if (string.IsNullOrEmpty(reader["img1"].ToString()))
-                        {
-                            txtCurrPrimFile.Text = reader["img1"].ToString();
-                        }
-                        if (Convert.ToInt32(reader["StatusID"]) == 4)
+                        GetImages();
+
+                        if (Convert.ToInt32(reader["StatusID"]) == 3)
                         {
                             cbArchive.Visible = true;
-                            cbArchive.Checked = true;
                             cbPostedStatus.Visible = false;
                         }
                     }
@@ -443,6 +449,67 @@ public partial class FLAdminReview : System.Web.UI.Page
 
 
 
+    protected void GetImages()
+    {
+        using (SqlConnection conn = new SqlConnection(MBIntranet_DEV))
+        {
+            using (SqlCommand cmd = new SqlCommand())
+            {
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.CommandText = "flGetImages";
+                cmd.Parameters.Add("@PostID", SqlDbType.Int).Value = Convert.ToInt32(Request.QueryString["PostID"]);
+                cmd.Connection = conn;
+
+                try
+                {
+                    conn.Open();
+                    SqlDataReader reader = cmd.ExecuteReader();
+                    if (reader.HasRows)
+                    {
+                        txtCurrPrimFile.Visible = true;
+                        lblCurrPrimFile.Visible = true;
+                        btnAddImages.Visible = true;
+                        tblAdditionalImages.Visible = false;
+
+                        while (reader.Read())
+                        {
+                            if (string.IsNullOrEmpty(txtCurrPrimFile.Text))
+                            {
+                                txtCurrPrimFile.Text = reader["flImageThumb"].ToString();
+                            }
+                            else
+                            {
+                                txtCurrPrimFile.Text = txtCurrPrimFile.Text + " <br />" + reader["flImageThumb"].ToString();
+                            }
+                        }
+                    }
+                    else
+                    {
+                        txtCurrPrimFile.Visible = false;
+                        lblCurrPrimFile.Visible = false;
+                        btnAddImages.Visible = false;
+                        tblAdditionalImages.Visible = true;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    lblMessage.Visible = true;
+                    lblMessage.Text = "Error Message: " + ex.Message + " was received while trying to retrieve Project Data. Please contact support@missionbell.com for assistance.";
+                }
+                finally
+                {
+                    cmd.Dispose();
+                    conn.Close();
+                    conn.Dispose();
+                }
+            }
+        }
+    }
+
+
+
+
+
     protected void cblTags_OnDataBound(object sender, EventArgs e)
     {
         //Loops through each of the tags to determine which one has been selected in the database
@@ -451,7 +518,7 @@ public partial class FLAdminReview : System.Web.UI.Page
             using (SqlCommand cmd = new SqlCommand())
             {
                 cmd.CommandType = CommandType.Text;
-                cmd.CommandText = "SELECT TagID, PostID FROM dbo.flTagLookup WHERE PostID = 1";
+                cmd.CommandText = "SELECT TagID, PostID FROM dbo.flTagLookup WHERE PostID = " + Request.QueryString["PostID"];
                 cmd.Connection = conn;
 
                 try
@@ -537,28 +604,17 @@ public partial class FLAdminReview : System.Web.UI.Page
 
 
 
-    protected void AsyncFileUpload_UploadedComplete(object sender, AjaxControlToolkit.AsyncFileUploadEventArgs e)  
-    { 
-        System.Threading.Thread.Sleep(5000);
-        //if (AsyncFileUpload.HasFile)
-        {
-        //    string strPath = MapPath("~/Uploads/") + Path.GetFileName(e.filename);
-        //    string filename = System.IO.Path.GetFileName(AsyncFileUpload.FileName);
-        //    AsyncFileUpload.SaveAs(Server.MapPath("FileUploads/") + filename);    
-        } 
-    } 
-
-
-
     protected void btnSubmit_OnClick(object sender, EventArgs e)
     {
+        strAccessType = vaClass.VerifyflAdminAccess();
         //Code below is for Approver hitting submit button
-        if (vaClass.VerifyflAdminAccess() == "Approver")
+        if (strAccessType == "Approver")
         {
             if ((!cbApprove.Checked) && (!cbDecline.Checked))
             {
                 lblMessage.Visible = true;
                 lblMessage.Text = "Please check either Approve or Decline before continuing.";
+                lblMessage.ForeColor = System.Drawing.Color.Red;
             }
             else
             {
@@ -568,7 +624,14 @@ public partial class FLAdminReview : System.Web.UI.Page
                 }
                 else
                 {
-                    intStatus = 3;
+                    if (cbDecline.Checked)
+                    {
+                        intStatus = 4;
+                    }
+                    else
+                    {
+                        intStatus = 1;
+                    }
                 }
            
 
@@ -578,9 +641,8 @@ public partial class FLAdminReview : System.Web.UI.Page
                     {
                         cmd.CommandType = CommandType.StoredProcedure;
                         cmd.CommandText = "flUpdateApprover";
-                        cmd.Parameters.Add("@intJobNumber", SqlDbType.Int).Value = Convert.ToInt32(Request.QueryString["JID"]);
-                        cmd.Parameters.Add("@intTaskNumber", SqlDbType.Int).Value = Convert.ToInt32(Request.QueryString["TID"]);
-                        cmd.Parameters.Add("@strStatus", SqlDbType.VarChar).Value = vaClass.VerifyflAdminAccess();
+                        cmd.Parameters.Add("@PostID", SqlDbType.Int).Value = Convert.ToInt32(Request.QueryString["PostID"]);
+                        cmd.Parameters.Add("@strStatus", SqlDbType.VarChar).Value = strAccessType;
                         cmd.Parameters.Add("@intStatusID", SqlDbType.Int).Value = intStatus;
                         cmd.Parameters.Add("@strComments", SqlDbType.VarChar).Value = txtComments.Text.Trim();
                         cmd.Connection = conn;
@@ -594,11 +656,10 @@ public partial class FLAdminReview : System.Web.UI.Page
                             string strCurrentStatus = reader["Status"].ToString();
                             reader.Close();
 
+                            GetPostList(strAccessType);
                             lblMessage.Visible = true;
-                            lblMessage.Text = "The " + strJobName + " Fixtures Listing has been Updated to " + strCurrentStatus + " Staus.";
+                            lblMessage.Text = "The " + strJobName + " Fixtures Listing has been " + strCurrentStatus + ".";
                             tcData.Visible = false;
-                            GetLaborList();
-
                         }
                         catch (Exception ex)
                         {
@@ -614,86 +675,232 @@ public partial class FLAdminReview : System.Web.UI.Page
                             conn.Dispose();
                         }
                     }
-                }   
+                }
+
+                GetPostList(strAccessType);
             }
-
-
         }
         else
         {
             //Code for Admin Submitting Record
 
-            //variables for Uploaded files
-            string strFileName;
-            string strFilePath;
-            string strDirectory;
+            string strNewFilePath;
 
+            //if ((cbPostedStatus.Checked) && (!(PrimaryfileUpload.HasFile) && (!PrimaryfileUploadl.HasFile) && (!FileUpload2s.HasFile) && (!FileUpload2l.HasFile) && (!FileUpload3s.HasFile) && (!FileUpload3l.HasFile) && (!FileUpload4s.HasFile) && (!FileUpload4l.HasFile) && (!FileUpload5s.HasFile) && (!FileUpload5l.HasFile)))
+            //{
+            //    if (string.IsNullOrEmpty(txtCurrPrimFile.Text))
+            //    {
+            //        lblMessage.Visible = true;
+            //        lblMessage.Text = "Please upload Images before Posting.";
+            //        lblMessage.ForeColor = System.Drawing.Color.Red;
+            //    }
+            //}
+            //else
+            //{
+            if (cbPostedStatus.Checked)
+            {
+                intStatus = 3;
+            }
+            else
+            {
+                intStatus = 2;
+            }
+
+                using (SqlConnection conn = new SqlConnection(MBIntranet_DEV))
+                {
+                    using (SqlCommand cmd = new SqlCommand())
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.CommandText = "flUpdateAdmin";
+                        cmd.Parameters.Add("@PostID", SqlDbType.Int).Value = Convert.ToInt32(Request.QueryString["PostID"]);
+                        cmd.Parameters.Add("@intSubCategoryID", SqlDbType.VarChar).Value = ddSubCategory.SelectedValue;
+                        cmd.Parameters.Add("@intPosted", SqlDbType.Int).Value = intStatus;
+
+                        //Verify File exists in Attachment field before submitting form
+                        if (PrimaryfileUpload.HasFile)
+                        {
+                            strNewFilePath = GetImagePath(PrimaryfileUpload.FileName);
+                            PrimaryfileUpload.SaveAs(Server.MapPath(strNewFilePath));
+                            cmd.Parameters.Add("@PrimaryImgPaths", SqlDbType.VarChar).Value = strNewFilePath;
+                        }
+                        else
+                        {
+                            cmd.Parameters.Add("@PrimaryImgPaths", SqlDbType.VarChar).Value = "N/A";
+                        }
+                        if (PrimaryfileUploadl.HasFile)
+                        {
+                            strNewFilePath = GetImagePath(PrimaryfileUploadl.FileName);
+                            PrimaryfileUploadl.SaveAs(Server.MapPath(strNewFilePath));
+                            cmd.Parameters.Add("@PrimaryImgPathl", SqlDbType.VarChar).Value = strNewFilePath;
+                        }
+                        else
+                        {
+                            cmd.Parameters.Add("@PrimaryImgPathl", SqlDbType.VarChar).Value = "N/A";
+                        }
+                        if (FileUpload2s.HasFile)
+                        {
+                            strNewFilePath = GetImagePath(FileUpload2s.FileName);
+                            FileUpload2s.SaveAs(Server.MapPath(strNewFilePath));
+                            cmd.Parameters.Add("@FileUpload2s", SqlDbType.VarChar).Value = strNewFilePath;
+                        }
+                        else
+                        {
+                            cmd.Parameters.Add("@FileUpload2s", SqlDbType.VarChar).Value = "N/A";
+                        }
+                        if (FileUpload2l.HasFile)
+                        {
+                            strNewFilePath = GetImagePath(FileUpload2l.FileName);
+                            FileUpload2l.SaveAs(Server.MapPath(strNewFilePath));
+                            cmd.Parameters.Add("@FileUpload2l", SqlDbType.VarChar).Value = strNewFilePath;
+                        }
+                        else
+                        {
+                            cmd.Parameters.Add("@FileUpload2l", SqlDbType.VarChar).Value = "N/A";
+                        }
+                        if (FileUpload3s.HasFile)
+                        {
+                            strNewFilePath = GetImagePath(FileUpload3s.FileName);
+                            FileUpload3s.SaveAs(Server.MapPath(strNewFilePath));
+                            cmd.Parameters.Add("@FileUpload3s", SqlDbType.VarChar).Value = strNewFilePath;
+                        }
+                        else
+                        {
+                            cmd.Parameters.Add("@FileUpload3s", SqlDbType.VarChar).Value = "N/A";
+                        }
+                        if (FileUpload3l.HasFile)
+                        {
+                            strNewFilePath = GetImagePath(FileUpload3l.FileName);
+                            FileUpload3l.SaveAs(Server.MapPath(strNewFilePath));
+                            cmd.Parameters.Add("@FileUpload3l", SqlDbType.VarChar).Value = strNewFilePath;
+                        }
+                        else
+                        {
+                            cmd.Parameters.Add("@FileUpload3l", SqlDbType.VarChar).Value = "N/A";
+                        }
+                        if (FileUpload4s.HasFile)
+                        {
+                            strNewFilePath = GetImagePath(FileUpload4s.FileName);
+                            FileUpload4s.SaveAs(Server.MapPath(strNewFilePath));
+                            cmd.Parameters.Add("@FileUpload4s", SqlDbType.VarChar).Value = strNewFilePath;
+                        }
+                        else
+                        {
+                            cmd.Parameters.Add("@FileUpload4s", SqlDbType.VarChar).Value = "N/A";
+                        }
+                        if (FileUpload4l.HasFile)
+                        {
+                            strNewFilePath = GetImagePath(FileUpload4l.FileName);
+                            FileUpload4l.SaveAs(Server.MapPath(strNewFilePath));
+                            cmd.Parameters.Add("@FileUpload4l", SqlDbType.VarChar).Value = strNewFilePath;
+                        }
+                        else
+                        {
+                            cmd.Parameters.Add("@FileUpload4l", SqlDbType.VarChar).Value = "N/A";
+                        }
+                        if (FileUpload5s.HasFile)
+                        {
+                            strNewFilePath = GetImagePath(FileUpload5s.FileName);
+                            FileUpload5s.SaveAs(Server.MapPath(strNewFilePath));
+                            cmd.Parameters.Add("@FileUpload5s", SqlDbType.VarChar).Value = strNewFilePath;
+                        }
+                        else
+                        {
+                            cmd.Parameters.Add("@FileUpload5s", SqlDbType.VarChar).Value = "N/A";
+                        }
+                        if (FileUpload5l.HasFile)
+                        {
+                            strNewFilePath = GetImagePath(FileUpload5l.FileName);
+                            FileUpload5l.SaveAs(Server.MapPath(strNewFilePath));
+                            cmd.Parameters.Add("@FileUpload5l", SqlDbType.VarChar).Value = strNewFilePath;
+                        }
+                        else
+                        {
+                            cmd.Parameters.Add("@FileUpload5l", SqlDbType.VarChar).Value = "N/A";
+                        }
+                        cmd.Connection = conn;
+
+
+                        try
+                        {
+                            conn.Open();
+                            SqlDataReader reader = cmd.ExecuteReader();
+                            //get code for no records found
+                            if (reader.HasRows)
+                            {
+                                reader.Read();
+                                string strJobName = reader["txtJobName"].ToString();
+                                lblMessage.Text = "The " + strJobName + " Fixtures Listing has been Updated.";
+                            }
+                            reader.Close();
+
+                            InsertTags();
+
+                            lblMessage.Visible = true;
+                                
+                            tcData.Visible = false;
+
+                            GetPostList(strAccessType);
+                            GetHistory(); 
+                        }
+                        catch (Exception ex)
+                        {
+                            lblMessage.Visible = true;
+                            lblMessage.Text = "Error Msg: " + ex.Message + " while updating the record. Please call support@missionbell.com for assistance.";
+                            lblMessage.ForeColor = System.Drawing.Color.Red;
+                        }
+                        finally
+                        {
+                            cmd.Dispose();
+                            conn.Close();
+                            conn.Dispose();
+                        }
+                    }
+
+                GetPostList(strAccessType);
+            }
+        }
+    }
+
+
+
+
+    protected void InsertTags()
+    {
+        //only do this portion if one of the tags are selected
+        string cbFlag = "0";
+        for (int i = 0; i < cblTags.Items.Count; i++)
+        {
+            if (cblTags.Items[i].Selected)
+            {
+                cbFlag = "1";
+                break;
+            }
+        }
+
+        if (cbFlag == "1")
+        {
+
+            //Delete record with postid
             using (SqlConnection conn = new SqlConnection(MBIntranet_DEV))
             {
                 using (SqlCommand cmd = new SqlCommand())
                 {
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.CommandText = "flUpdateAdmin";
-                    cmd.Parameters.Add("@intJobNumber", SqlDbType.Int).Value = Convert.ToInt32(Request.QueryString["JID"]);
-                    cmd.Parameters.Add("@intTaskNumber", SqlDbType.Int).Value = Convert.ToInt32(Request.QueryString["TID"]);
-                    cmd.Parameters.Add("@strStatus", SqlDbType.VarChar).Value = vaClass.VerifyflAdminAccess();
-                    cmd.Parameters.Add("@intCategoryID", SqlDbType.VarChar).Value = ddCategory.SelectedValue;
-                    cmd.Parameters.Add("@intSubCategoryID", SqlDbType.VarChar).Value = ddSubCategory.SelectedValue;
-                    cmd.Parameters.Add("@intPosted", SqlDbType.Int).Value = cbPostedStatus.Checked;
-
-                    //Verify File exists in Attachment field before submitting form
-                    if (PrimaryfileUpload.HasFile)
-                    {
-                        try
-                        {
-                            strFileName = System.IO.Path.GetFileName(PrimaryfileUpload.FileName);
-                            strDirectory = "~/images/" + lblProjectName.Text.Trim();
-
-                            if (!Directory.Exists(strDirectory))
-                            {
-                                Directory.CreateDirectory(MapPath(strDirectory));
-                            }
-                            strFilePath = strDirectory + "/" + strFileName;
-                            PrimaryfileUpload.SaveAs(Server.MapPath(strFilePath));
-                            cmd.Parameters.Add("@PrimaryImgPath", SqlDbType.VarChar).Value = strFilePath;
-                        }
-                        catch (Exception ex)
-                        {
-                            //Display error message when form submission unsuccessful --error with file upload
-                            lblMessage.Visible = true;
-                            lblMessage.Text = "Error Msg(Insert Data): " + ex.Message + ".<br>" + strErrMsg;
-                        }
-                    }
-                    else
-                    {
-                        cmd.Parameters.Add("@PrimaryImgPath", SqlDbType.VarChar).Value = "NA";
-                    }
+                    cmd.CommandType = CommandType.Text;
+                    cmd.CommandText = "DELETE FROM dbo.flTagLookup WHERE PostID = " + Request.QueryString["PostID"];
                     cmd.Connection = conn;
 
                     try
                     {
                         conn.Open();
                         SqlDataReader reader = cmd.ExecuteReader();
-                        //get code for no records found
-                        if (reader.HasRows)
-                        {
-                            reader.Read();
-                            string strJobName = reader["txtJobName"].ToString();
-                            reader.Close();
-
-                            lblMessage.Visible = true;
-                            lblMessage.Text = "The " + strJobName + " Fixtures Listing has been Updated.";
-                            tcData.Visible = false;
-                            GetLaborList();
-                            GetHistory();
-                        }
-                        reader.Close();       
+                        reader.Read();
+                        reader.Close();
                     }
                     catch (Exception ex)
                     {
+                        //Display error message when form submission unsuccessful
                         lblMessage.Visible = true;
-                        lblMessage.Text = "Error Msg: " + ex.Message + " while updating the record. Please call support@missionbell.com for assistance.";
-                        lblMessage.ForeColor = System.Drawing.Color.Red;
+                        lblMessage.Text = "Error (Insert SysInfo Apps): " + ex.Message + ".<br>" + strErrMsg;
                     }
                     finally
                     {
@@ -702,87 +909,95 @@ public partial class FLAdminReview : System.Web.UI.Page
                         conn.Dispose();
                     }
                 }
+            }
 
 
 
-                //only do this portion if one of the tags are selected
-                string cbFlag = "0";
-                for (int i = 0; i < cblTags.Items.Count; i++)
-                    {
-                    if (cblTags.Items[i].Selected)
-                      {
-                        cbFlag = "1";
-                        break;
-                      }
-                    }
-
-                if (cbFlag == "1")
+            using (SqlConnection conn = new SqlConnection(MBIntranet_DEV))
+            {
+                //loop through check box list to insert
+                using (SqlCommand cmd = new SqlCommand())
                 {
-                    //Delete record with postid
-                    using (SqlCommand cmd = new SqlCommand())
-                    {          
-                        cmd.CommandType = CommandType.Text;
-                        cmd.CommandText = "DELETE FROM dbo.flTagLookup WHERE PostID = " + intPostID;
-                        cmd.Connection = conn;
+                    cmd.CommandType = CommandType.Text;
+                    cmd.CommandText = "INSERT INTO dbo.flTagLookup (PostID, TagID) VALUES (@PostID, @TagID)";
+                    cmd.Connection = conn;
 
-                        try
+                    try
+                    {
+                        conn.Open();
+                        foreach (ListItem item in cblTags.Items)
                         {
-                            conn.Open();
-                            SqlDataReader reader = cmd.ExecuteReader();
-                            reader.Read();
-                            reader.Close();
-                        }
-                        catch (Exception ex)
-                        {
-                            //Display error message when form submission unsuccessful
-                            lblMessage.Visible = true;
-                            lblMessage.Text = "Error (Insert SysInfo Apps): " + ex.Message + ".<br>" + strErrMsg;
-                        }
-                        finally
-                        {
-                            cmd.Dispose();
-                            conn.Close();
-                            conn.Dispose();   
-                        }                   
-                    }  
-
-
-                     //loop through check box list to insert
-                    using (SqlCommand cmd = new SqlCommand())
-                    {          
-                        cmd.CommandType = CommandType.Text;
-                        cmd.CommandText = "INSERT INTO dbo.flTagLookup (PostID, TagID) VALUES (@PostID, @TagID)";
-                        cmd.Connection = conn;
-
-                        try
-                        {
-                            conn.Open();
-                            foreach (ListItem item in cblTags.Items)
+                            if (item.Selected)
                             {
                                 cmd.Parameters.Clear();
-                                cmd.Parameters.AddWithValue("@PostID", intPostID);
-                                cmd.Parameters.AddWithValue("@TagID", item.Value);   
+                                cmd.Parameters.AddWithValue("@PostID", Request.QueryString["PostID"]);
+                                cmd.Parameters.AddWithValue("@TagID", item.Value);
                                 cmd.ExecuteNonQuery();
                             }
                         }
-                        catch (Exception ex)
-                        {
-                            //Display error message when form submission unsuccessful
-                            lblMessage.Visible = true;
-                            lblMessage.Text = "Error (Insert SysInfo Apps): " + ex.Message + ".<br>" + strErrMsg;
-                        }
-                        finally
-                        {
-                             cmd.Dispose();
-                            conn.Close();
-                            conn.Dispose();   
-                        }                   
-                    }  
+                    }
+                    catch (Exception ex)
+                    {
+                        //Display error message when form submission unsuccessful
+                        lblMessage.Visible = true;
+                        lblMessage.Text = "Error (Insert SysInfo Apps): " + ex.Message + ".<br>" + strErrMsg;
+                    }
+                    finally
+                    {
+                        cmd.Dispose();
+                        conn.Close();
+                        conn.Dispose();
+                    }
                 }
             }
-            GetLaborList();
         }
     }
+
+
+
+
+    private string GetImagePath(string strImageName)
+    {
+        string strFileName;
+        string strFilePath;
+        string strDirectory;
+
+        try
+        {
+            strFileName = System.IO.Path.GetFileName(strImageName);
+            strDirectory = "~/images/" + lblProjectName.Text.Trim();
+
+            if (!Directory.Exists(strDirectory))
+            {
+                Directory.CreateDirectory(MapPath(strDirectory));
+            }
+            strFilePath = "images/" + lblProjectName.Text.Trim() + "/" + strFileName;
+
+            return strFilePath;
+            //PrimaryfileUpload.SaveAs(Server.MapPath(strFilePath));
+            
+        }
+        catch (Exception ex)
+        {
+            //Display error message when form submission unsuccessful --error with file upload
+            lblMessage.Visible = true;
+            lblMessage.Text = "Error Msg(Insert Data): " + ex.Message + ".<br>" + strErrMsg;
+
+            return null;
+        }
+    }
+
+
+
+
+    protected void btnAddImages_Onclick(object sender, EventArgs e)
+    {
+        txtCurrPrimFile.Visible = false;
+        lblCurrPrimFile.Visible = false;
+        btnAddImages.Visible = false;
+        tblAdditionalImages.Visible = true;
+    }
+
 
 
 

@@ -1,16 +1,7 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Site.master" AutoEventWireup="true" CodeFile="FLAdminReview.aspx.cs" Inherits="FLAdminReview" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="Ajax" %>
 
-<asp:Content ID="Content1" ContentPlaceHolderID="HeadContent" Runat="Server">
-<script type = "text/javascript">
-    function uploadComplete(sender) {
-        $get("<%=lblUploadMsg.ClientID%>").innerHTML = "File Uploaded Successfully";
-    }
-    function uploadError(sender) {
-        $get("<%=lblUploadMsg.ClientID%>").innerHTML = "File upload failed.";
-    } 
-</script> 
-</asp:Content>
+<asp:Content ID="Content1" ContentPlaceHolderID="HeadContent" Runat="Server"></asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" Runat="Server">
 
 <form runat="server">
@@ -19,20 +10,21 @@
 <%--Drop down list datasources--%>
     <asp:SqlDataSource ID="dsCategories" 
                         runat="server" 
-                        SelectCommand="SELECT CategoryID, CategoryName FROM flCategories WHERE ParentID IS NULL" 
-                        ConnectionString="<%$ ConnectionStrings:MBData2005_DEV %>" 
+                        SelectCommand="SELECT CategoryID, CategoryName FROM dbo.flCategories WHERE ParentID IS NULL" 
+                        ConnectionString="<%$ ConnectionStrings:MBData2005 %>" 
                         DataSourceMode="DataSet" />
 
     <asp:SqlDataSource ID="dsSubCategories" 
                     runat="server"    
-                    ConnectionString="<%$ ConnectionStrings:MBData2005_DEV %>" 
+                    ConnectionString="<%$ ConnectionStrings:MBData2005 %>" 
                     DataSourceMode="DataSet" />
 
      <asp:SqlDataSource ID="dsTags" 
                     runat="server"
-                    SelectCommand="SELECT TagId, Tags FROM flTags"     
-                    ConnectionString="<%$ ConnectionStrings:MBData2005_DEV %>" 
+                    SelectCommand="SELECT TagId, Tags FROM dbo.flTags"     
+                    ConnectionString="<%$ ConnectionStrings:MBData2005 %>" 
                     DataSourceMode="DataSet" />
+
 
 <div id="MainTitle" runat="server" class="flAdminHeader">
 <h2><asp:label ID="lblMainTitle" runat="server" /></h2></div>
@@ -53,7 +45,7 @@
                     <asp:TemplateField>
                     <ItemTemplate>
                         <div class="flReviewList">
-                        <asp:HyperLink ID="HyperLink1" runat="server" NavigateUrl='<%#"~/FLAdminReview.aspx?JID="+Eval("lJobNumber")+"&TID="+Eval("lTaskNumber") %>' Target="_self">
+                        <asp:HyperLink ID="HyperLink1" runat="server" CssClass="list" NavigateUrl='<%#"~/FLAdminReview.aspx?PostID="+Eval("PostID") %>' Target="_self">
                             <asp:Label id="lblhl" runat="server" Text='<%# Eval("txtJobNumber") + " | " + Eval("txtTaskNumber") + " | " + Eval("txtJobName") + " | By: " + Eval("txtEmployeeName") + " | On: " + Eval("CreatedDate") %>' />
                         </asp:HyperLink></div>
                     </ItemTemplate>    
@@ -72,8 +64,8 @@
                     <asp:TemplateField>
                     <ItemTemplate>
                         <div class="flReviewList">
-                        <asp:HyperLink ID="HyperLink1" runat="server" NavigateUrl='<%#"~/FLAdminReview.aspx?JID="+Eval("lJobNumber")+"&TID="+Eval("lTaskNumber") %>' Target="_self">
-                            <asp:Label id="lblhl" runat="server" Text='<%# Eval("txtJobNumber") + " | " + Eval("txtTaskNumber") + " | " + Eval("txtJobName") + " | By: " + Eval("txtEmployeeName") + " | On: " + Eval("CreatedDate") %>' />
+                        <asp:HyperLink ID="HyperLink1" runat="server" CssClass="list" NavigateUrl='<%#"~/FLAdminReview.aspx?PostID="+Eval("PostID") %>' Target="_self">
+                            <asp:Label id="lblhl" runat="server" Text='<%# Eval("txtJobNumber") + " | " + Eval("txtTaskNumber") + " | " + Eval("txtJobName") + " | By: " + Eval("txtEmployeeName") + " | On: " + Eval("PostedDate") %>' />
                         </asp:HyperLink></div>
                     </ItemTemplate>    
                     </asp:TemplateField>
@@ -90,14 +82,14 @@
             <h3 class="flLaborHeader"><asp:Label ID="lblLaborDetailsHeader" runat="server" Text="Labor Details" /></h3><br />
            
             <asp:Table ID="tblDetails" runat="server" Width="100%">
+
                 <%--Labor Details table--%>
                 <asp:TableRow ID="trLaborgv" runat="server">
                     <asp:TableCell>
                         <asp:GridView ID="gvLaborDetails" runat="server" ShowFooter="true" AutoGenerateColumns="false"  
-                            OnRowDataBound="gvLaborDetails_RowDataBound" BorderStyle="Solid" GridLines="Both" CellSpacing="10" Width="100%">
+                            OnRowDataBound="gvLaborDetails_RowDataBound" BorderStyle="Solid" GridLines="Both" CellSpacing="12" Width="100%">
                             <Columns>
                             <asp:BoundField HeaderText="Department" DataField="txtDepartmentDescription" />
-                            <asp:BoundField HeaderText="Fac" DataField="txtFacilityShortName" ItemStyle-HorizontalAlign="Center" />
                             <asp:BoundField HeaderText="Work Order Desc" DataField="txtWorkOrderDescription" FooterText="Total Hours" FooterStyle-Font-Bold="true" FooterStyle-HorizontalAlign="Right" ItemStyle-HorizontalAlign="Center" /> 
                             <asp:TemplateField HeaderText="Budget Hours" HeaderStyle-Wrap="true" ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="60px" FooterStyle-HorizontalAlign="Center" FooterStyle-Font-Bold="true" >
                                 <ItemTemplate>
@@ -123,7 +115,7 @@
                 <%--Project Details--%>
                 <asp:TableRow ID="trProjDetails" runat="server">
                     <asp:TableCell>                        
-                        <asp:Table ID="tblProjDetails" runat="server" CssClass="flDetails">
+                        <asp:Table ID="tblProjDetails" runat="server" CssClass="flProjDetails">
                             <asp:TableRow><asp:TableCell><h3 class="flProjectHeader">Project Details</h3></asp:TableCell></asp:TableRow>
                             <asp:TableRow><asp:TableCell>&nbsp;&nbsp;&nbsp;Job Number:&nbsp;<b><asp:Label ID="lblJobNum" runat="server" /></b></asp:TableCell></asp:TableRow>
                             <asp:TableRow><asp:TableCell>&nbsp;&nbsp;&nbsp;Job Location:&nbsp;<asp:Label ID="lblJobCity" runat="server" /></asp:TableCell></asp:TableRow>
@@ -135,7 +127,7 @@
 
                 <asp:TableRow ID="trComments" runat="server">
                     <asp:TableCell>
-                        <asp:Label ID="lblComments" runat="server" Text="Comments:" Font-Size="14" ForeColor="Silver" /><br />
+                        <asp:Label ID="lblComments" runat="server" Text="Comments:" Font-Size="14" /><br />
                         <asp:TextBox ID="txtComments" runat="server" Rows="5" TextMode="MultiLine" Width="100%" /> 
                     </asp:TableCell>
                 </asp:TableRow>
@@ -212,36 +204,80 @@
 
                 <asp:TableRow ID="trUploads" runat="server">
                     <asp:TableCell>
-                        <br />
-                        <div class="flLabels">
-                            <asp:Label ID="lblUploadPrim" runat="server" Text="Upload Primary Image:" />&nbsp;
-                            <asp:FileUpload ID="PrimaryfileUpload" runat="server" BorderColor="AliceBlue" />
-                            <asp:TextBox ID="txtCurrPrimFile" runat="server" Visible="false" />
-                            <br /><br />
-                        </div>
-                        <div class="flLabels">
-                            <asp:Label ID="lblUploadMltp" runat="server" Text="Upload Additional Images:" />
-                        </div>
-                        <ajax:AjaxFileUpload ID="AsyncFileUpload" 
-                                            OnClientUploadError="uploadError" 
-                                            OnClientUploadComplete="uploadComplete"
-                                            UploaderStyle="Modern" 
-                                            CompleteBackColor="White" 
-                                            UploadingBackColor="#CCFFFF" 
-                                            ThrobberID="imgLoader"
-                                            ContextKeys="fred"
-                                            MaximumNumberOfFiles="10"                                             
-                                            runat="server"/>  
-                            <div class="flLabels">
-                                <asp:Label ID="lblUploadMsg" runat="server" Text="" />
-                            </div>
+                        <div class="flLabels">      
+                        <asp:Label runat="server" ID="lblCurrPrimFile" Visible="false" Text="Current Image(s):" />
+                        <asp:Button ID="btnAddImages" runat="server" Text="Add Images" OnClick="btnAddImages_Onclick" Visible="false" /><br />
+                        <%--<asp:TextBox ID="txtCurrPrimFile" runat="server" Visible="false" Width="500" Rows="7" TextMode="MultiLine" BorderColor="AliceBlue" />--%>
+                       <asp:Label ID="txtCurrPrimFile" runat="server" Visible="false" Width="600" Font-Size="14px" />
+                        <asp:Table ID="tblAdditionalImages" runat="server">
+                            <asp:TableRow>
+                                <asp:TableCell></asp:TableCell><asp:TableCell>Small Image</asp:TableCell><asp:TableCell>Large Image</asp:TableCell>
+                            </asp:TableRow>
+                            <asp:TableRow>
+                                <asp:TableCell>
+                                    <asp:Label ID="Label1" runat="server" Text="Primary Image:" />
+                                </asp:TableCell>
+                                <asp:TableCell>
+                                    <asp:FileUpload ID="PrimaryfileUpload" runat="server" BorderColor="AliceBlue" />
+                                </asp:TableCell>
+                                <asp:TableCell>
+                                    <asp:FileUpload ID="PrimaryfileUploadl" runat="server" BorderColor="AliceBlue" />
+                                </asp:TableCell>
+                            </asp:TableRow>
+                            <asp:TableRow>
+                                <asp:TableCell>
+                                    <asp:Label ID="Label8" runat="server" Text="Upload Image:" />
+                                </asp:TableCell>
+                                <asp:TableCell>
+                                    <asp:FileUpload ID="FileUpload2s" runat="server" BorderColor="AliceBlue" />
+                                </asp:TableCell>
+                                <asp:TableCell>
+                                    <asp:FileUpload ID="FileUpload2l" runat="server" BorderColor="AliceBlue" />
+                                </asp:TableCell>
+                            </asp:TableRow>
+                             <asp:TableRow>
+                                <asp:TableCell>
+                                    <asp:Label ID="Label9" runat="server" Text="Upload Image:" />
+                                </asp:TableCell>
+                                <asp:TableCell>
+                                    <asp:FileUpload ID="FileUpload3s" runat="server" BorderColor="AliceBlue" />
+                                </asp:TableCell>
+                                <asp:TableCell>
+                                    <asp:FileUpload ID="FileUpload3l" runat="server" BorderColor="AliceBlue" />
+                                </asp:TableCell>
+                            </asp:TableRow>
+                             <asp:TableRow>
+                                <asp:TableCell>
+                                    <asp:Label ID="Label10" runat="server" Text="Upload Image:" />
+                                </asp:TableCell>
+                                <asp:TableCell>
+                                    <asp:FileUpload ID="FileUpload4s" runat="server" BorderColor="AliceBlue" />
+                                </asp:TableCell>
+                                <asp:TableCell>
+                                    <asp:FileUpload ID="FileUpload4l" runat="server" BorderColor="AliceBlue" />
+                                </asp:TableCell>
+                            </asp:TableRow>
+                             <asp:TableRow>
+                                <asp:TableCell>
+                                    <asp:Label ID="Label11" runat="server" Text="Upload Image:" />
+                                </asp:TableCell>
+                                <asp:TableCell>
+                                    <asp:FileUpload ID="FileUpload5s" runat="server" BorderColor="AliceBlue" />
+                                </asp:TableCell>
+                                <asp:TableCell>
+                                    <asp:FileUpload ID="FileUpload5l" runat="server" BorderColor="AliceBlue" />
+                                </asp:TableCell>
+                            </asp:TableRow>
+                        </asp:Table>
+                        
+                        </div>                       
                     </asp:TableCell>
                 </asp:TableRow>
 
             <asp:TableRow ID="trPostedcb" runat="server">
                 <asp:TableCell>
                     <div class="flLabels">
-                        <br />
+                    <br />
                         <asp:CheckBox ID="cbPostedStatus" runat="server" Text="Ready To Post" Font-Size="18px" ForeColor="Maroon" /> 
                         <asp:CheckBox ID="cbArchive" runat="server" Text="Archive" Font-Size="18px" ForeColor="Maroon" Visible="false" /> 
                     </div>
@@ -250,8 +286,7 @@
 
             <asp:TableRow ID="trButtons" runat="server">
                 <asp:TableCell>
-                    <br />
-                    <asp:Button ID="btnSubmit" runat="server" Text="Submit" OnClick="btnSubmit_OnClick" Font-Size="16px" />
+                    <br /><asp:Button ID="btnSubmit" runat="server" Text="Submit" OnClick="btnSubmit_OnClick" Font-Size="16px" />
                 </asp:TableCell>
             </asp:TableRow>
 

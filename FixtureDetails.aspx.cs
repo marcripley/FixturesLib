@@ -13,23 +13,24 @@ public partial class FixtureDetails : System.Web.UI.Page
 {
     public Int32 ProjSum = 0;
     public Int32 ActualSum = 0;
-    string MBIntranet_DEV = ConfigurationManager.ConnectionStrings["MBData2005_DEV"].ConnectionString;
+    string MBIntranet_DEV = ConfigurationManager.ConnectionStrings["MBData2005"].ConnectionString;
     public string strStatus = "Admin";
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (!Page.IsPostBack && !String.IsNullOrEmpty(Request.QueryString["TID"]))
+        if (!Page.IsPostBack && !String.IsNullOrEmpty(Request.QueryString["PostID"]))
         {
             //First Call
             //put code to go back to home if no querystrings
             BindImages();
             BindJobDetails();
-            BindLaborDetails();
             getTags();
+            BindLaborDetails();
         }
         else
         {
-
+            //Need PostID to retreive Data and Images so user must be redirected back to FL Home page
+            Response.Redirect("Default.aspx");
         }
     }
 
@@ -37,7 +38,7 @@ public partial class FixtureDetails : System.Web.UI.Page
 
     private void BindImages()
     {
-        Int32 iImageType = 2;
+        //Int32 iImageType = 2;
 
         //submit selected values to stored procedure and retrieve results
         //temp populated into gridveiw
@@ -47,10 +48,10 @@ public partial class FixtureDetails : System.Web.UI.Page
             {
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.CommandText = "flGetImages";
-                cmd.Parameters.Add("@JobNumber", SqlDbType.Int).Value = Convert.ToInt32(Request.QueryString["JID"]);
-                cmd.Parameters.Add("@TaskNumber", SqlDbType.Int).Value = Convert.ToInt32(Request.QueryString["TID"]);
-                cmd.Parameters.Add("@ImageType", SqlDbType.Int).Value = iImageType;
-
+                cmd.Parameters.Add("@PostID", SqlDbType.Int).Value = Convert.ToInt32(Request.QueryString["PostID"]);
+                //cmd.Parameters.Add("@JobNumber", SqlDbType.Int).Value = Convert.ToInt32(Request.QueryString["JID"]);
+                //cmd.Parameters.Add("@TaskNumber", SqlDbType.Int).Value = Convert.ToInt32(Request.QueryString["TID"]);
+                //cmd.Parameters.Add("@ImageTypeID", SqlDbType.Int).Value = iImageType;
                 cmd.Connection = conn;
 
                 try
@@ -82,7 +83,7 @@ public partial class FixtureDetails : System.Web.UI.Page
                 }
                 catch (Exception ex)
                 {
-
+                    
                 }
                 finally
                 {
@@ -106,9 +107,10 @@ public partial class FixtureDetails : System.Web.UI.Page
             {
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.CommandText = "flGetLaborDetails";
-                cmd.Parameters.Add("@JobNumber", SqlDbType.Int).Value = Convert.ToInt32(Request.QueryString["JID"]);
-                cmd.Parameters.Add("@TaskNumber", SqlDbType.Int).Value = Convert.ToInt32(Request.QueryString["TID"]);
-                cmd.Parameters.Add("@strStatus", SqlDbType.VarChar).Value = strStatus;
+                cmd.Parameters.Add("@PostID", SqlDbType.Int).Value = Convert.ToInt32(Request.QueryString["PostID"]);
+                //cmd.Parameters.Add("@JobNumber", SqlDbType.Int).Value = Convert.ToInt32(Request.QueryString["JID"]);
+                //cmd.Parameters.Add("@TaskNumber", SqlDbType.Int).Value = Convert.ToInt32(Request.QueryString["TID"]);
+                //cmd.Parameters.Add("@strStatus", SqlDbType.VarChar).Value = strStatus;
                 cmd.Connection = conn;
 
                 try
@@ -164,8 +166,9 @@ public partial class FixtureDetails : System.Web.UI.Page
                 //Int32 itestid = 2;
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.CommandText = "flGetJobDetails";
-                cmd.Parameters.Add("@JobNumber", SqlDbType.Int).Value = Convert.ToInt32(Request.QueryString["JID"]);
-                cmd.Parameters.Add("@TaskNumber", SqlDbType.Int).Value = Convert.ToInt32(Request.QueryString["TID"]);
+                cmd.Parameters.Add("@PostID", SqlDbType.Int).Value = Convert.ToInt32(Request.QueryString["PostID"]);
+                //cmd.Parameters.Add("@JobNumber", SqlDbType.Int).Value = Convert.ToInt32(Request.QueryString["JID"]);
+                //cmd.Parameters.Add("@TaskNumber", SqlDbType.Int).Value = Convert.ToInt32(Request.QueryString["TID"]);
                // cmd.Parameters.Add("@StatusID", SqlDbType.Int).Value = itestid;
                 cmd.Connection = conn;
 
@@ -214,8 +217,9 @@ public partial class FixtureDetails : System.Web.UI.Page
             {
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.CommandText = "flGetTags";
-                cmd.Parameters.Add("@JobNumber", SqlDbType.Int).Value = Convert.ToInt32(Request.QueryString["JID"]);
-                cmd.Parameters.Add("@TaskNumber", SqlDbType.Int).Value = Convert.ToInt32(Request.QueryString["TID"]);
+                cmd.Parameters.Add("@PostID", SqlDbType.Int).Value = Convert.ToInt32(Request.QueryString["PostID"]);
+                //cmd.Parameters.Add("@JobNumber", SqlDbType.Int).Value = Convert.ToInt32(Request.QueryString["JID"]);
+                //cmd.Parameters.Add("@TaskNumber", SqlDbType.Int).Value = Convert.ToInt32(Request.QueryString["TID"]);
                 cmd.Connection = conn;
 
                 try
@@ -254,10 +258,9 @@ public partial class FixtureDetails : System.Web.UI.Page
     }
 
 
+
     protected void gvLaborDetails_RowDataBound(object sender, GridViewRowEventArgs e)
     {
-        
-
         if (e.Row.RowType == DataControlRowType.DataRow)
         {
             ProjSum = ProjSum + Convert.ToInt32(DataBinder.Eval(e.Row.DataItem, "sWorkOrderHoursBudget"));

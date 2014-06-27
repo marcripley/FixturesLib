@@ -31,8 +31,8 @@ public class VerifyAccess
         UserPrincipal user = UserPrincipal.Current;
         //strUsername = user.DisplayName;
         //***Need to accomadate ' apostrophe's 
-        strUsername = "Blaine Gulbinas";
-        //strUsername = "Sharon de la Cruz";
+        //strUsername = "Blaine Gulbinas";
+        strUsername = "Sharon de la Cruz";
         //strUsername = "Raquel Martinez";
         UserPrincipal user2 = UserPrincipal.FindByIdentity(ctx, strUsername);
 

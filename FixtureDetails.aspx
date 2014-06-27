@@ -3,7 +3,6 @@
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="HeadContent" Runat="Server"></asp:Content>
-
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" Runat="Server">
 
 <form runat="server">
@@ -59,7 +58,6 @@
                             OnRowDataBound="gvLaborDetails_RowDataBound" cellspacing="10" BorderStyle="Solid" GridLines="Both" Width="100%">
                             <Columns>
                             <asp:BoundField HeaderText="Department" DataField="txtDepartmentDescription" />
-                            <asp:BoundField HeaderText="Fac" DataField="txtFacilityShortName" ItemStyle-HorizontalAlign="Center" />
                             <asp:BoundField HeaderText="Work Order Desc" DataField="txtWorkOrderDescription" FooterText="Total Hours" FooterStyle-Font-Bold="true" FooterStyle-HorizontalAlign="Right" ItemStyle-HorizontalAlign="Center" /> 
                             <asp:TemplateField HeaderText="Budget Hours"  HeaderStyle-Wrap="true" ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="60px" FooterStyle-HorizontalAlign="Center" FooterStyle-Font-Bold="true" >
                                 <ItemTemplate>

@@ -8,13 +8,14 @@
 /* Universal reset */
 html,body,div,span,applet,object,iframe,caption,del,dfn,em,font,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,dl,dt,dd,ol,ul,li,fieldset,form,label,legend {vertical-align: baseline;font-size: 100%;outline: 0;padding: 0;margin: 0;border: 0;}
 html {min-height: 100%;border-bottom: 1px solid transparent;}
-body {background: #ffffff;line-height: 14px;color: #222222;font-size: 12px;font-family: Georgia, Palatino Linotype, Century Gothic;line-height: 18px;}
+/*body {background: #ffffff;line-height: 14px;color: #222222;font-size: 12px;font-family: Georgia, Palatino Linotype, Century Gothic;line-height: 18px;} */
+body {background: #ffffff;line-height: 14px;color: #222222;font-size: 12px;font-family: Tahoma, Geneva, sans-serif;line-height: 18px;}
 img {border: none;text-decoration: none;}
 a {outline: none;cursor: pointer;}
 a:link {text-decoration: none; color:Maroon}
 a:active {text-decoration: none;}
-a:visited {text-decoration: none; color:gray; font-style:italic;}
-a:hover {text-decoration:highlgiht; background-color:#ECF5FF;}
+a:visited {text-decoration: none;}
+a:hover {text-decoration:none;}
 /* HTML5 tags */
 header, section, footer, aside, nav, article, figure {display: block;}
 
@@ -35,8 +36,7 @@ hgroup#tagline h2 span {color: #a2a2a2;}
 /* Search and Sort */
 #fixturesFilter {position: relative;margin: 20px 0 40px;}
 div.fixturesFormDrop {display: inline;width: 20%;margin: 10px;color: #888;}
-div.fixturesFormDrop  select {margin: 10px;color: #888;
-}
+div.fixturesFormDrop  select {margin: 10px;color: #888;}
 div.fixturesFormItem {display: inline;margin: 10px;padding: 4px;/*-moz-border-radius: 15px;border-radius: 15px;*/text-indent: 18px;font-size: 15px;font-weight: bold;background: #f6f6f6;color: #888888;}
 div.fixturesTextInput {display: inline;width: 20%;margin: 10px;color: #888;}
 .fixturesInput {width: 260px;background: #f6f6f6;border: 0px;font-size: 15px;font-weight: bold;color: #888888;}
@@ -65,13 +65,14 @@ h2#flTitle {font-size: 28px;line-height: 30px;margin-bottom: 4px;padding-bottom:
 .flDetails ul {margin: 10px 10px 20px;list-style: none;line-height: 34px;}
 .flDetails ul span {color: #222;}
 
-.flComments {margin: 20px;font-size: 14px; color:#222; padding-top:3px; font-family: Georgia, Palatino Linotype, Century Gothic; line-height: 27px; list-style: none;}
-.flDetails td {font-size: 16px; color:#A2A2A1; font-family: Georgia, Palatino Linotype, Century Gothic; line-height: 22px; list-style: none;}
-.flDetails td span {font-size: 16px; color:#222; font-family: Georgia, Palatino Linotype, Century Gothic; line-height: 22px; list-style: none; font-weight:600}
-div.flDetailsHeader{font-size: 28px;line-height: 30px;margin-bottom: 4px;padding-bottom: 4px; font-family: Georgia, Palatino Linotype, Century Gothic;}
+.flComments {margin: 20px;font-size: 14px; color:#222; padding-top:3px; font-family: Tahoma, Geneva, sans-serif; line-height: 27px; list-style: none;}
+.flDetails td {font-size: 16px; color:#A2A2A1; font-family: Tahoma, Geneva, sans-serif; line-height: 22px; list-style: none;}
+.flDetails td span {font-size: 16px; color:#222; font-family: Tahoma, Geneva, sans-serif; line-height: 22px; list-style: none; font-weight:600}
+div.flDetailsHeader{font-size: 28px;line-height: 30px;margin-bottom: 4px;padding-bottom: 4px; font-family: Tahoma, Geneva, sans-serif;}
 .flDetailsHeader h3 {font-size: 48px;}
 .flDetailsHeader h2 {font-size: 28px;line-height: 30px;margin-bottom: 4px;padding-bottom: 4px;color:purple ;border-bottom: 1px solid #888;}
 .flDetails h4 {font-size: 30px;color: #444;}
+
 
 /* FL Admin Review Page */
 .flAdminHeader h2 {font-size: 28px;line-height: 30px;margin-bottom: 4px;padding-bottom: 4px;color:Gray ;text-align:center;}
@@ -80,11 +81,17 @@ h3.flProjectTitle {font-size: 24px;line-height: 30px;margin-bottom: 4px;padding-
 h3.AdminTitle {font-size: 24px;line-height: 30px;margin-bottom: 4px;padding-bottom: 4px;color:maroon;}
 .flReviewList {font-size: 14px;}
 h3.flLaborHeader {font-size: 22px;line-height: 5px;padding-top:8px;color:#444;}
-h3.flProjectHeader {font-size: 22px;line-height: 5px;padding-top:8px;color:#444; padding-bottom:8px;}
+h3.flProjectHeader {font-size: 22px;line-height: 5px;padding-top:8px;color:#444; padding-bottom:13px;}
 .CustomComboBoxStyle .ajax__combobox_itemlist li {font-size:14px; width:150px;}
 /*.CustomComboBoxStyle .ajax__combobox_textboxcontainer {width:500px;}
 .CustomComboBoxStyle .ajax__combobox_textboxcontainer input {width:500px;}*/
-div.flLabels {font-size: 16px; font-family: Georgia, Palatino Linotype, Century Gothic;}
+div.flLabels {font-size: 16px; font-family: Tahoma, Geneva, sans-serif;}
+.flProjDetails td {font-size: 16px; color:#A2A2A1; font-family: Tahoma, Geneva, sans-serif; line-height: 22px; list-style: none;}
+
+a.list:link {text-decoration: none; color:Maroon}
+a.list:active {text-decoration: none;}
+a.list:visited {text-decoration: none; color:gray; font-style:italic;}
+a.list:hover {text-decoration:highlgiht; background-color:#ECF5FF;}
 
 
 /* Labor Details */

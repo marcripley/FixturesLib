@@ -9,13 +9,13 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.DirectoryServices.AccountManagement;
-
+using System.Web.Services;
 
 public partial class _Default : System.Web.UI.Page
 {
     //Public Declarations
     public string strUsername;
-    string MBIntranet_DEV = ConfigurationManager.ConnectionStrings["MBData2005_DEV"].ConnectionString;
+    string MBIntranet_DEV = ConfigurationManager.ConnectionStrings["MBData2005"].ConnectionString;
 
     public string strPrimImageLoc;
     public string strSecImageLoc;
@@ -58,7 +58,6 @@ public partial class _Default : System.Web.UI.Page
             }
         }
     }
-
 
 
 
@@ -154,8 +153,7 @@ public partial class _Default : System.Web.UI.Page
         }
 
 
-        //submit selected Tags to stored procedure and retrieve results
-        //temp populated into gridveiw
+        //submit selected Tags to stored procedure and retrieve results in gridview
         using (SqlConnection conn = new SqlConnection(MBIntranet_DEV))
         {
             using (SqlCommand cmd = new SqlCommand())
@@ -223,7 +221,6 @@ public partial class _Default : System.Web.UI.Page
                         //Display No records message if no data found.
                         gvPosts.Visible = false;
                         lblMessage.Text = "There are no Records that match your criteria.";
-                       // trBlank.Visible = true;
                         trlblMessage.Visible = true;
                     }
                     else
@@ -258,19 +255,11 @@ public partial class _Default : System.Web.UI.Page
         if (e.Row.RowType == DataControlRowType.DataRow)
         {
             Label lblimg1 = (Label)e.Row.FindControl("lblimage1");
-            //Label lblimg2 = (Label)e.Row.FindControl("lblimage2");
-
             strPrimImageLoc = lblimg1.Text;
-            //strSecImageLoc = lblimg2.Text;
-
             Image img = (Image)e.Row.FindControl("imgOriginal");
             img.ImageUrl = strPrimImageLoc;
-
-            //img.Attributes.Add("onmouseover", "this.src='" + strSecImageLoc + "'");
             img.Attributes.Add("onmouseout", "this.src='" + strPrimImageLoc + "'");
-
             Label lblOverlay = (Label)e.Row.FindControl("lblOverlayDesc");
-            //lblOverlay.Text = tags0.Text;
         }
     }
 
@@ -322,6 +311,7 @@ public partial class _Default : System.Web.UI.Page
     {
         set { tags0.Font.Size = value; }
     }
+
 
 
     /// Add Items to the CheckBoxList from sql server tables

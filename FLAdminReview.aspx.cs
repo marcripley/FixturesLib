@@ -33,10 +33,14 @@ public partial class FLAdminReview : System.Web.UI.Page
 
      protected void Page_Load(object sender, EventArgs e)
      {
+
+         //Response.Redirect("ReDirect.aspx");
+
          if (!Page.IsPostBack)
          {
-             strAccessType = vaClass.VerifyflAdminAccess();
-
+             //strAccessType = vaClass.VerifyflAdminAccess();
+             strAccessType = Session["flgroup"].ToString();
+             //strAccessType = "Both";
              //For users with no access - display the following message
              if (strAccessType == "None")
              {
@@ -75,7 +79,7 @@ public partial class FLAdminReview : System.Web.UI.Page
                  }
                  else
                  {
-                     if (strAccessType == "Admin")
+                     if (strAccessType == "Admin" || strAccessType == "Both")
                      {
                          //Retrieve Historical gridview data - all records that have been posted so they can be edited.
                          GetHistory();
@@ -89,6 +93,10 @@ public partial class FLAdminReview : System.Web.UI.Page
                  }
              }
          }
+
+         //**Used for testing Access Type 
+         lblMessage.Visible = true;
+         lblMessage.Text = Session["flgroup"].ToString();
      }
 
 
@@ -606,7 +614,8 @@ public partial class FLAdminReview : System.Web.UI.Page
 
     protected void btnSubmit_OnClick(object sender, EventArgs e)
     {
-        strAccessType = vaClass.VerifyflAdminAccess();
+        //strAccessType = vaClass.VerifyflAdminAccess();
+        strAccessType = Session["flgroup"].ToString();
         //Code below is for Approver hitting submit button
         if (strAccessType == "Approver")
         {
@@ -660,6 +669,18 @@ public partial class FLAdminReview : System.Web.UI.Page
                             lblMessage.Visible = true;
                             lblMessage.Text = "The " + strJobName + " Fixtures Listing has been " + strCurrentStatus + ".";
                             tcData.Visible = false;
+
+                            //send Email to blaine once approved.
+                            if (strCurrentStatus == "Approved")
+                            {
+                                //Call Class to send Email
+                                string strBody = "The Committee has approved a new item for the Fixture Library.  Please visit the Administration at iddo:88/FLAdminReview.aspx page to Post.";
+                                //**Need to get from AD flAdmin group
+                                string strSendTo = "BlaineG@missionbell.com";
+                                string strSubject = "New Fixtures Library Approval";
+                                vaClass.SendEmail(strBody, strSendTo, strSubject);
+                            }
+
                         }
                         catch (Exception ex)
                         {

@@ -5,6 +5,7 @@ using System.Web;
 using System.DirectoryServices.AccountManagement;
 using System.Net.Mail; //Used for Email
 using System.Net; //Used for Emails
+using System.Security.Principal;
 
 /// Created By: Jenise Marcus
 /// Created Date: 6/3/2014
@@ -13,97 +14,104 @@ using System.Net; //Used for Emails
 public class VerifyAccess
 {
     //Public Declarations
-    public string strUsername;
-    public string strIsInAdminGroupFlag = "0";
-    public string strIsInApprovalGroupFlag = "0";
-    public string strAccessType;
+   // public string strUsername;
+   // public string strIsInAdminGroupFlag = "0";
+   // public string strIsInApprovalGroupFlag = "0";
+   // public string strAccessType;
 
+    //public string VerifyflAdminAccess()
+    //{
+        //**Currently not in use. Moved code to global.asax for now
 
-    public string VerifyflAdminAccess()
-    {
         //Checks if user is in flAdmin or flApproval group to help determine what type of access they will receive.
-        string strAdminGroup = "flAdmin";
-        string strApprovalGroup = "flApproval";
+    //    string strAdminGroup = "flAdmin";
+    //    string strApprovalGroup = "flApproval";
+
+     //   strUsername = Environment.UserName;
+        //String usertest = System.Security.Principal.WindowsIdentity.GetCurrent().Name;    
+     
+
+    //    string strtest = HttpContext.Current.Session["group"].ToString();
 
         //verifyAccess method in CommonMethods.cs class file.
-        PrincipalContext ctx = new PrincipalContext(ContextType.Domain);
+    //    PrincipalContext ctx = new PrincipalContext(ContextType.Domain);
         // find currently logged in user
-        UserPrincipal user = UserPrincipal.Current;
+        //UserPrincipal user = UserPrincipal.FindByIdentity(ctx, strUsername);
+   //     UserPrincipal user = UserPrincipal.Current;
         //strUsername = user.DisplayName;
+
         //***Need to accomadate ' apostrophe's 
         //strUsername = "Blaine Gulbinas";
-        strUsername = "Sharon de la Cruz";
+     //   strUsername = "Sharon de la Cruz";
         //strUsername = "Raquel Martinez";
-        UserPrincipal user2 = UserPrincipal.FindByIdentity(ctx, strUsername);
+        //UserPrincipal user2 = UserPrincipal.FindByIdentity(ctx, strUsername);
 
         //Find Admin group
-        GroupPrincipal Admingroup = GroupPrincipal.FindByIdentity(ctx, strAdminGroup);
-        GroupPrincipal Approvalgroup = GroupPrincipal.FindByIdentity(ctx, strApprovalGroup);
+     //   GroupPrincipal Admingroup = GroupPrincipal.FindByIdentity(ctx, strAdminGroup);
+     //   GroupPrincipal Approvalgroup = GroupPrincipal.FindByIdentity(ctx, strApprovalGroup);
 
-        
-        if (user2 != null)
-        {
-            try
-            {
+ //       if (user != null)
+  //      {
+  //          try
+  //          {
                 //Assigns Admin Flag is user logged in is in the group
-                if (user2.IsMemberOf(Admingroup))
-                {
-                    strIsInAdminGroupFlag = "1";
-                }
-                else
-                {
-                    strIsInAdminGroupFlag = "0";
-                }
-                //Assigns Approval Flag is user logged in is in the group
-                if (user2.IsMemberOf(Approvalgroup))
-                {
-                    strIsInApprovalGroupFlag = "1";
-                }
-                else
-                {
-                    strIsInApprovalGroupFlag = "0";
-                }
-
-            }
-            catch(Exception e)
-            {
-                return e.Message;
-            }
-        }
+  //              if (user.IsMemberOf(Admingroup))
+  //              {
+  //                  strIsInAdminGroupFlag = "1";
+  //              }
+  //              else
+  //              {
+  //                 strIsInAdminGroupFlag = "0";
+   //             }
+  //              //Assigns Approval Flag is user logged in is in the group
+  //              if (user.IsMemberOf(Approvalgroup))
+  //              {
+  //                  strIsInApprovalGroupFlag = "1";
+ //               }
+ //               else
+ //               {
+  //                  strIsInApprovalGroupFlag = "0";
+ //               }
+ //           }
+ //           catch(Exception e)
+ //           {
+ //               return e.Message;
+  //          }
+  //      }
 
         //Assigns string depending upon if user is not in either group, in on of the groups or is in both groups.
-        if (strIsInAdminGroupFlag == "0" && strIsInApprovalGroupFlag == "0")
-        {
-            strAccessType = "None";
-        }
-        else
-        {
-            if (strIsInAdminGroupFlag == "1" && strIsInApprovalGroupFlag == "1")
-            {
-                strAccessType = "Both";
-            }
-            else
-            {
-                if (strIsInAdminGroupFlag == "1")
-                {
-                    strAccessType = "Admin";
-                }
-                else
-                {
-                    strAccessType = "Approver";
-                }
-            }
-        }
+  //      if (strIsInAdminGroupFlag == "0" && strIsInApprovalGroupFlag == "0")
+  //      {
+  //          strAccessType = "None";
+  //      }
+  //      else
+  //      {
+  //          if (strIsInAdminGroupFlag == "1" && strIsInApprovalGroupFlag == "1")
+  //          {
+  //              strAccessType = "Both";
+  //          }
+  //          else
+  //          {
+   //             if (strIsInAdminGroupFlag == "1")
+   //             {
+   //                 strAccessType = "Admin";
+   //             }
+   //             else
+   //             {
+   //                 strAccessType = "Approver";
+   //             }
+    //        }
+   //     }
 
-        return strAccessType;
-    }
+    //    return strAccessType;
+   // }
 
 
 
 
     public void SendEmail(string strBody, string strSendTo, string strSubject)
     {
-        string strSendFrom = "test@misisonbell.com";
+        string strSendFrom = "support-noreply@misisonbell.com";
 
         //***Remove after testing
         strSendTo = "jenisem@missionbell.com";
@@ -123,7 +131,7 @@ public class VerifyAccess
         NetworkCredential network_cdr = new NetworkCredential();
         network_cdr.UserName = strSendFrom;
         //SMTP host
-        mail_client.Host = "SMTP.in.missionbell.com";
+        mail_client.Host = "SMTP.missionbell.com";
         mail_client.UseDefaultCredentials = false;
         mail_client.Credentials = network_cdr;
         //Now Send the message

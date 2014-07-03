@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Site.master" AutoEventWireup="true" CodeFile="FLAdminReview.aspx.cs" Inherits="FLAdminReview" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Site.master" AutoEventWireup="true" CodeFile="FLAdminReview.aspx.cs" Inherits="FLAdminReview" MaintainScrollPositionOnPostback="true" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="Ajax" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="HeadContent" Runat="Server"></asp:Content>
@@ -189,15 +189,16 @@
                         <div class="flLabels">
                             <asp:label ID="lblSelectTags" runat="server" Text="Select Tags (3 min):" />
                         </div>
+                        <div style="overflow-y:scroll; width:650px; height:100px">
                         <asp:CheckBoxList ID="cblTags" 
                                         runat="server" 
                                         DataSourceID="dsTags" 
-                                        RepeatColumns="8" 
-                                        CellPadding="5" 
+                                        RepeatColumns="7" 
+                                        CellPadding="2" 
                                         RepeatDirection="Horizontal" 
                                         DataTextField="Tags" 
                                         DataValueField="TagID" Font-Size="14px" 
-                                        OnDataBound="cblTags_OnDataBound"/>
+                                        OnDataBound="cblTags_OnDataBound"/></div>
                     </asp:TableCell>
                 </asp:TableRow>
 

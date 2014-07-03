@@ -91,7 +91,7 @@
                 <asp:TableCell>
                     <div class="fixturesFormDrop">              
                     <label for="recipient"> TAGS </label> &nbsp;                                       
-                    <asp:TextBox ID="tags0" runat="server" ReadOnly="true" Width="250" Height="20px" />
+                    <asp:TextBox ID="tags0" runat="server" ReadOnly="true" Width="250" Height="18px" />
      
                         <Ajax:PopupControlExtender ID="PopupControlExtender111" runat="server" TargetControlID="tags0" PopupControlID="Panel1" Position="Bottom" />
                         <input type="hidden" name="hidVal" id="hidVal" runat="server" />
@@ -104,7 +104,7 @@
                 <asp:TableCell>
                     <div class="fixturesTextInput">
                         <label for="recipient">JOB NUMBER&nbsp;</label>
-                        <asp:TextBox ID="jobNumber0" runat="server" Height="20px" />
+                        <asp:TextBox ID="jobNumber0" runat="server" Height="18px" Width="90" />
                     </div>
                 </asp:TableCell>
 
@@ -127,8 +127,39 @@
         </asp:Table>
         
 
+        <asp:GridView ID="gvPosts" runat="server" AutoGenerateColumns="false" Visible="true" ShowHeader="false" GridLines="None" Width="940" HorizontalAlign="Center" 
+                OnRowDataBound="gvPosts_OnRowDataBound" DataKeyNames="PostID">
+            <Columns>
+                <asp:TemplateField HeaderImageUrl="Images" ItemStyle-HorizontalAlign="Left">
+                    <ItemTemplate>
+                        <asp:Label ID="lblimage1" runat="server" Visible="false" Text='<%# Eval("Img1") %>'  />
+                        <div id="slideshow0">
+                            <asp:ListView ID="lvPics" runat="server" AutoGenerateColumns="false" Visible="true" ShowHeader="false">
+                                <LayoutTemplate>
+                                    <ul class="bjqs">
+                                        <asp:PlaceHolder ID="itemPlaceholder" runat="server" />
+                                    </ul>
+                                </LayoutTemplate>
 
-        <asp:GridView ID="gvPosts" runat="server" AutoGenerateColumns="false" Visible="true" ShowHeader="false" GridLines="None" Width="940" 
+                                <ItemTemplate>
+                                    <li>
+                                        <img src='<%# Eval("flImageThumb") %>' alt="no image" width="940" height="450" />
+                                    </li>
+                                </ItemTemplate>
+
+                                <EmptyDataTemplate>
+                                    <p>Sorry, no images have been uploaded for this post yet.</p>
+                                </EmptyDataTemplate>
+                            </asp:ListView>
+                        </div>
+                    </ItemTemplate>
+                </asp:TemplateField>
+                </Columns>
+            </asp:GridView>
+
+
+
+        <%--<asp:GridView ID="gvPosts" runat="server" AutoGenerateColumns="false" Visible="true" ShowHeader="false" GridLines="None" Width="940" 
                         HorizontalAlign="Center" OnRowDataBound="gvPosts_OnRowDataBound">
             <Columns>
                 <asp:TemplateField HeaderImageUrl="Images" ItemStyle-HorizontalAlign="Left">
@@ -145,7 +176,7 @@
                     </ItemTemplate>
                 </asp:TemplateField>  
             </Columns>
-        </asp:GridView>
+        </asp:GridView>--%>
 
 
     </form>

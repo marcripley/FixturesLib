@@ -11,6 +11,7 @@ using System.Web.UI.WebControls;
 using System.DirectoryServices.AccountManagement;
 using System.Web.Services;
 
+
 public partial class _Default : System.Web.UI.Page
 {
     //Public Declarations
@@ -19,7 +20,6 @@ public partial class _Default : System.Web.UI.Page
 
     public string strPrimImageLoc;
     public string strSecImageLoc;
-
 
     protected void Page_Load(object sender, EventArgs e)
     {
@@ -54,17 +54,20 @@ public partial class _Default : System.Web.UI.Page
                     currentCheckBox.Selected = true;
                 }
                 //Call GetPics method to retrieve Images from Database based upon TagID
-                GetPics();
+                //GetPics();
+                GetPosts();
             }
         }
     }
 
 
 
+
     protected void subcategoryList_SelectedIndexChanged(object sender, EventArgs e)
     {
         //Call GetPics method to retrieve Images from Database based upon SubCategoryID Selected
-        GetPics();
+        //GetPics();
+        GetPosts();
     }
 
 
@@ -131,7 +134,8 @@ public partial class _Default : System.Web.UI.Page
 
 
 
-    protected void GetPics()
+    //protected void GetPics()
+    protected void GetPosts()
     {
         //Clear string used for populating query criteria
         string strquery = string.Empty;
@@ -254,12 +258,52 @@ public partial class _Default : System.Web.UI.Page
         //Formatting for Images
         if (e.Row.RowType == DataControlRowType.DataRow)
         {
-            Label lblimg1 = (Label)e.Row.FindControl("lblimage1");
-            strPrimImageLoc = lblimg1.Text;
-            Image img = (Image)e.Row.FindControl("imgOriginal");
-            img.ImageUrl = strPrimImageLoc;
-            img.Attributes.Add("onmouseout", "this.src='" + strPrimImageLoc + "'");
-            Label lblOverlay = (Label)e.Row.FindControl("lblOverlayDesc");
+            //Label lblimg1 = (Label)e.Row.FindControl("lblimage1");
+            //strPrimImageLoc = lblimg1.Text;
+            //Image img = (Image)e.Row.FindControl("imgOriginal");
+            //img.ImageUrl = strPrimImageLoc;
+            //img.Attributes.Add("onmouseout", "this.src='" + strPrimImageLoc + "'");
+            //Label lblOverlay = (Label)e.Row.FindControl("lblOverlayDesc");
+
+            using (SqlConnection conn = new SqlConnection(MBIntranet_DEV))
+            {
+                using (SqlCommand cmd = new SqlCommand())
+                {
+                    ListView lvPics = ((ListView)e.Row.FindControl("lvPics"));
+                    int postId = int.Parse((gvPosts.DataKeys[e.Row.RowIndex].Value.ToString()));
+
+                    lblMessage.Text = Convert.ToString(postId);
+
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.CommandText = "flGetImages";
+                    cmd.Parameters.Add("@PostId", SqlDbType.Int).Value = 4;
+
+                    cmd.Connection = conn;
+
+                    try
+                    {
+                        SqlDataAdapter daPics = new SqlDataAdapter();
+                        daPics.SelectCommand = cmd;
+                        DataSet dsPics = new DataSet();
+                        daPics.Fill(dsPics);
+
+                        lvPics.DataSource = dsPics;
+                        lvPics.DataBind();
+
+                        daPics.Dispose();
+                    }
+                    catch (Exception ex)
+                    {
+                        lblMessage.Text = "Error Msg: " + ex.Message + " was received while trying to retrieve the Fixtures Library images. Please contact support@missionbell.com with a screenshot of the page";
+                    }
+                    finally
+                    {
+                        cmd.Dispose();
+                        conn.Close();
+                        conn.Dispose();
+                    }
+                }
+            }
         }
     }
 
@@ -271,7 +315,8 @@ public partial class _Default : System.Web.UI.Page
         GetTags();
 
         //Get Images based upon Criteria search provided in text/drop down boxes
-        GetPics();
+        //GetPics();
+        GetPosts();
     }
 
 
@@ -314,7 +359,8 @@ public partial class _Default : System.Web.UI.Page
 
 
 
-    /// Add Items to the CheckBoxList from sql server tables
+
+    //Add Items to the CheckBoxList from sql server tables
     public void AddItems()
     {
         //clear checklist

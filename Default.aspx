@@ -99,16 +99,12 @@
                             <asp:CheckBoxList ID="chkList" runat="server" Height="20" onclick="CheckItem(this)" />
                         </asp:Panel>
                         </div>
-                </asp:TableCell>
-
-                <asp:TableCell>
+                </asp:TableCell><asp:TableCell>
                     <div class="fixturesTextInput">
                         <label for="recipient">JOB NUMBER&nbsp;</label>
                         <asp:TextBox ID="jobNumber0" runat="server" Height="18px" Width="90" />
                     </div>
-                </asp:TableCell>
-
-                <asp:TableCell HorizontalAlign="Left">
+                </asp:TableCell><asp:TableCell HorizontalAlign="Left">
                     <asp:Button ID="btnSubmit" runat="server" Text="Search" OnClick="btnSubmit_OnClick" />&nbsp;
                     <asp:Button ID="btnClear" runat="server" Text="Clear Search" OnClick="btnClear_OnClick" />
                 </asp:TableCell>
@@ -132,7 +128,7 @@
             <Columns>
                 <asp:TemplateField HeaderImageUrl="Images" ItemStyle-HorizontalAlign="Left">
                     <ItemTemplate>
-                        <asp:Label ID="lblimage1" runat="server" Visible="false" Text='<%# Eval("Img1") %>'  />
+                        <%--<asp:Label ID="lblimage1" runat="server" Visible="false" Text='<%# Eval("Img1") %>'  />--%>
                         <div id="slideshow0">
                             <asp:ListView ID="lvPics" runat="server" AutoGenerateColumns="false" Visible="true" ShowHeader="false">
                                 <LayoutTemplate>
@@ -140,23 +136,24 @@
                                         <asp:PlaceHolder ID="itemPlaceholder" runat="server" />
                                     </ul>
                                 </LayoutTemplate>
-
                                 <ItemTemplate>
                                     <li>
                                         <img src='<%# Eval("flImageThumb") %>' alt="no image" width="940" height="450" />
+                                        
                                     </li>
                                 </ItemTemplate>
+                                
 
                                 <EmptyDataTemplate>
                                     <p>Sorry, no images have been uploaded for this post yet.</p>
                                 </EmptyDataTemplate>
                             </asp:ListView>
+                           
                         </div>
                     </ItemTemplate>
                 </asp:TemplateField>
                 </Columns>
             </asp:GridView>
-
 
 
         <%--<asp:GridView ID="gvPosts" runat="server" AutoGenerateColumns="false" Visible="true" ShowHeader="false" GridLines="None" Width="940" 
@@ -178,8 +175,6 @@
             </Columns>
         </asp:GridView>--%>
 
-
-    </form>
+        </form>
     </div>
-
 </asp:Content>

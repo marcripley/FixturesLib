@@ -54,7 +54,6 @@ public partial class _Default : System.Web.UI.Page
                     currentCheckBox.Selected = true;
                 }
                 //Call GetPics method to retrieve Images from Database based upon TagID
-                //GetPics();
                 GetPosts();
             }
         }
@@ -66,7 +65,6 @@ public partial class _Default : System.Web.UI.Page
     protected void subcategoryList_SelectedIndexChanged(object sender, EventArgs e)
     {
         //Call GetPics method to retrieve Images from Database based upon SubCategoryID Selected
-        //GetPics();
         GetPosts();
     }
 
@@ -132,9 +130,6 @@ public partial class _Default : System.Web.UI.Page
 
 
 
-
-
-    //protected void GetPics()
     protected void GetPosts()
     {
         //Clear string used for populating query criteria
@@ -233,12 +228,12 @@ public partial class _Default : System.Web.UI.Page
                         lblMessage.Text = string.Empty;
                         //trBlank.Visible = true;
                         trlblMessage.Visible = true;
-                    }                   
+                    }
                 }
                 //Error handeling
                 catch (Exception ex)
                 {
-                    lblMessage.Text = "Error Msg: " + ex.Message + " was received while trying to retrieve the Fixtures Library images. Please contact support@missionbell.com with a screenshot of the page";
+                    lblMessage.Text = "Error Msg: " + ex.Message + " was received while trying to retrieve the Fixtures Library posts. Please contact support@missionbell.com with a screenshot of the page";
                 }
                 finally
                 {
@@ -263,8 +258,8 @@ public partial class _Default : System.Web.UI.Page
             //Image img = (Image)e.Row.FindControl("imgOriginal");
             //img.ImageUrl = strPrimImageLoc;
             //img.Attributes.Add("onmouseout", "this.src='" + strPrimImageLoc + "'");
-            //Label lblOverlay = (Label)e.Row.FindControl("lblOverlayDesc");
-
+            Label lblOverlay = (Label)e.Row.FindControl("lblOverlayDesc");
+            
             using (SqlConnection conn = new SqlConnection(MBIntranet_DEV))
             {
                 using (SqlCommand cmd = new SqlCommand())
@@ -272,11 +267,12 @@ public partial class _Default : System.Web.UI.Page
                     ListView lvPics = ((ListView)e.Row.FindControl("lvPics"));
                     int postId = int.Parse((gvPosts.DataKeys[e.Row.RowIndex].Value.ToString()));
 
+                    lblMessage.Visible = true;
                     lblMessage.Text = Convert.ToString(postId);
 
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.CommandText = "flGetImages";
-                    cmd.Parameters.Add("@PostId", SqlDbType.Int).Value = 4;
+                    cmd.Parameters.Add("@PostId", SqlDbType.Int).Value = postId;
 
                     cmd.Connection = conn;
 
@@ -315,7 +311,6 @@ public partial class _Default : System.Web.UI.Page
         GetTags();
 
         //Get Images based upon Criteria search provided in text/drop down boxes
-        //GetPics();
         GetPosts();
     }
 
@@ -398,8 +393,5 @@ public partial class _Default : System.Web.UI.Page
         get { return hidVal.Value; }
         set { tags0.Text = value; }
     }
-
-
-
 
 }

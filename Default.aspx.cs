@@ -258,7 +258,7 @@ public partial class _Default : System.Web.UI.Page
             //Image img = (Image)e.Row.FindControl("imgOriginal");
             //img.ImageUrl = strPrimImageLoc;
             //img.Attributes.Add("onmouseout", "this.src='" + strPrimImageLoc + "'");
-            Label lblOverlay = (Label)e.Row.FindControl("lblOverlayDesc");
+            //Label lblOverlay = (Label)e.Row.FindControl("lblOverlayDesc");
             
             using (SqlConnection conn = new SqlConnection(MBIntranet_DEV))
             {
@@ -267,8 +267,8 @@ public partial class _Default : System.Web.UI.Page
                     ListView lvPics = ((ListView)e.Row.FindControl("lvPics"));
                     int postId = int.Parse((gvPosts.DataKeys[e.Row.RowIndex].Value.ToString()));
 
-                    lblMessage.Visible = true;
-                    lblMessage.Text = Convert.ToString(postId);
+                    //lblMessage.Visible = true;
+                    //lblMessage.Text = Convert.ToString(postId);
 
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.CommandText = "flGetImages";

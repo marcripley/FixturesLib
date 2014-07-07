@@ -123,37 +123,44 @@
         </asp:Table>
         
 
+
         <asp:GridView ID="gvPosts" runat="server" AutoGenerateColumns="false" Visible="true" ShowHeader="false" GridLines="None" Width="940" HorizontalAlign="Center" 
                 OnRowDataBound="gvPosts_OnRowDataBound" DataKeyNames="PostID">
-            <Columns>
+            <Columns>       
                 <asp:TemplateField HeaderImageUrl="Images" ItemStyle-HorizontalAlign="Left">
                     <ItemTemplate>
                         <%--<asp:Label ID="lblimage1" runat="server" Visible="false" Text='<%# Eval("Img1") %>'  />--%>
                         <div id="slideshow0">
+                        
                             <asp:ListView ID="lvPics" runat="server" AutoGenerateColumns="false" Visible="true" ShowHeader="false">
                                 <LayoutTemplate>
                                     <ul class="bjqs">
+                                        <%--<div id="slider">
+                                      <a href="#" class="control_next">>></a>
+                                      <a href="#" class="control_prev"><</a></div>--%>
                                         <asp:PlaceHolder ID="itemPlaceholder" runat="server" />
+
+                                        <%--<div class="img-overlay">
+                                            <h3 align="center"><asp:Label ID="lblOverlaytitle" runat="server" Text='<%# Eval("txtJobName") %>' ForeColor="White" /></h3>
+                                        </div>--%>
+
                                     </ul>
                                 </LayoutTemplate>
                                 <ItemTemplate>
                                     <li>
-                                        <img src='<%# Eval("flImageThumb") %>' alt="no image" width="940" height="450" />
-                                        
+                                        <img src='<%# Eval("flImageThumb") %>' alt="no image" width="940" height="450" title='<%# Eval("txtJobName") %>' />
                                     </li>
                                 </ItemTemplate>
-                                
-
-                                <EmptyDataTemplate>
+                                <%--<EmptyDataTemplate>
                                     <p>Sorry, no images have been uploaded for this post yet.</p>
-                                </EmptyDataTemplate>
+                                </EmptyDataTemplate>--%>
                             </asp:ListView>
-                           
                         </div>
                     </ItemTemplate>
                 </asp:TemplateField>
                 </Columns>
             </asp:GridView>
+
 
 
         <%--<asp:GridView ID="gvPosts" runat="server" AutoGenerateColumns="false" Visible="true" ShowHeader="false" GridLines="None" Width="940" 

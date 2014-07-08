@@ -486,7 +486,7 @@ public partial class FLAdminReview : System.Web.UI.Page
                         lblCurrPrimFile.Visible = true;
                         btnAddImages.Visible = true;
                         tblAdditionalImages.Visible = false;
-
+                        ViewState["strHasImages"] = "1";
                         while (reader.Read())
                         {
                             if (string.IsNullOrEmpty(txtCurrPrimFile.Text))
@@ -501,6 +501,7 @@ public partial class FLAdminReview : System.Web.UI.Page
                     }
                     else
                     {
+                        ViewState["strHasImages"] = "0";
                         txtCurrPrimFile.Visible = false;
                         lblCurrPrimFile.Visible = false;
                         btnAddImages.Visible = false;
@@ -679,15 +680,15 @@ public partial class FLAdminReview : System.Web.UI.Page
                             tcData.Visible = false;
 
                             //send Email to blaine once approved.
-                            if (strCurrentStatus == "Approved")
-                            {
+                            //if (strCurrentStatus == "Approved")
+                            //{
                                 //Call Class to send Email
-                                string strBody = "The Committee has approved a new item for the Fixture Library.  Please visit the Administration at iddo:88/FLAdminReview.aspx page to Post.";
+                             //   string strBody = "The Committee has approved a new item for the Fixture Library.  Please visit the Administration at iddo:88/FLAdminReview.aspx page to Post.";
                                 //**Need to get from AD flAdmin group
-                                string strSendTo = "BlaineG@missionbell.com";
-                                string strSubject = "New Fixtures Library Approval";
-                                vaClass.SendEmail(strBody, strSendTo, strSubject);
-                            }
+                             //   string strSendTo = "BlaineG@missionbell.com";
+                             //   string strSubject = "New Fixtures Library Approval";
+                             //   vaClass.SendEmail(strBody, strSendTo, strSubject);
+                            //}
                             //Update list of Submitted Fixtures on left hand side
                             GetPostList(strAccessType);
 
@@ -727,18 +728,7 @@ public partial class FLAdminReview : System.Web.UI.Page
             {
                 if (cbPostedStatus.Checked)
                 {
-                    string strHasImages = "0";
-
-                    if ((txtCurrPrimFile.Visible = true) && (tblAdditionalImages.Visible = false))
-                    {
-                        strHasImages = "1";
-                    }
-                    else
-                    {
-                        strHasImages = "0";
-                    }
-
-                    if (((!(PrimaryfileUpload.HasFile) && (!PrimaryfileUploadl.HasFile) && (!FileUpload2s.HasFile) && (!FileUpload2l.HasFile) && (!FileUpload3s.HasFile) && (!FileUpload3l.HasFile) && (!FileUpload4s.HasFile) && (!FileUpload4l.HasFile) && (!FileUpload5s.HasFile) && (!FileUpload5l.HasFile) && (strHasImages == "0"))) || (string.IsNullOrEmpty(ddCategory.SelectedValue) && string.IsNullOrEmpty(ddSubCategory.SelectedValue)))
+                    if (((!(PrimaryfileUpload.HasFile) && (!PrimaryfileUploadl.HasFile) && (!FileUpload2s.HasFile) && (!FileUpload2l.HasFile) && (!FileUpload3s.HasFile) && (!FileUpload3l.HasFile) && (!FileUpload4s.HasFile) && (!FileUpload4l.HasFile) && (!FileUpload5s.HasFile) && (!FileUpload5l.HasFile) && (ViewState["strHasImages"] == "0"))) || (string.IsNullOrEmpty(ddCategory.SelectedValue) && string.IsNullOrEmpty(ddSubCategory.SelectedValue)))
                     {
                         lblMessage.Visible = true;
                         lblMessage.Text = "You must select your categories and at least one image before posting.";

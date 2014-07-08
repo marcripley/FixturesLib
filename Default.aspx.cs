@@ -259,7 +259,8 @@ public partial class _Default : System.Web.UI.Page
             //img.ImageUrl = strPrimImageLoc;
             //img.Attributes.Add("onmouseout", "this.src='" + strPrimImageLoc + "'");
             //Label lblOverlay = (Label)e.Row.FindControl("lblOverlayDesc");
-            
+
+
             using (SqlConnection conn = new SqlConnection(MBIntranet_DEV))
             {
                 using (SqlCommand cmd = new SqlCommand())
@@ -274,7 +275,7 @@ public partial class _Default : System.Web.UI.Page
                     cmd.CommandText = "flGetImages";
                     cmd.Parameters.Add("@PostId", SqlDbType.Int).Value = postId;
 
-                    cmd.Connection = conn;
+                   cmd.Connection = conn;
 
                     try
                     {
@@ -302,6 +303,7 @@ public partial class _Default : System.Web.UI.Page
             }
         }
     }
+
 
 
 

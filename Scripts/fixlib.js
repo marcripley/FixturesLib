@@ -1,5 +1,5 @@
 jQuery(document).ready(function ($) {
-    $('#slideshow0').bjqs({
+    $('div.slideshow0').bjqs({
         'width': 940,
         'height': 450,
         'automatic': false,

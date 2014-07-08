@@ -101,6 +101,7 @@ public partial class FLAdminReview : System.Web.UI.Page
 
 
 
+
     private void GetPostList(string strAccessType)
     {
         //Passes the user's access type to the stored procedure returning list of appropriate Job listing awaiting action.
@@ -244,6 +245,7 @@ public partial class FLAdminReview : System.Web.UI.Page
 
     protected void ddCategory_SelectedIndexChanged(object sender, EventArgs e)
     {
+        ddSubCategory.Enabled = true;
         BindSubCategory();
     }
 
@@ -358,6 +360,7 @@ public partial class FLAdminReview : System.Web.UI.Page
                                 lblMessage.ForeColor = System.Drawing.Color.Red;
                             }
                             reader.Close();
+                            ddSubCategory.Enabled = true;
                         }
                         else
                         {
@@ -423,9 +426,14 @@ public partial class FLAdminReview : System.Web.UI.Page
 
                             if (reader["SubCategoryID"] != DBNull.Value)
                             {
+                                ddSubCategory.Enabled = true;
                                 dsSubCategories.SelectCommand = "SELECT CategoryID, CategoryName FROM flCategories WHERE ParentID = " + Convert.ToInt32(reader["CategoryID"]).ToString();
                                 ddSubCategory.DataBind();
                                 ddSubCategory.SelectedValue = Convert.ToInt32(reader["SubCategoryID"]).ToString();
+                            }
+                            else
+                            {
+                                ddSubCategory.Enabled = false;
                             }
                         }
 
@@ -642,7 +650,7 @@ public partial class FLAdminReview : System.Web.UI.Page
                         intStatus = 1;
                     }
                 }
-           
+
 
                 using (SqlConnection conn = new SqlConnection(MBIntranet_DEV))
                 {
@@ -680,6 +688,8 @@ public partial class FLAdminReview : System.Web.UI.Page
                                 string strSubject = "New Fixtures Library Approval";
                                 vaClass.SendEmail(strBody, strSendTo, strSubject);
                             }
+                            //Update list of Submitted Fixtures on left hand side
+                            GetPostList(strAccessType);
 
                         }
                         catch (Exception ex)
@@ -696,9 +706,7 @@ public partial class FLAdminReview : System.Web.UI.Page
                             conn.Dispose();
                         }
                     }
-                }
-
-                GetPostList(strAccessType);
+                }  
             }
         }
         else
@@ -707,25 +715,69 @@ public partial class FLAdminReview : System.Web.UI.Page
 
             string strNewFilePath;
 
-            //if ((cbPostedStatus.Checked) && (!(PrimaryfileUpload.HasFile) && (!PrimaryfileUploadl.HasFile) && (!FileUpload2s.HasFile) && (!FileUpload2l.HasFile) && (!FileUpload3s.HasFile) && (!FileUpload3l.HasFile) && (!FileUpload4s.HasFile) && (!FileUpload4l.HasFile) && (!FileUpload5s.HasFile) && (!FileUpload5l.HasFile)))
-            //{
-            //    if (string.IsNullOrEmpty(txtCurrPrimFile.Text))
-            //    {
-            //        lblMessage.Visible = true;
-            //        lblMessage.Text = "Please upload Images before Posting.";
-            //        lblMessage.ForeColor = System.Drawing.Color.Red;
-            //    }
-            //}
-            //else
-            //{
-            if (cbPostedStatus.Checked)
+            //(string.IsNullOrEmpty(categoryList0.SelectedValue)
+
+            if (!string.IsNullOrEmpty(ddCategory.SelectedValue) && string.IsNullOrEmpty(ddSubCategory.SelectedValue))
             {
-                intStatus = 3;
+                lblMessage.Visible = true;
+                lblMessage.Text = "Please select both a Category and SubCategory before saving your changes.";
+                lblMessage.ForeColor = System.Drawing.Color.Red;
             }
             else
             {
-                intStatus = 2;
-            }
+                if (cbPostedStatus.Checked)
+                {
+                    string strHasImages = "0";
+
+                    if ((txtCurrPrimFile.Visible = true) && (tblAdditionalImages.Visible = false))
+                    {
+                        strHasImages = "1";
+                    }
+                    else
+                    {
+                        strHasImages = "0";
+                    }
+
+                    if (((!(PrimaryfileUpload.HasFile) && (!PrimaryfileUploadl.HasFile) && (!FileUpload2s.HasFile) && (!FileUpload2l.HasFile) && (!FileUpload3s.HasFile) && (!FileUpload3l.HasFile) && (!FileUpload4s.HasFile) && (!FileUpload4l.HasFile) && (!FileUpload5s.HasFile) && (!FileUpload5l.HasFile) && (strHasImages == "0"))) || (string.IsNullOrEmpty(ddCategory.SelectedValue) && string.IsNullOrEmpty(ddSubCategory.SelectedValue)))
+                    {
+                        lblMessage.Visible = true;
+                        lblMessage.Text = "You must select your categories and at least one image before posting.";
+                        lblMessage.ForeColor = System.Drawing.Color.Red;
+                        return;
+                    }
+                    else
+                    {
+                        //check for any populated tags
+                        Int32 iFlagCount = 0;
+
+                        for (int i = 0; i < cblTags.Items.Count; i++)
+                        {
+                            if (cblTags.Items[i].Selected)
+                            {
+                                iFlagCount += 1;
+                                if (iFlagCount == 3)
+                                {
+                                    break;
+                                }
+                            }
+                        }
+                        if (iFlagCount > 2)
+                        {
+                            intStatus = 3;
+                        }
+                        else
+                        {
+                            lblMessage.Visible = true;
+                            lblMessage.Text = "You must select at least three Tags before posting.";
+                            lblMessage.ForeColor = System.Drawing.Color.Red;
+                            return;
+                        }
+                    }
+                }
+                else
+                {
+                    intStatus = 2;
+                }
 
                 using (SqlConnection conn = new SqlConnection(MBIntranet_DEV))
                 {
@@ -857,11 +909,13 @@ public partial class FLAdminReview : System.Web.UI.Page
                             InsertTags();
 
                             lblMessage.Visible = true;
-                                
-                            tcData.Visible = false;
 
+                            tcData.Visible = false;
+                            
+                            //Update the list of approved posts on Left hand side
                             GetPostList(strAccessType);
-                            GetHistory(); 
+                            //Update the list of Submitted posts on left hand side
+                            GetHistory();
                         }
                         catch (Exception ex)
                         {
@@ -876,9 +930,10 @@ public partial class FLAdminReview : System.Web.UI.Page
                             conn.Dispose();
                         }
                     }
-
-                GetPostList(strAccessType);
+                }
             }
+            
+
         }
     }
 

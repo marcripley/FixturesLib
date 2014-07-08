@@ -175,7 +175,7 @@
                                                     DataTextField="CategoryName" 
                                                     DataValueField="CategoryID" 
                                                     AutoPostBack="true" 
-                                                    CssClass="CustomComboBoxStyle"  
+                                                    CssClass="CustomComboBoxStyle" Enabled="false" 
                                                     OnItemInserted="ddSubCategory_OnItemInserted"/>
                                 </asp:TableCell>
                             </asp:TableRow>
@@ -206,8 +206,9 @@
                 <asp:TableRow ID="trUploads" runat="server">
                     <asp:TableCell>
                         <div class="flLabels">      
-                        <asp:Label runat="server" ID="lblCurrPrimFile" Visible="false" Text="Current Image(s):" />
-                        <asp:Button ID="btnAddImages" runat="server" Text="Add Images" OnClick="btnAddImages_Onclick" Visible="false" /><br />
+                        <asp:Label runat="server" ID="lblCurrPrimFile" Visible="false" Font-Underline="true" Text="Existing Image(s): " />
+                        <asp:Button ID="btnAddImages" runat="server" Text="Add Images" OnClick="btnAddImages_Onclick" Visible="false" />
+                        <asp:Label ID="lblAddImagesNote" runat="server" Text="**Adding images will replace the existing images listed below." ForeColor="Gray" /><br />
                         <%--<asp:TextBox ID="txtCurrPrimFile" runat="server" Visible="false" Width="500" Rows="7" TextMode="MultiLine" BorderColor="AliceBlue" />--%>
                        <asp:Label ID="txtCurrPrimFile" runat="server" Visible="false" Width="600" Font-Size="14px" />
                         <asp:Table ID="tblAdditionalImages" runat="server">

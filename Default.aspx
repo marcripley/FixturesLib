@@ -23,7 +23,7 @@
             var TxtBox_Tags = document.getElementById("<%=tags0.ClientID%>");
             TxtBox_Tags.value = s;
             document.getElementById('<%=hidVal.ClientID %>').value = s;
-        }  
+        }
     </script>
 </asp:Content>
 
@@ -121,7 +121,6 @@
                 </asp:TableCell>
             </asp:TableRow>
         </asp:Table>
-        
 
 
         <asp:GridView ID="gvPosts" runat="server" AutoGenerateColumns="false" Visible="true" ShowHeader="false" GridLines="None" Width="940" HorizontalAlign="Center" 
@@ -130,14 +129,11 @@
                 <asp:TemplateField HeaderImageUrl="Images" ItemStyle-HorizontalAlign="Left">
                     <ItemTemplate>
                         <%--<asp:Label ID="lblimage1" runat="server" Visible="false" Text='<%# Eval("Img1") %>'  />--%>
-                        <div id="slideshow0">
+                        <div class="slideshow0">
                         
                             <asp:ListView ID="lvPics" runat="server" AutoGenerateColumns="false" Visible="true" ShowHeader="false">
                                 <LayoutTemplate>
                                     <ul class="bjqs">
-                                        <%--<div id="slider">
-                                      <a href="#" class="control_next">>></a>
-                                      <a href="#" class="control_prev"><</a></div>--%>
                                         <asp:PlaceHolder ID="itemPlaceholder" runat="server" />
 
                                         <%--<div class="img-overlay">
@@ -154,13 +150,14 @@
                                 <%--<EmptyDataTemplate>
                                     <p>Sorry, no images have been uploaded for this post yet.</p>
                                 </EmptyDataTemplate>--%>
-                            </asp:ListView>
+                            </asp:ListView>                                              
                         </div>
+
                     </ItemTemplate>
                 </asp:TemplateField>
                 </Columns>
             </asp:GridView>
-
+  
 
 
         <%--<asp:GridView ID="gvPosts" runat="server" AutoGenerateColumns="false" Visible="true" ShowHeader="false" GridLines="None" Width="940" 

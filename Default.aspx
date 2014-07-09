@@ -129,7 +129,7 @@
                 <asp:TemplateField HeaderImageUrl="Images" ItemStyle-HorizontalAlign="Left">
                     <ItemTemplate>
                         <%--<asp:Label ID="lblimage1" runat="server" Visible="false" Text='<%# Eval("Img1") %>'  />--%>
-                        <div class="slideshow0">
+                        <div class="slider" id="slideshow<%# Container.DataItemIndex %>">
                         
                             <asp:ListView ID="lvPics" runat="server" AutoGenerateColumns="false" Visible="true" ShowHeader="false">
                                 <LayoutTemplate>

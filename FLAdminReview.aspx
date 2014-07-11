@@ -175,7 +175,7 @@
                                                     DataTextField="CategoryName" 
                                                     DataValueField="CategoryID" 
                                                     AutoPostBack="true" 
-                                                    CssClass="CustomComboBoxStyle" Enabled="false" 
+                                                    CssClass="CustomComboBoxStyle" 
                                                     OnItemInserted="ddSubCategory_OnItemInserted"/>
                                 </asp:TableCell>
                             </asp:TableRow>
@@ -220,10 +220,10 @@
                                     <asp:Label ID="Label1" runat="server" Text="Primary Image:" />
                                 </asp:TableCell>
                                 <asp:TableCell>
-                                    <asp:FileUpload ID="PrimaryfileUpload" runat="server" BorderColor="AliceBlue" />
+                                    <asp:FileUpload ID="PrimaryfileUpload" runat="server" ForeColor="Red" BorderColor="AliceBlue" />
                                 </asp:TableCell>
                                 <asp:TableCell>
-                                    <asp:FileUpload ID="PrimaryfileUploadl" runat="server" BorderColor="AliceBlue" />
+                                    <asp:FileUpload ID="PrimaryfileUploadl" runat="server" ForeColor="Red" BorderColor="AliceBlue" />
                                 </asp:TableCell>
                             </asp:TableRow>
                             <asp:TableRow>

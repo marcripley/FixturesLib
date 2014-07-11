@@ -20,6 +20,7 @@ public partial class FLAdminReview : System.Web.UI.Page
 
     string MBIntranet_DEV = ConfigurationManager.ConnectionStrings["MBData2005"].ConnectionString;
 
+    //Used for Calculating total Proj & Actual hours within labor details gridview.
     public Int32 ProjSum = 0;
     public Int32 ActualSum = 0;
     public Int32 intStatus;
@@ -28,24 +29,25 @@ public partial class FLAdminReview : System.Web.UI.Page
      VerifyAccess vaClass = new VerifyAccess();
      public string strAccessType;
 
-    //public Int32 intPostID;
-
 
      protected void Page_Load(object sender, EventArgs e)
      {
-
-         //Response.Redirect("ReDirect.aspx");
-
          if (!Page.IsPostBack)
          {
              //strAccessType = vaClass.VerifyflAdminAccess();
              strAccessType = Session["flgroup"].ToString();
              //strAccessType = "Both";
+
+             //Set ViewState variables for new Category & Subcategories added within
+             //ajax comboboxes.
+             ViewState["NewCatID"] = 0;
+             ViewState["NewSubCatID"] = 0;
+
              //For users with no access - display the following message
              if (strAccessType == "None")
              {
                  lblMessage.Visible = true;
-                 lblMessage.Text = "You do not have access to this page.  If you feel you've reached this message in error, please contact <u><a href=mailto:jenisem@missionbell.com?subject=FLAdmin>Support</a></u>.";
+                 lblMessage.Text = "You do not have access to this page.  Please contact <u><a href=mailto:jenisem@missionbell.com?subject=FLAdmin>Support</a></u> for any questions.";
                  lblMainTitle.Text = "Fixtures Library Administration Page";
                  tblMain.Visible = false;
              }
@@ -56,16 +58,19 @@ public partial class FLAdminReview : System.Web.UI.Page
 
                  if (!!String.IsNullOrEmpty(Request.QueryString["PostID"]))
                  {
+                     //Hide right hand side if no Post has been selected from the list
                      tcData.Visible = false;
                  }
                  else
                  {
+                     //Display the Right side/Record details and call methods to retrieve Labor and Job Info from Datbase
                      tcList.Visible = true;
                      tcData.Visible = true;
                      BindLaborDetails();
                      BindJobDetails();
                  }
 
+                 //Display/Hide appropriate field for the approver
                  if (strAccessType == "Approver")
                  {
                      lblMainTitle.Text = "Committe Review";
@@ -136,7 +141,7 @@ public partial class FLAdminReview : System.Web.UI.Page
                     catch (Exception ex)
                     {
                         lblMessage.Visible = true;
-                        lblMessage.Text = "Error Msg: " + ex.Message + " was received. Please contact support@missionbell.com with a screenshot of the page";
+                        lblMessage.Text = "Error Msg: " + ex.Message + " was received. Please contact <u><a href=mailto:jenisem@missionbell.com?subject=FLAdmin>Support</a></u> with a screenshot of the page";
                         lblMessage.ForeColor = System.Drawing.Color.Red;
                     }
                     finally
@@ -180,7 +185,7 @@ public partial class FLAdminReview : System.Web.UI.Page
                 catch (Exception ex)
                 {
                     lblMessage.Visible = true;
-                    lblMessage.Text = "Error Msg: " + ex.Message + " was received while trying to retrieve the Fixtures Library images. Please contact support@missionbell.com with a screenshot of the page";
+                    lblMessage.Text = "Error Msg: " + ex.Message + " while retrieving Posts. Please contact <u><a href=mailto:jenisem@missionbell.com?subject=FLAdmin>Support</a></u> with a screenshot of the page";
                     lblMessage.ForeColor = System.Drawing.Color.Red;
                 }
                 finally
@@ -197,7 +202,7 @@ public partial class FLAdminReview : System.Web.UI.Page
 
     private void BindLaborDetails()
     {
-        //
+    //Retrieving Labor Records
         using (SqlConnection conn = new SqlConnection(MBIntranet_DEV))
         {
             using (SqlCommand cmd = new SqlCommand())
@@ -218,7 +223,7 @@ public partial class FLAdminReview : System.Web.UI.Page
                     {
                         //Display No records message if no data found.
                         lblMessage.Visible = true;
-                        lblMessage.Text = "No Labor Details were retrieved. Please contact support@missionbell.com for assistance.";
+                        lblMessage.Text = "No Labor Details were retrieved. Please contact <u><a href=mailto:jenisem@missionbell.com?subject=FLAdmin>Support</a></u> for assistance.";
                     }
                     else
                     {
@@ -228,7 +233,7 @@ public partial class FLAdminReview : System.Web.UI.Page
                 //Error handeling
                 catch (Exception ex)
                 {
-                    lblMessage.Text = "Error Msg: " + ex.Message + " was received while trying to retrieve the Labor Details. Please contact support@missionbell.com with a screenshot of the page";
+                    lblMessage.Text = "Error Msg: " + ex.Message + " was received while trying to retrieve the Labor Informtaion. Please contact <u><a href=mailto:jenisem@missionbell.com?subject=FLAdmin>Support</a></u> with a screenshot of the page";
                 }
                 finally
                 {
@@ -245,13 +250,11 @@ public partial class FLAdminReview : System.Web.UI.Page
 
     protected void ddCategory_SelectedIndexChanged(object sender, EventArgs e)
     {
-        ddSubCategory.Enabled = true;
         BindSubCategory();
     }
 
 
-
-
+    
     private void BindSubCategory()
     {
         //clear subcategory list before adding to it
@@ -294,22 +297,33 @@ public partial class FLAdminReview : System.Web.UI.Page
                         {
                             //Display Message
                             lblMessage.Visible = true;
-                            lblMessage.Text = "That Category already exists in the Dropdown. If this message is an error, please contact support@missionbell.com.";
+                            lblMessage.Text = "That Category already exists in the Dropdown";
                             lblMessage.ForeColor = System.Drawing.Color.Red;
+                            ViewState["NewCatID"] = 0;
                         }
-                        reader.Close();
+                        else
+                        {
+                            ViewState["NewCatID"] = reader["CategoryID"];
+                            ddSubCategory.Items.Clear();
+                            //Add Select and All items to the Subcategory drop down list
+                            ddSubCategory.Items.Insert(0, "Please Add New SubCategory");
+                            //Filter Subcategory list based upon Category Selected
+                            //dsSubCategories.SelectCommand = "SELECT CategoryID, CategoryName FROM flCategories WHERE ParentID = " + ViewState["NewCatID"];
+                            ddSubCategory.DataBind();
+                        }
+                        reader.Close(); 
                     }
                     else
                     {
                         lblMessage.Visible = true;
-                        lblMessage.Text = "no data found";
+                        lblMessage.Text = "No data found";
                     }
                 }
                 //Error handeling
                 catch (Exception ex)
                 {
                     lblMessage.Visible = true;
-                    lblMessage.Text = "Error Msg: " + ex.Message + " was received while trying to retrieve the Labor Details. Please contact support@missionbell.com with a screenshot of the page";
+                    lblMessage.Text = "Error Msg: " + ex.Message + " was received while inserting a new category. Please contact <u><a href=mailto:jenisem@missionbell.com?subject=FLAdmin>Support</a></u> with the category name.";
                     lblMessage.ForeColor = System.Drawing.Color.Red;
                 }
                 finally
@@ -328,6 +342,7 @@ public partial class FLAdminReview : System.Web.UI.Page
     {
         //Insert new item in flCategories table
         string strCategory = "SubCategory";
+        int iCategoryID = Convert.ToInt32(ViewState["NewCatID"]);
 
         if (!string.IsNullOrEmpty(ddCategory.SelectedValue))
         {
@@ -340,7 +355,14 @@ public partial class FLAdminReview : System.Web.UI.Page
                     cmd.CommandText = "flInsertCategories";
                     cmd.Parameters.Add("@strItem", SqlDbType.VarChar).Value = strCategory;
                     cmd.Parameters.Add("@strText", SqlDbType.VarChar).Value = ddSubCategory.SelectedItem.ToString();
-                    cmd.Parameters.Add("@intCategoryID", SqlDbType.Int).Value = ddCategory.SelectedValue;
+                    if (iCategoryID != 0)
+                    {
+                        cmd.Parameters.Add("@intCategoryID", SqlDbType.Int).Value = iCategoryID;
+                    }
+                    else
+                    {
+                        cmd.Parameters.Add("@intCategoryID", SqlDbType.Int).Value = ddCategory.SelectedValue;
+                    }
                     cmd.Connection = conn;
 
                     try
@@ -356,11 +378,15 @@ public partial class FLAdminReview : System.Web.UI.Page
                             {
                                 //Display Message
                                 lblMessage.Visible = true;
-                                lblMessage.Text = "The SubCategory already exists in the Dropdown. If this message is an error, please contact support@missionbell.com.";
+                                lblMessage.Text = "The SubCategory already exists in the Dropdown";
                                 lblMessage.ForeColor = System.Drawing.Color.Red;
+                                ViewState["NewSubCatID"] = 0;
+                            }
+                            else
+                            {
+                                ViewState["NewSubCatID"] = reader["CategoryID"];
                             }
                             reader.Close();
-                            ddSubCategory.Enabled = true;
                         }
                         else
                         {
@@ -372,7 +398,7 @@ public partial class FLAdminReview : System.Web.UI.Page
                     catch (Exception ex)
                     {
                         lblMessage.Visible = true;
-                        lblMessage.Text = "Error Msg: " + ex.Message + " was received while trying to retrieve the Labor Details. Please contact support@missionbell.com with a screenshot of the page";
+                        lblMessage.Text = "Error Msg: " + ex.Message + " was received while inserting a subcategory. Please contact <u><a href=mailto:jenisem@missionbell.com?subject=FLAdmin>Support</a></u> with the subcategory name.";
                         lblMessage.ForeColor = System.Drawing.Color.Red;
                     }
                     finally
@@ -395,10 +421,9 @@ public partial class FLAdminReview : System.Web.UI.Page
 
 
 
+
     private void BindJobDetails()
     {
-        //submit selected values to stored procedure and retrieve results
-        //temp populated into gridveiw
         using (SqlConnection conn = new SqlConnection(MBIntranet_DEV))
         {
             using (SqlCommand cmd = new SqlCommand())
@@ -426,21 +451,17 @@ public partial class FLAdminReview : System.Web.UI.Page
 
                             if (reader["SubCategoryID"] != DBNull.Value)
                             {
-                                ddSubCategory.Enabled = true;
                                 dsSubCategories.SelectCommand = "SELECT CategoryID, CategoryName FROM flCategories WHERE ParentID = " + Convert.ToInt32(reader["CategoryID"]).ToString();
                                 ddSubCategory.DataBind();
                                 ddSubCategory.SelectedValue = Convert.ToInt32(reader["SubCategoryID"]).ToString();
-                            }
-                            else
-                            {
-                                ddSubCategory.Enabled = false;
-                            }
+                            }   
                         }
 
                         GetImages();
 
                         if (Convert.ToInt32(reader["StatusID"]) == 3)
                         {
+                            ViewState["CurrentStatusid"] = 3;
                             cbArchive.Visible = true;
                             cbPostedStatus.Visible = false;
                         }
@@ -450,7 +471,7 @@ public partial class FLAdminReview : System.Web.UI.Page
                 catch (Exception ex)
                 {
                     lblMessage.Visible = true;
-                    lblMessage.Text = "Error Message: " + ex.Message + " was received while trying to retrieve Project Data. Please contact support@missionbell.com for assistance.";
+                    lblMessage.Text = "Error Message: " + ex.Message + " was received while retrieving Project Data. Please contact <u><a href=mailto:jenisem@missionbell.com?subject=FLAdmin>Support</a></u> with a screenshot of the page.";
                 }
                 finally
                 {
@@ -482,10 +503,13 @@ public partial class FLAdminReview : System.Web.UI.Page
                     SqlDataReader reader = cmd.ExecuteReader();
                     if (reader.HasRows)
                     {
+                        //Display list of current images stored in database and display button for user
+                        //to replace them.
                         txtCurrPrimFile.Visible = true;
                         lblCurrPrimFile.Visible = true;
                         btnAddImages.Visible = true;
                         tblAdditionalImages.Visible = false;
+                        //Store flag value stating there are images - used in "Submit" button process.
                         ViewState["strHasImages"] = "1";
                         while (reader.Read())
                         {
@@ -501,7 +525,10 @@ public partial class FLAdminReview : System.Web.UI.Page
                     }
                     else
                     {
+                        //Store flag value stating there are images - used in "Submit" button process.
                         ViewState["strHasImages"] = "0";
+                        //Hide list of current images stored in database and display browse buttons to 
+                        //upload images.
                         txtCurrPrimFile.Visible = false;
                         lblCurrPrimFile.Visible = false;
                         btnAddImages.Visible = false;
@@ -511,7 +538,7 @@ public partial class FLAdminReview : System.Web.UI.Page
                 catch (Exception ex)
                 {
                     lblMessage.Visible = true;
-                    lblMessage.Text = "Error Message: " + ex.Message + " was received while trying to retrieve Project Data. Please contact support@missionbell.com for assistance.";
+                    lblMessage.Text = "Error Message: " + ex.Message + " was received while retrieving the Images. Please contact <u><a href=mailto:jenisem@missionbell.com?subject=FLAdmin>Support</a></u> with a screenshot.";
                 }
                 finally
                 {
@@ -560,11 +587,13 @@ public partial class FLAdminReview : System.Web.UI.Page
                 catch (Exception e2)
                 {
                     lblMessage.Visible = true;
-                    lblMessage.Text = "Error Msg:" + e2.Message + " Please contact support@missionbell.com";
+                    lblMessage.Text = "Error Msg:" + e2.Message + " was received while retrieving the Tags. Please contact <u><a href=mailto:jenisem@missionbell.com?subject=FLAdmin>Support</a></u> with a screenshot.";
                 }
                 finally
                 {
                     cmd.Dispose();
+                    conn.Close();
+                    conn.Dispose();
                 }
             }
         }
@@ -674,6 +703,7 @@ public partial class FLAdminReview : System.Web.UI.Page
                             string strCurrentStatus = reader["Status"].ToString();
                             reader.Close();
 
+                            //Update list of posts listed on left hand side
                             GetPostList(strAccessType);
                             lblMessage.Visible = true;
                             lblMessage.Text = "The " + strJobName + " Fixtures Listing has been " + strCurrentStatus + ".";
@@ -690,15 +720,12 @@ public partial class FLAdminReview : System.Web.UI.Page
                              //   vaClass.SendEmail(strBody, strSendTo, strSubject);
                             //}
                             //Update list of Submitted Fixtures on left hand side
-                            GetPostList(strAccessType);
-
                         }
                         catch (Exception ex)
                         {
                             lblMessage.Visible = true;
-                            lblMessage.Text = "Error Message: " + ex.Message + " while attemting to update the record. Please contact support@missionbell.com for assistance.";
+                            lblMessage.Text = "Error Message: " + ex.Message + " while attemting to update the record. Please contact <u><a href=mailto:jenisem@missionbell.com?subject=FLAdmin>Support</a></u> for assistance.";
                             lblMessage.ForeColor = System.Drawing.Color.Red;
-
                         }
                         finally
                         {
@@ -713,10 +740,7 @@ public partial class FLAdminReview : System.Web.UI.Page
         else
         {
             //Code for Admin Submitting Record
-
             string strNewFilePath;
-
-            //(string.IsNullOrEmpty(categoryList0.SelectedValue)
 
             if (!string.IsNullOrEmpty(ddCategory.SelectedValue) && string.IsNullOrEmpty(ddSubCategory.SelectedValue))
             {
@@ -728,6 +752,7 @@ public partial class FLAdminReview : System.Web.UI.Page
             {
                 if (cbPostedStatus.Checked)
                 {
+                    //Ensure at least one file has been uploaded and Categories have been selected before allowing admin to post.
                     if (((!(PrimaryfileUpload.HasFile) && (!PrimaryfileUploadl.HasFile) && (!FileUpload2s.HasFile) && (!FileUpload2l.HasFile) && (!FileUpload3s.HasFile) && (!FileUpload3l.HasFile) && (!FileUpload4s.HasFile) && (!FileUpload4l.HasFile) && (!FileUpload5s.HasFile) && (!FileUpload5l.HasFile) && (ViewState["strHasImages"] == "0"))) || (string.IsNullOrEmpty(ddCategory.SelectedValue) && string.IsNullOrEmpty(ddSubCategory.SelectedValue)))
                     {
                         lblMessage.Visible = true;
@@ -766,8 +791,35 @@ public partial class FLAdminReview : System.Web.UI.Page
                 }
                 else
                 {
-                    intStatus = 2;
+                    //Determine if the current Status id is 3(Posted) then it will remain, otherwise
+                    //assign status id to approved.  Viewstate id is populated during the BindJobDetails 
+                    //method and if the record has already been posted (meaning it is displaying in the 
+                    //Historical/Posted gridview
+                    Int32 intCurrentStatusid = Convert.ToInt32(ViewState["CurrentStatusid"]);
+                    if (intCurrentStatusid == 3)
+                    {
+                        intStatus = 3;
+                    }
+                    else
+                    {
+                        intStatus = 2;
+                    }
                 }
+
+                //Retrieve the new subcategory id. 
+                //Issue with obtaining selected value of combobox after inserting new item.  Selectedvalue displays the item instead of the id.
+                Int32 iSubCategory = Convert.ToInt32(ViewState["NewSubCatID"]);
+                if (iSubCategory == 0)
+                {
+                    iSubCategory = Convert.ToInt32(ddSubCategory.SelectedValue);
+                }
+
+                //Re-assign status id if archived checkbox is checked.
+                if (cbArchive.Checked)
+                {
+                    intStatus = 5;
+                }
+
 
                 using (SqlConnection conn = new SqlConnection(MBIntranet_DEV))
                 {
@@ -776,7 +828,7 @@ public partial class FLAdminReview : System.Web.UI.Page
                         cmd.CommandType = CommandType.StoredProcedure;
                         cmd.CommandText = "flUpdateAdmin";
                         cmd.Parameters.Add("@PostID", SqlDbType.Int).Value = Convert.ToInt32(Request.QueryString["PostID"]);
-                        cmd.Parameters.Add("@intSubCategoryID", SqlDbType.VarChar).Value = ddSubCategory.SelectedValue;
+                        cmd.Parameters.Add("@intSubCategoryID", SqlDbType.Int).Value = iSubCategory;
                         cmd.Parameters.Add("@intPosted", SqlDbType.Int).Value = intStatus;
 
                         //Verify File exists in Attachment field before submitting form
@@ -882,7 +934,6 @@ public partial class FLAdminReview : System.Web.UI.Page
                         }
                         cmd.Connection = conn;
 
-
                         try
                         {
                             conn.Open();
@@ -895,11 +946,11 @@ public partial class FLAdminReview : System.Web.UI.Page
                                 lblMessage.Text = "The " + strJobName + " Fixtures Listing has been Updated.";
                             }
                             reader.Close();
-
+                            
+                            //Update Tags in database.
                             InsertTags();
 
                             lblMessage.Visible = true;
-
                             tcData.Visible = false;
                             
                             //Update the list of approved posts on Left hand side
@@ -910,7 +961,7 @@ public partial class FLAdminReview : System.Web.UI.Page
                         catch (Exception ex)
                         {
                             lblMessage.Visible = true;
-                            lblMessage.Text = "Error Msg: " + ex.Message + " while updating the record. Please call support@missionbell.com for assistance.";
+                            lblMessage.Text = "Error Msg: " + ex.Message + " while updating the record. Please contact <u><a href=mailto:jenisem@missionbell.com?subject=FLAdmin>Support</a></u> for assistance.";
                             lblMessage.ForeColor = System.Drawing.Color.Red;
                         }
                         finally
@@ -922,8 +973,6 @@ public partial class FLAdminReview : System.Web.UI.Page
                     }
                 }
             }
-            
-
         }
     }
 

@@ -31,7 +31,7 @@
 <div class="fixturesFilter">
 <form id="fixturesSelect" runat="server">
 
-    <Ajax:ToolkitScriptManager runat="server" ID="ScriptManager1" ScriptMode="Release" />
+    <Ajax:ToolkitScriptManager runat="server" ID="ScriptManager1" />
 
 
     <%--Images Displayed in Table below--%>
@@ -64,15 +64,13 @@
                     <div class="fixturesFormDrop">
                     <label for="recipient">SUBCATEGORY</label>
                     <asp:DropDownList ID="subcategoryList0" 
-                                        runat="server" 
-                                        
+                                        runat="server"  
                                         DataTextField="CategoryName" 
                                         DataValueField="CategoryID" 
                                         Height="20px"
-                                        OnSelectedIndexChanged="subcategoryList_SelectedIndexChanged" 
+                                        OnSelectedIndexChanged="subcategoryList_SelectedIndexChanged"   
                                         Width="180px" 
-                                        AutoPostBack="True" 
-                                        AppendDataBoundItems="true">             
+                                        AutoPostBack="True">             
                     </asp:DropDownList>
                     <Ajax:CascadingDropDown ID="cddSubCategories" 
                                             TargetControlID="subcategoryList0"   
@@ -122,11 +120,11 @@
   <div id="mainContent">
 
 
-               <%--<asp:UpdatePanel ID="panelimages" runat="server">
-               <ContentTemplate>--%>
+               <asp:UpdatePanel ID="panelimages" runat="server">
+               <ContentTemplate>
 
         <asp:GridView ID="gvPosts" runat="server" AutoGenerateColumns="false" Visible="true" ShowHeader="false" GridLines="None" Width="940" Height="470" HorizontalAlign="Center" 
-                OnRowDataBound="gvPosts_OnRowDataBound" DataKeyNames="PostID" BorderStyle="Solid">
+                OnRowDataBound="gvPosts_OnRowDataBound" DataKeyNames="PostID" BorderStyle="Solid" OnSelectedIndexChanging="gvPosts_OnSelectedIndexChanging">
             <Columns>       
                 <asp:TemplateField HeaderImageUrl="Images" ItemStyle-HorizontalAlign="Left">
                     <ItemTemplate>
@@ -144,7 +142,7 @@
                                 </LayoutTemplate>
                                 <ItemTemplate>
                                     <li>
-                                        <asp:LinkButton ID="lbImageDetails" runat="server" OnClick="lbImageDetails_OnClick">
+                                        <asp:LinkButton ID="lbImageDetails" runat="server" OnClick="lbImageDetails_OnClick" Text="select">
                                         <img src='<%# Eval("flImageThumb") %>' alt="no image" width="940" height="450" title='<%# Eval("txtJobName") %>' />
                                         </asp:LinkButton>
                                     </li>
@@ -160,15 +158,15 @@
                 </Columns>
             </asp:GridView>
 
-            <%--</ContentTemplate>
-            </asp:UpdatePanel>--%>
+            </ContentTemplate>
+            </asp:UpdatePanel>
         </div>
 
 
             <section id="flDetailsSection">
 
-            <asp:UpdatePanel ID="updatepanel2" runat="server">
-            <ContentTemplate>
+            <%--<asp:UpdatePanel ID="updatepanel2" runat="server">
+            <ContentTemplate>--%>
 
                 <h2 id="H1" class="flDetailsHeader"><asp:Label ID="lblProjectName" runat="server" /></h2>
 
@@ -252,11 +250,11 @@
             <asp:Label ID="lblComments" runat="server" CssClass="flComments" />
         </div>
 
-        </ContentTemplate>
+        <%--</ContentTemplate>
        <%-- <Triggers>
             <%--<asp:AsyncPostBackTrigger ControlID="lbImageDetails" EventName="Click" />
-        </Triggers>--%>
-        </asp:UpdatePanel>
+        </Triggers>-
+        </asp:UpdatePanel>--%>
       </section>
 
     </div>

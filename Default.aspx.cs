@@ -87,8 +87,14 @@ public partial class _Default : System.Web.UI.Page
 
     protected void lbImageDetails_OnClick(object sender, EventArgs e)
     {
-        ViewState["CurrPostID"] = 1;
-        
+        //LinkButton btn = sender as LinkButton;
+        //GridViewRow gvr = btn.NamingContainer as GridViewRow;
+        //string key = gvPosts.DataKeys[gvr.RowIndex].Value.ToString();
+
+        //ViewState["CurrPostID"] = gvPosts.SelectedValue;
+
+        //Int32 ipostid = Convert.ToInt32(ViewState["CurrPostID"]);
+
         tblOrganizationInfo.Visible = true;
         lblLaborDetailsHeader.Visible = true;
         tblProjDetails.Visible = true;
@@ -99,7 +105,7 @@ public partial class _Default : System.Web.UI.Page
         BindLaborDetails();
         GetCurrentTags();
 
-        updatepanel2.Update();
+       //updatepanel2.Update();
     }
 
 
@@ -283,6 +289,14 @@ public partial class _Default : System.Web.UI.Page
                 }
             }
         }
+    }
+
+
+
+    protected void gvPosts_OnSelectedIndexChanging(object sender, GridViewSelectEventArgs e)
+    {
+        ViewState["CurrPostID"] = gvPosts.SelectedValue;
+        Int32 ipostid = Convert.ToInt32(ViewState["CurrPostID"]);
     }
 
 

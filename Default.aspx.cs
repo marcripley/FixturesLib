@@ -126,7 +126,6 @@ public partial class _Default : System.Web.UI.Page
     }
 
 
-
     protected void subcategoryList_SelectedIndexChanged(object sender, EventArgs e)
     {
        // ViewState["CurrPostID"] = 0;
@@ -358,7 +357,7 @@ public partial class _Default : System.Web.UI.Page
                 //Int32 itestid = 2;
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.CommandText = "flGetJobDetails";
-                cmd.Parameters.Add("@PostID", SqlDbType.Int).Value = 1;
+                cmd.Parameters.Add("@PostID", SqlDbType.Int).Value = ViewState["CurrPostID"];
                 cmd.Connection = conn;
 
                 try

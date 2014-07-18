@@ -167,7 +167,7 @@
 
             <section id="flDetailsSection">
 
-            <asp:UpdatePanel ID="updatepanel2" runat="server">
+            <asp:UpdatePanel ID="updatepanel2" runat="server" UpdateMode="Conditional">
             <ContentTemplate>
 
                 <h2 id="H1" class="flDetailsHeader"><asp:Label ID="lblProjectName" runat="server" /></h2>

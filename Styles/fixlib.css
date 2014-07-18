@@ -1,6 +1,6 @@
 /* CSS for Mission Bell Manufacturing, Inc.
  * Custom CSS rules for the Fixtures Library pages
- * Author: Marc Ripley (http://marcripley.com)
+ * Author: Marc Ripley (http://marcripley.com) and Jenise Marcus
  * Colors: #660000 (dark red),#990000 (brighter red), #034c95 (dark blue), #c6deff (light blue), #030 (dark green)
 		   #888s and #444s for grays, mostly #f6f6f6 for whitishs
  */
@@ -47,6 +47,9 @@ div.fixturesTextInput {display: inline;width: 20%;margin: 10px;color: #888;}
 .fixturesProj {position: relative;float: left;width: 540px;margin: 4px;background: #222;}
 .fixturesProjTitle {position: absolute;bottom: 0;left: 0;width: 100%;height: 60px;background: #222;background: rgba(0,0,0,0.7);}
 .fixturesProjTitle p {font-size: 18px;line-height: 24px;padding-top:14px;color: #fff;}
+
+/* Gridviews and Tables */
+table#MainContent_gvPosts {float: left;margin: 0 40px 0;}
 
 /* Single FL Post Details */
 

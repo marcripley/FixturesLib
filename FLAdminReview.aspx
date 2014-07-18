@@ -1,10 +1,49 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Site.master" AutoEventWireup="true" CodeFile="FLAdminReview.aspx.cs" Inherits="FLAdminReview" MaintainScrollPositionOnPostback="true" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="Ajax" %>
 
-<asp:Content ID="Content1" ContentPlaceHolderID="HeadContent" Runat="Server"></asp:Content>
+<asp:Content ID="Content1" ContentPlaceHolderID="HeadContent" Runat="Server">
+<script type="text/javascript">
+
+    function validateCombobox() {
+        var id = document.getElementById('<%=ddCategory.ClientID %>');
+        var inputs = id.getElementsByTagName('input');
+        var i;
+                    
+        for (i = 0; i < inputs.length; i++) {
+            if (inputs[i].type == 'text') {
+                if (inputs[i].value != "" && inputs[i].value != null) {
+                    alert(inputs[i].value);
+                    return true;
+                }
+                else {
+                    alert("null value");
+                    return false;
+                }
+
+                //break;
+            }
+        }
+    }
+
+
+    function validatecb() {
+    if (document.getElementById('cbPostedStatus').checked){
+    alert("checked");
+    return true;    
+    }
+    else
+    {
+    alert("false");
+    return false;
+    }
+    }
+    
+</script>
+</asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" Runat="Server">
 
 <form runat="server">
+
 <Ajax:ToolkitScriptManager runat="server" ID="ScriptManager1" ScriptMode="Release" />
 
 <%--Drop down list datasources--%>
@@ -162,6 +201,8 @@
                                                     AppendDataBoundItems="true" 
                                                     OnItemInserted="ddCategory_OnItemInserted">
                                     </Ajax:ComboBox>
+                                    
+                                    
                                 </asp:TableCell>
                                     
                                 <asp:TableCell>
@@ -177,6 +218,7 @@
                                                     AutoPostBack="true" 
                                                     CssClass="CustomComboBoxStyle" 
                                                     OnItemInserted="ddSubCategory_OnItemInserted"/>
+                                                    
                                 </asp:TableCell>
                             </asp:TableRow>
                         </asp:Table>
@@ -288,7 +330,7 @@
 
             <asp:TableRow ID="trButtons" runat="server">
                 <asp:TableCell>
-                    <br /><asp:Button ID="btnSubmit" runat="server" Text="Submit" OnClick="btnSubmit_OnClick" Font-Size="16px" />
+                    <br /><asp:Button ID="btnSubmit" runat="server" Text="Submit" OnClick="btnSubmit_OnClick" Font-Size="16px" OnClientClick="return validatecb();" />
                 </asp:TableCell>
             </asp:TableRow>
 
@@ -299,4 +341,3 @@
 
 </form>
 </asp:Content>
-

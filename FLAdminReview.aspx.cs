@@ -98,6 +98,34 @@ public partial class FLAdminReview : System.Web.UI.Page
                  }
              }
          }
+       
+
+         else
+         //code for Post back
+         {
+             //If first time page is submitted and we have file in FileUpload control but not in session 
+             // Store the values to SEssion Object 
+            // if (Session["PrimaryfileUpload"] == null && PrimaryfileUpload.HasFile)
+           //  {
+            //     Session["PrimaryfileUpload"] = PrimaryfileUpload;
+            //     Label1.Text = PrimaryfileUpload.FileName;     
+            // }
+             // Next time submit and Session has values but FileUpload is Blank 
+             // Return the values from session to FileUpload 
+            // else if (Session["PrimaryfileUpload"] != null && (!PrimaryfileUpload.HasFile))
+            // {
+            //     PrimaryfileUpload = (FileUpload)Session["PrimaryfileUpload"];
+            //     Label1.Text = PrimaryfileUpload.FileName;
+            // }
+             // Now there could be another sictution when Session has File but user want to change the file 
+             // In this case we have to change the file in session object 
+            // else if (PrimaryfileUpload.HasFile)
+           //  {
+           //      Session["PrimaryfileUpload"] = PrimaryfileUpload;
+           //      Label1.Text = PrimaryfileUpload.FileName;
+            // }
+         }
+
 
          //**Used for testing Access Type 
          lblMessage.Visible = true;
@@ -652,6 +680,8 @@ public partial class FLAdminReview : System.Web.UI.Page
 
     protected void btnSubmit_OnClick(object sender, EventArgs e)
     {
+        
+
         //strAccessType = vaClass.VerifyflAdminAccess();
         strAccessType = Session["flgroup"].ToString();
         //Code below is for Approver hitting submit button
@@ -753,7 +783,7 @@ public partial class FLAdminReview : System.Web.UI.Page
                 if (cbPostedStatus.Checked)
                 {
                     //Ensure at least one file has been uploaded and Categories have been selected before allowing admin to post.
-                    if (((!(PrimaryfileUpload.HasFile) && (!PrimaryfileUploadl.HasFile) && (!FileUpload2s.HasFile) && (!FileUpload2l.HasFile) && (!FileUpload3s.HasFile) && (!FileUpload3l.HasFile) && (!FileUpload4s.HasFile) && (!FileUpload4l.HasFile) && (!FileUpload5s.HasFile) && (!FileUpload5l.HasFile) && (ViewState["strHasImages"] == "0"))) || (string.IsNullOrEmpty(ddCategory.SelectedValue) && string.IsNullOrEmpty(ddSubCategory.SelectedValue)))
+                    if (((!(PrimaryfileUpload.HasFile) && (!PrimaryfileUploadl.HasFile) && (!FileUpload2s.HasFile) && (!FileUpload2l.HasFile) && (!FileUpload3s.HasFile) && (!FileUpload3l.HasFile) && (!FileUpload4s.HasFile) && (!FileUpload4l.HasFile) && (!FileUpload5s.HasFile) && (!FileUpload5l.HasFile) && (ViewState["strHasImages"] == "0"))) || (string.IsNullOrEmpty(ddCategory.SelectedValue) || string.IsNullOrEmpty(ddSubCategory.SelectedValue)))
                     {
                         lblMessage.Visible = true;
                         lblMessage.Text = "You must select your categories and at least one image before posting.";
@@ -831,7 +861,7 @@ public partial class FLAdminReview : System.Web.UI.Page
                         cmd.Parameters.Add("@intSubCategoryID", SqlDbType.Int).Value = iSubCategory;
                         cmd.Parameters.Add("@intPosted", SqlDbType.Int).Value = intStatus;
 
-                        //Verify File exists in Attachment field before submitting form
+                        //Verify File exists in Attachment fields before submitting form
                         if (PrimaryfileUpload.HasFile)
                         {
                             strNewFilePath = GetImagePath(PrimaryfileUpload.FileName);
@@ -982,18 +1012,18 @@ public partial class FLAdminReview : System.Web.UI.Page
     protected void InsertTags()
     {
         //only do this portion if one of the tags are selected
-        string cbFlag = "0";
-        for (int i = 0; i < cblTags.Items.Count; i++)
-        {
-            if (cblTags.Items[i].Selected)
-            {
-                cbFlag = "1";
-                break;
-            }
-        }
+        //string cbFlag = "0";
+        //for (int i = 0; i < cblTags.Items.Count; i++)
+        //{
+        //    if (cblTags.Items[i].Selected)
+        //    {
+        //        cbFlag = "1";
+        //        break;
+        //    }
+       // }
 
-        if (cbFlag == "1")
-        {
+        //if (cbFlag == "1")
+       // {
 
             //Delete record with postid
             using (SqlConnection conn = new SqlConnection(MBIntranet_DEV))
@@ -1065,7 +1095,7 @@ public partial class FLAdminReview : System.Web.UI.Page
                     }
                 }
             }
-        }
+       // }
     }
 
 

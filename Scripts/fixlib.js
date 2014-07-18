@@ -16,3 +16,31 @@ jQuery(document).ready(function ($) {
         });
     }
 });
+
+
+$(document).ready(function () {
+    //    var s = $("#sticker");
+    //    var pos = s.position();
+    //    $(window).scroll(function () {
+    //        var windowpos = $(window).scrollTop();
+    //        s.html("Distance from top:" + pos.top + "<br />Scroll position: " + windowpos);
+    //        if (windowpos >= pos.top) {
+    //            s.addClass("stick");
+    //        } else {
+    //            s.removeClass("stick");
+    //        }
+    //    });
+    //});
+
+
+    // If the user scrolls below the post details, they will fix to the top of the window
+    var flDetails = $("#flDetailsSection"), pos = flDetails.offset();
+
+    $(window).scroll(function () {
+        if ($(this).scrollTop() > pos.top && $(flDetails.css('position') == 'static')) {
+            $(flDetails).css('position', 'fixed');
+        } else {
+            $(flDetails).css('position', 'static');
+        }
+    })
+});

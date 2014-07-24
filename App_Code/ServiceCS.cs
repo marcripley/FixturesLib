@@ -8,6 +8,12 @@ using AjaxControlToolkit;
 using System.Collections.Generic;
 using System.Web.Script.Services;
 
+
+
+//****Currently NOT IN USE ******
+//Using SelectedIndexChanged from dropdown menus instead.
+
+
 /// <summary>
 /// Summary description for ServiceCS
 /// </summary>

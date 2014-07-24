@@ -73,7 +73,13 @@
 
 <asp:Table ID="tblMain" runat="server" Width="90%" HorizontalAlign="Center">
     <asp:TableRow>
+        <asp:TableCell>
+            <span style="color:Maroon;Font-Size:14px"><asp:HyperLink ID="hpl_FLHome" runat="server" NavigateUrl="~/Default.aspx" Target="_blank" Font-Underline="true">FL Home</asp:HyperLink></span>&nbsp;&nbsp;&nbsp;         
+        </asp:TableCell>
+    </asp:TableRow>
+    <asp:TableRow><asp:TableCell>&nbsp;</asp:TableCell></asp:TableRow>
 
+    <asp:TableRow>
     <%--Contains List of Pending items for Committee and List of Approved items for Admin--%>
         <asp:TableCell ID="tcList" runat="server" HorizontalAlign="Left" BorderStyle="None" VerticalAlign="Top">
 
@@ -91,8 +97,6 @@
                     </asp:TemplateField>
                 </Columns>
             </asp:GridView>
-
-
             <br />
             <br />
             <br />
@@ -265,7 +269,7 @@
                                     <asp:FileUpload ID="PrimaryfileUpload" runat="server" ForeColor="Red" BorderColor="AliceBlue" />
                                 </asp:TableCell>
                                 <asp:TableCell>
-                                    <asp:FileUpload ID="PrimaryfileUploadl" runat="server" ForeColor="Red" BorderColor="AliceBlue" />
+                                    <asp:FileUpload ID="PrimaryfileUploadl" runat="server" BorderColor="AliceBlue" />
                                 </asp:TableCell>
                             </asp:TableRow>
                             <asp:TableRow>

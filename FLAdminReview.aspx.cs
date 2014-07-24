@@ -128,8 +128,8 @@ public partial class FLAdminReview : System.Web.UI.Page
 
 
          //**Used for testing Access Type 
-         lblMessage.Visible = true;
-         lblMessage.Text = Session["flgroup"].ToString();
+         //lblMessage.Visible = true;
+        // lblMessage.Text = Session["flgroup"].ToString();
      }
 
 
@@ -261,6 +261,7 @@ public partial class FLAdminReview : System.Web.UI.Page
                 //Error handeling
                 catch (Exception ex)
                 {
+                    lblMessage.Visible = true;
                     lblMessage.Text = "Error Msg: " + ex.Message + " was received while trying to retrieve the Labor Informtaion. Please contact <u><a href=mailto:jenisem@missionbell.com?subject=FLAdmin>Support</a></u> with a screenshot of the page";
                 }
                 finally
@@ -973,6 +974,7 @@ public partial class FLAdminReview : System.Web.UI.Page
                             {
                                 reader.Read();
                                 string strJobName = reader["txtJobName"].ToString();
+                                lblMessage.Visible = true;
                                 lblMessage.Text = "The " + strJobName + " Fixtures Listing has been Updated.";
                             }
                             reader.Close();
@@ -1119,8 +1121,7 @@ public partial class FLAdminReview : System.Web.UI.Page
             strFilePath = "images/" + lblProjectName.Text.Trim() + "/" + strFileName;
 
             return strFilePath;
-            //PrimaryfileUpload.SaveAs(Server.MapPath(strFilePath));
-            
+            //PrimaryfileUpload.SaveAs(Server.MapPath(strFilePath));       
         }
         catch (Exception ex)
         {

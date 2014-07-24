@@ -7,6 +7,11 @@ using System.Net.Mail; //Used for Email
 using System.Net; //Used for Emails
 using System.Security.Principal;
 
+
+//****Currently NOT IN USE ******
+//using Global.asa file
+
+
 /// Created By: Jenise Marcus
 /// Created Date: 6/3/2014
 /// Description: Determines user logged onto the site using AD. Checks the two FL groups to determine their access.

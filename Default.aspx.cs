@@ -10,27 +10,22 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.DirectoryServices.AccountManagement;
 using System.Web.Services;
-using AjaxControlToolkit;
+
 
 public partial class _Default : System.Web.UI.Page
 {
     //Public Declarations
-    public string strUsername;
+    //public string strUsername;
     string MBIntranet_DEV = ConfigurationManager.ConnectionStrings["MBData2005"].ConnectionString;
 
     public string strPrimImageLoc;
-    public string strSecImageLoc;
-
-    public Int32 ProjSum = 0;
-    public Int32 ActualSum = 0;
-
+    //public string strSecImageLoc;
 
     protected void Page_Load(object sender, EventArgs e)
     {
         if (!IsPostBack)
-        {           
+        {
             //Initial Page Open
-            ViewState["CurrPostID"] = 0;
 
             //Add List of Tags to checklist drop down
             AddItems();
@@ -42,6 +37,7 @@ public partial class _Default : System.Web.UI.Page
             lblMessage.Visible = true;
             lblMessage.Text = "To begin your search, please select a Category, Tag or enter a Job Number";
             
+
             //Check for Pre-populated tags
             //Tags can be pre-populated if the user has selected the tags from the Project details screen
             //Tags will then automatically filter the selection and pre-populate the "Tags" text box if previously selected
@@ -57,121 +53,53 @@ public partial class _Default : System.Web.UI.Page
                 {
                     currentCheckBox.Selected = true;
                 }
+
                 //Call GetPics method to retrieve Images from Database based upon TagID
                 GetPosts();
-            }      
+            }
         }
-
-        ScriptManager1.RegisterAsyncPostBackControl(gvPosts);
-
-       // this.RegisterPostBackControl();
     }
 
 
 
-    //private void RegisterPostBackControl()
-    //{
-    //    foreach (GridViewRow row in gvPosts.Rows)
-    //    {
-            
-    //        LinkButton lnkFull = row.FindControl("lbImageDetails") as LinkButton;
-    //        string templb = Convert.ToString(lnkFull);
-    //        if (!string.IsNullOrEmpty(templb))
-    //        {
-    //            ScriptManager.GetCurrent(this).RegisterPostBackControl(lnkFull);
-    //        }
-    //    }
-   // }
-
-
-
-    protected void lbImageDetails_OnClick(object sender, EventArgs e)
+    protected void categoryList_SelectedIndexChanged(object sender, EventArgs e)
     {
-        //LinkButton btn = sender as LinkButton;
-        //GridViewRow gvr = btn.NamingContainer as GridViewRow;
-        //string key = gvPosts.DataKeys[gvr.RowIndex].Value.ToString();
+        //Call GetTags Method - Keeps Populate Tag textbox populated with selected items after postback
+        GetTags();
 
-        //ViewState["CurrPostID"] = gvPosts.SelectedValue;
+        //clear subcategory list before adding to it
+        subcategoryList0.Items.Clear();
 
-        //Int32 ipostid = Convert.ToInt32(ViewState["CurrPostID"]);
+        //If user selects "All" from subcategory drop down, provide all otherwise filter by selected category
+        if (categoryList0.SelectedValue == "0")
+        {
+            subcategoryList0.Items.Clear();
+        }
+        else
+        {
+            //Add Select and All items to the Subcategory drop down list
+            subcategoryList0.Items.Insert(0, new ListItem("Select", "0"));
+            subcategoryList0.Items.Insert(1, new ListItem("All", "1"));
 
-        tblOrganizationInfo.Visible = true;
-        lblLaborDetailsHeader.Visible = true;
-        tblProjDetails.Visible = true;
-        lblCommentslbl.Visible = true;
-        upLaborDetails.Visible = true;
-
-        BindJobDetails();
-        BindLaborDetails();
-        GetCurrentTags();
-
-       //updatepanel2.Update();
+            if (categoryList0.SelectedValue == "1")
+            {
+                dsSubCategories.SelectCommand = "SELECT CategoryID, CategoryName FROM flCategories WHERE ParentID IS NOT NULL";
+            }
+            else
+            {
+                dsSubCategories.SelectCommand = "SELECT CategoryID, CategoryName FROM flCategories WHERE ParentID = " + categoryList0.SelectedValue;
+            }
+        }
+        subcategoryList0.DataBind();
     }
 
-
-
-    protected void gvPosts_Onchangeing(object sender, GridViewSelectEventArgs e)
-    {
-       // gvPosts.SelectedIndex = Convert.ToInt32(e.NewSelectedIndex);
-       //Int32 intkey = Convert.ToInt32(gvPosts.SelectedDataKey.Value);
-       //ViewState["CurrPostID"] = Convert.ToInt32(gvPosts.SelectedValue).ToString();
-       //int itest = Convert.ToInt32(ViewState["CurrPostID"]);
-
-      // updatepanel2.Update();
-
-      // tblOrganizationInfo.Visible = true;
-      // lblLaborDetailsHeader.Visible = true;
-      // tblProjDetails.Visible = true;
-      // lblCommentslbl.Visible = true;
-      // upLaborDetails.Visible = true;
-
-      // BindJobDetails();
-     //  BindLaborDetails();
-      // GetCurrentTags();
-       
-    }
 
 
     protected void subcategoryList_SelectedIndexChanged(object sender, EventArgs e)
     {
-       // ViewState["CurrPostID"] = 0;
-        tblOrganizationInfo.Visible = false;
-        lblLaborDetailsHeader.Visible = false;
-        tblProjDetails.Visible = false;
-        lblCommentslbl.Visible = false;
-        upLaborDetails.Visible = false;
-
-
         //Call GetPics method to retrieve Images from Database based upon SubCategoryID Selected
         GetPosts();
     }
-
-  
-
-
-    protected void GetTags()
-    {
-        //Clear string used for populating query criteria
-        string strTags = string.Empty;
-
-        //Loop through list of items checked within Tags checkbox list
-        for (int i = 0; i < chkList.Items.Count; i++)
-        {
-            if (chkList.Items[i].Selected)
-            {
-                if (string.IsNullOrEmpty(strTags))
-                {
-                    strTags = chkList.Items[i].Text;
-                }
-                else
-                {
-                    strTags += ", " + chkList.Items[i].Text; ;
-                }
-            }
-        }
-        tags0.Text = strTags;
-    }
-
 
 
 
@@ -260,9 +188,9 @@ public partial class _Default : System.Web.UI.Page
                     gvPosts.DataSource = cmd.ExecuteReader();
                     gvPosts.DataBind();
 
+                    //Display No records message if no data found.
                     if (gvPosts.Rows.Count == 0)
-                    {
-                        //Display No records message if no data found.
+                    {  
                         gvPosts.Visible = false;
                         lblMessage.Text = "There are no Records that match your criteria.";
                         trlblMessage.Visible = true;
@@ -271,14 +199,13 @@ public partial class _Default : System.Web.UI.Page
                     {
                         gvPosts.Visible = true;
                         lblMessage.Text = string.Empty;
-                        //trBlank.Visible = true;
                         trlblMessage.Visible = true;
-                    }                    
+                    }
                 }
-                //Error handeling
                 catch (Exception ex)
                 {
-                    lblMessage.Text = "Error Msg: " + ex.Message + " was received while trying to retrieve the Fixtures Library posts. Please contact support@missionbell.com with a screenshot of the page";
+                    //Error handeling
+                    lblMessage.Text = "Error Msg: " + ex.Message + " was received while retrieving FL Images. Please contact <u><a href=mailto:support@missionbell.com?subject=FL:RetreiveImages;Default.aspx>Support</a></u> with a screenshot of the page. Thank You.";
                 }
                 finally
                 {
@@ -292,65 +219,54 @@ public partial class _Default : System.Web.UI.Page
 
 
 
-    protected void gvPosts_OnSelectedIndexChanging(object sender, GridViewSelectEventArgs e)
-    {
-        ViewState["CurrPostID"] = gvPosts.SelectedValue;
-        Int32 ipostid = Convert.ToInt32(ViewState["CurrPostID"]);
-    }
-
-
-
-
     protected void gvPosts_OnRowDataBound(object sender, GridViewRowEventArgs e)
     {
-        //Formatting for Images
+        //Append Caption for each Image
         if (e.Row.RowType == DataControlRowType.DataRow)
         {
-            using (SqlConnection conn = new SqlConnection(MBIntranet_DEV))
-            {
-                using (SqlCommand cmd = new SqlCommand())
-                {
-                    ListView lvPics = ((ListView)e.Row.FindControl("lvPics"));
-                    int ipostId = int.Parse((gvPosts.DataKeys[e.Row.RowIndex].Value.ToString()));
-                    
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.CommandText = "flGetImages";
-                    cmd.Parameters.Add("@PostId", SqlDbType.Int).Value = ipostId;
-                    cmd.Connection = conn;
-
-                    try
-                    {
-                        SqlDataAdapter daPics = new SqlDataAdapter();
-                        daPics.SelectCommand = cmd;
-                        DataSet dsPics = new DataSet();
-                        daPics.Fill(dsPics);
-
-                        lvPics.DataSource = dsPics;
-                        lvPics.DataBind();
-
-                        daPics.Dispose();
-                    }
-                    catch (Exception ex)
-                    {
-                        lblMessage.Text = "Error Msg: " + ex.Message + " was received while trying to retrieve the Fixtures Library images. Please contact support@missionbell.com with a screenshot of the page";
-                    }
-                    finally
-                    {
-                        cmd.Dispose();
-                        conn.Close();
-                        conn.Dispose();
-                    }
-                }
-            }
+            Label lblimg1 = (Label)e.Row.FindControl("lblimage1");
+            strPrimImageLoc = lblimg1.Text;
+            Image img = (Image)e.Row.FindControl("imgOriginal");
+            img.ImageUrl = strPrimImageLoc;
+            img.Attributes.Add("onmouseout", "this.src='" + strPrimImageLoc + "'");
+            Label lblOverlay = (Label)e.Row.FindControl("lblOverlayDesc");
         }
     }
 
 
 
+    protected void GetTags()
+    {
+        //Keeps Populate Tag textbox populated with selected items after postback
+
+        //Clear string used for populating query criteria
+        string strTags = string.Empty;
+
+        //Loop through the list Tag checkboxes to find items checked.
+        //append each checked tag to string and assign to Checkboxlist
+        for (int i = 0; i < chkList.Items.Count; i++)
+        {
+            if (chkList.Items[i].Selected)
+            {
+                if (string.IsNullOrEmpty(strTags))
+                {
+                    strTags = chkList.Items[i].Text;
+                }
+                else
+                {
+                    strTags += ", " + chkList.Items[i].Text; ;
+                }
+            }
+        }
+        //assign Textbox
+        tags0.Text = strTags;
+    }
+
+
 
     protected void btnSubmit_OnClick(object sender, EventArgs e)
     {
-        //Populate Tag textbox
+        //Keeps Populate Tag textbox populated with selected items after postback
         GetTags();
 
         //Get Images based upon Criteria search provided in text/drop down boxes
@@ -360,182 +276,10 @@ public partial class _Default : System.Web.UI.Page
 
 
 
-    private void BindJobDetails()
-    {
-        //submit selected values to stored procedure and retrieve results
-        //temp populated into gridveiw
-        using (SqlConnection conn = new SqlConnection(MBIntranet_DEV))
-        {
-            using (SqlCommand cmd = new SqlCommand())
-            {
-                //Int32 itestid = 2;
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.CommandText = "flGetJobDetails";
-                cmd.Parameters.Add("@PostID", SqlDbType.Int).Value = ViewState["CurrPostID"];
-                cmd.Connection = conn;
-
-                try
-                {
-                    conn.Open();
-                    SqlDataReader reader = cmd.ExecuteReader();
-
-                    //get code for no records found
-                    if (reader.HasRows)
-                    {
-                        reader.Read();
-                        lblProjectName.Text = reader["txtJobName"].ToString();
-                        lblJobNum.Text = reader["txtJobNumber"].ToString();
-                        lblGC.Text = reader["txtCustomerName"].ToString();
-                        lblArhitect.Text = reader["txtArchitectName"].ToString();
-                        lblJobCity.Text = reader["txtJobCity"].ToString();
-                        lblCategory.Text = reader["CategoryName"].ToString();
-                        lblSubCat.Text = reader["SubCategoryName"].ToString();
-                        lblComments.Text = reader["Comments"].ToString();
-                    }
-                }
-                catch (Exception ex)
-                {
-                    lblMessage.Text = "Error Msg: " + ex.Message + " was received while trying to retrieve the Fixtures Library images. Please contact support@missionbell.com with a screenshot of the page";
-                }
-                finally
-                {
-                    cmd.Dispose();
-                    conn.Close();
-                    conn.Dispose();
-                }
-            }
-        }
-    }
-
-
-
-    protected void GetCurrentTags()
-    {
-        //submit selected values to stored procedure and retrieve results
-        //temp populated into gridveiw
-        using (SqlConnection conn = new SqlConnection(MBIntranet_DEV))
-        {
-            using (SqlCommand cmd = new SqlCommand())
-            {
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.CommandText = "flGetTags";
-                cmd.Parameters.Add("@PostID", SqlDbType.Int).Value = 1;
-                cmd.Connection = conn;
-
-                try
-                {
-                    conn.Open();
-                    SqlDataReader reader = cmd.ExecuteReader();
-
-                    //get code for no records found
-                    if (reader.HasRows)
-                    {
-                        while (reader.Read())
-                        {
-                            HyperLink hp = new HyperLink();
-                            hp.Text = reader["Tags"].ToString();
-                            hp.NavigateUrl = "~/Default.aspx?TagID=" + reader["TagID"] + "&Tag=" + hp.Text;
-                            hp.CssClass = "post-tag";
-                            tcTags.Controls.Add(hp);
-                        }
-                    }
-                }
-                catch (Exception ex)
-                {
-                    lblMessage.Text = "Error Msg: " + ex.Message + " was received while trying to retrieve the Fixtures Library images. Please contact support@missionbell.com with a screenshot of the page";
-                }
-                finally
-                {
-                    cmd.Dispose();
-                    conn.Close();
-                    conn.Dispose();
-                }
-            }
-        }
-
-    }
-
-
-
-    private void BindLaborDetails()
-    {
-        //submit selected values to stored procedure and retrieve results
-        //temp populated into gridveiw
-        using (SqlConnection conn = new SqlConnection(MBIntranet_DEV))
-        {
-            using (SqlCommand cmd = new SqlCommand())
-            {
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.CommandText = "flGetLaborDetails";
-                cmd.Parameters.Add("@PostID", SqlDbType.Int).Value = 1;
-                cmd.Connection = conn;
-
-                try
-                {
-                    SqlDataAdapter myadapter = new SqlDataAdapter();
-                    myadapter.SelectCommand = cmd;
-                    DataSet myDataSet = new DataSet();
-                    myadapter.Fill(myDataSet);
-
-                    DataView myDataView = new DataView();
-                    myDataView = myDataSet.Tables[0].DefaultView;
-
-                    gvLaborDetails.DataSource = myDataView;
-                    gvLaborDetails.DataBind();
-
-                    //Display No records message if no data found.
-                    if (gvLaborDetails.Rows.Count == 0)
-                    {
-                        gvLaborDetails.Visible = false;
-                    }
-                    else
-                    {
-                        gvLaborDetails.Visible = true;
-                    }
-                    myadapter.Dispose();
-                }
-                catch (Exception ex)
-                {
-                    lblMessage.Text = "Error Msg: " + ex.Message + " was received while trying to retrieve the Fixtures Library images. Please contact support@missionbell.com with a screenshot of the page";
-                }
-                finally
-                {
-                    cmd.Dispose();
-                    conn.Close();
-                    conn.Dispose();
-                }
-            }
-        }
-    }
-
-
-
-    protected void gvLaborDetails_RowDataBound(object sender, GridViewRowEventArgs e)
-    {
-        if (e.Row.RowType == DataControlRowType.DataRow)
-        {
-            ProjSum = ProjSum + Convert.ToInt32(DataBinder.Eval(e.Row.DataItem, "sWorkOrderHoursBudget"));
-            ActualSum = ActualSum + Convert.ToInt32(DataBinder.Eval(e.Row.DataItem, "sWorkOrderHoursActual"));
-        }
-        if (e.Row.RowType == DataControlRowType.Footer)
-        {
-            Label obj = (Label)e.Row.FindControl("ProjSum");
-            obj.Text = Convert.ToString(ProjSum);
-
-            Label obj2 = (Label)e.Row.FindControl("ActualSum");
-            obj2.Text = Convert.ToString(ActualSum);
-        }
-    }
-
-
-
     protected void btnClear_OnClick(object sender, EventArgs e)
     {
-        //****RE-test clearing drop downs
-
         //Clear search criteria boxes
-        cddCategories.SelectedValue = "0";
-        //cddSubCategories.SelectedValue = "0";
+        categoryList0.SelectedValue = "0";
         subcategoryList0.Items.Clear();
         tags0.Text = string.Empty;
         chkList.ClearSelection();
@@ -544,8 +288,49 @@ public partial class _Default : System.Web.UI.Page
 
 
 
+
+    //Add Items to the CheckBoxList from sql server tables
+    public void AddItems()
+    {
+        //clear checklist
+        chkList.Items.Clear();
+
+        DataTable table = new DataTable();
+
+        using (SqlConnection conn = new SqlConnection(MBIntranet_DEV))
+        {
+            // write the sql statement to execute
+            string sql = "SELECT TagID, Tags FROM flTags";
+
+            // instantiate the command object to fire
+            using (SqlCommand cmd = new SqlCommand(sql, conn))
+            {
+                using (SqlDataAdapter ad = new SqlDataAdapter(cmd))
+                {
+                    // fire Fill method to fetch the data and fill into DataTable
+                    ad.Fill(table);
+                }
+                
+                ListItem li = new ListItem();
+                //loop through list in select statement and attach to checklist
+                foreach (DataRow row in table.Rows)
+                {
+                    li = new ListItem(row["Tags"].ToString(), Convert.ToInt32(row["TagID"]).ToString());
+                    chkList.Items.Add(li);
+                }
+            }
+        }
+    }
+
+
     //Remaining code below Checkboxlist drop down
-    /// Set the Width of the Combo
+    // Get or Set the Text shown in the Combo
+    public string Text
+    {
+        get { return hidVal.Value; }
+        set { tags0.Text = value; }
+    }
+    // Set the Width of the Combo
     public int Width
     {
         set { tags0.Width = value; }
@@ -567,48 +352,6 @@ public partial class _Default : System.Web.UI.Page
         set { tags0.Font.Size = value; }
     }
 
-
-
-
-    //Add Items to the CheckBoxList from sql server tables
-    public void AddItems()
-    {
-        //clear checklist
-        chkList.Items.Clear();
-
-        DataTable table = new DataTable();
-
-        using (SqlConnection conn = new SqlConnection(MBIntranet_DEV))
-        {
-            // write the sql statement to execute
-            string sql = "SELECT TagID, Tags FROM flTags";
-            // instantiate the command object to fire
-            using (SqlCommand cmd = new SqlCommand(sql, conn))
-            {
-                using (SqlDataAdapter ad = new SqlDataAdapter(cmd))
-                {
-                    // fire Fill method to fetch the data and fill into DataTable
-                    ad.Fill(table);
-                }
-                //SqlDataReader reader = cmd.ExecuteReader();
-                ListItem li = new ListItem();
-                foreach (DataRow row in table.Rows)
-                {
-                    li = new ListItem(row["Tags"].ToString(), Convert.ToInt32(row["TagID"]).ToString());
-                    chkList.Items.Add(li);
-                }
-            }
-        }
-    }
-
-
-
-    /// Get or Set the Text shown in the Combo
-    public string Text
-    {
-        get { return hidVal.Value; }
-        set { tags0.Text = value; }
-    }
 
 
 }

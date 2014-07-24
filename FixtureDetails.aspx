@@ -1,44 +1,73 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Site.master" AutoEventWireup="true" CodeFile="FixtureDetails.aspx.cs" Inherits="FixtureDetails" EnableViewState="true" %>
-
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Site.master" AutoEventWireup="true" CodeFile="FixtureDetails.aspx.cs" Inherits="FixtureDetails" MaintainScrollPositionOnPostback="true" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="HeadContent" Runat="Server"></asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" Runat="Server">
 
 <form runat="server">
-
     <asp:Table ID="tblMain" runat="server" Width="95%" HorizontalAlign="Center">
+
         <asp:TableRow><asp:TableCell>&nbsp;</asp:TableCell></asp:TableRow>
-        <asp:TableRow><asp:TableCell><span style="color:Maroon;font-style:italic;Font-Size:16px">Click on an image to enlarge it</span></asp:TableCell></asp:TableRow>
+        <asp:TableRow ID="trlblMessage" runat="server">
+            <asp:TableHeaderCell ID="TableHeaderCell1" ColumnSpan="5" runat="server">
+                <asp:Label ID="lblMessage" runat="server" visible="false" ForeColor="#660000" Font-Size="15px" />
+            </asp:TableHeaderCell>
+        </asp:TableRow>
+        <asp:TableRow>
+            <asp:TableCell>&nbsp;</asp:TableCell>
+        </asp:TableRow>
+        <asp:TableRow>
+            <asp:TableCell>
+                <span style="color:Maroon;Font-Size:14px"><asp:HyperLink ID="hpl_FLHome" runat="server" NavigateUrl="~/Default.aspx" Target="_self" Font-Underline="true">FL Home</asp:HyperLink></span>&nbsp;&nbsp;&nbsp;
+                <span style="color:Maroon;Font-Size:14px"><asp:HyperLink ID="hpl_FLAdmin" runat="server" NavigateUrl="~/FLAdminReview.aspx" Target="_self" Visible="false" Font-Underline="true">FL Administration</asp:HyperLink></span>
+            </asp:TableCell>
+        </asp:TableRow>
         
         <asp:TableRow runat="server">
-            <asp:TableCell runat="server">
-                <asp:GridView ID="gvImages" runat="server" ShowHeader="false" AutoGenerateColumns="false">
-                    <Columns>
-                        <asp:TemplateField>
-                            <ItemTemplate>
-                                <asp:HyperLink ID="HyperLink1" runat="server" NavigateUrl='<%# Eval("flImageThumb") %>' rel="shadowbox[c3-energy]">
-                                    <img src='<%# Eval("flImageLarge") %>' alt="no image" width="940" height="450" />              
-                                </asp:HyperLink>
-                            </ItemTemplate>
-                        </asp:TemplateField>
+            <asp:TableCell runat="server" VerticalAlign="Top">
+
+                <%--Display Image Slider--%>
+                <asp:GridView ID="gvPosts" runat="server" AutoGenerateColumns="false" Visible="true" ShowHeader="false" GridLines="None" Width="940" 
+                Height="470" HorizontalAlign="Center" OnRowDataBound="gvPosts_OnRowDataBound" DataKeyNames="PostID">
+                <Columns>
+                    <asp:TemplateField HeaderImageUrl="Images" ItemStyle-HorizontalAlign="Left">
+                        <ItemTemplate>
+                            <%--<div class="slider" id="slideshow<%# Container.DataItemIndex %>">--%>
+
+                            <div class="slideshow0">
+                                <asp:ListView ID="lvPics" runat="server" AutoGenerateColumns="false" Visible="true" ShowHeader="false">
+                                    <LayoutTemplate>
+                                        <ul class="bjqs">
+                                            <asp:PlaceHolder ID="itemPlaceholder" runat="server" />
+                                        </ul>
+                                    </LayoutTemplate>
+                                    <ItemTemplate>
+                                        <li>          
+                                            <img src='<%# Eval("flImageThumb") %>' alt="no image" width="940" height="450" title='<%# Eval("txtJobName") %>' />
+                                        </li>
+                                    </ItemTemplate>
+                                    <EmptyDataTemplate>
+                                        <p>No images have been uploaded for this post yet.</p>
+                                    </EmptyDataTemplate>
+                                </asp:ListView>                                              
+                            </div>
+
+                       </ItemTemplate>
+                    </asp:TemplateField>
                     </Columns>
                 </asp:GridView>
             </asp:TableCell>
 
 
             <asp:TableCell VerticalAlign="Top">
-                <h2 id="flTitle" class="flDetailsHeader"><asp:Label ID="lblProjectName" runat="server" /></h2>
-
+            <h2 id="flTitle" class="flDetailsHeader"><asp:Label ID="lblProjectName" runat="server" /></h2>
                 <div class="flDetails" id="flDetailsOrg">
-
-                <asp:Table ID="tblOrganizationInfo" runat="server">
-                    <asp:TableRow><asp:TableCell><h3>Organization</h3></asp:TableCell></asp:TableRow>
-                    <asp:TableRow><asp:TableCell>&nbsp;&nbsp;&nbsp;Category:&nbsp;<span><asp:Label ID="lblCategory" runat="server" /></span></asp:TableCell></asp:TableRow>
-                    <asp:TableRow><asp:TableCell>&nbsp;&nbsp;&nbsp;Subcategory:&nbsp;<span><asp:Label ID="lblSubCat" runat="server" /></span></asp:TableCell></asp:TableRow>
-                    <asp:TableRow><asp:TableCell ID="tcTags" runat="server">&nbsp;&nbsp;&nbsp;Tags:&nbsp;<asp:HyperLink ID="hlTags" runat="server" /></asp:TableCell></asp:TableRow>
-                </asp:Table>
-              
+                    <asp:Table ID="tblOrganizationInfo" runat="server">
+                        <asp:TableRow><asp:TableCell><h3>Organization</h3></asp:TableCell></asp:TableRow>
+                        <asp:TableRow><asp:TableCell>&nbsp;&nbsp;&nbsp;Category:&nbsp;<span><asp:Label ID="lblCategory" runat="server" /></span></asp:TableCell></asp:TableRow>
+                        <asp:TableRow><asp:TableCell>&nbsp;&nbsp;&nbsp;Subcategory:&nbsp;<span><asp:Label ID="lblSubCat" runat="server" /></span></asp:TableCell></asp:TableRow>
+                        <asp:TableRow><asp:TableCell ID="tcTags" runat="server">&nbsp;&nbsp;&nbsp;Tags:&nbsp;<asp:HyperLink ID="hlTags" runat="server" /></asp:TableCell></asp:TableRow>
+                    </asp:Table>             
                 </div>
 
             
@@ -78,21 +107,23 @@
                             </Columns>
                         </asp:GridView>
                     </asp:Panel>
- 
-                    <asp:CollapsiblePanelExtender ID="CollapsiblePanelExtender1" 
-                                            runat="server" 
-                                            TargetControlID="pBody" 
-                                            CollapseControlID="pHeader" 
-                                            ExpandControlID="pHeader"
-                                            Collapsed="true" 
-                                            TextLabelID="lblText" 
-                                            ImageControlID="Image1" 
-                                            CollapsedText="Click to Show Labor Details.." 
-                                            ExpandedText="Click to Hide Labor Details.." 
-                                            ExpandedImage="~/images/collapse.jpg"
-                                            CollapsedImage="~/images/expand.jpg"
-                                            CollapsedSize="0">
-                    </asp:CollapsiblePanelExtender>
+
+                    <div class="colltext">
+                        <asp:CollapsiblePanelExtender ID="CollapsiblePanelExtender1" 
+                                                runat="server" 
+                                                TargetControlID="pBody" 
+                                                CollapseControlID="pHeader" 
+                                                ExpandControlID="pHeader"
+                                                Collapsed="true" 
+                                                TextLabelID="lblText" 
+                                                ImageControlID="Image1" 
+                                                CollapsedText="Click to Show Labor Details.." 
+                                                ExpandedText="Click to Hide Labor Details.."  
+                                                ExpandedImage="~/images/collapse.jpg"
+                                                CollapsedImage="~/images/expand.jpg"
+                                                CollapsedSize="0">
+                        </asp:CollapsiblePanelExtender>
+                    </div>
                 </ContentTemplate>
             </asp:UpdatePanel>
 
